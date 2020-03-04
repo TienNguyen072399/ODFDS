@@ -1,0 +1,133 @@
+/**
+*Style the navigation bar
+*/
+#navigation{
+    background-color: black;
+    color: white;
+    padding: 10px;
+}
+.dropbtn {
+    background-color:black;
+    color: white;
+    border: none;
+  }
+  
+  .dropdown {
+    position: relative;
+    display: inline-block;
+    float: right;
+  }
+  
+  .dropdown-content,.popup_help {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+
+  .dropdown-content p {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  /* Show the dropdown menu on hover */
+  .dropdown:hover .dropdown-content {display: block;}
+  .help:hover .popup_help {display: block;}
+
+  /* Change the background color of the dropdown button when the dropdown content is shown */
+  .dropdown:hover .dropbtn {background-color: darkgrey;}
+  .help:hover .dropbtn {background-color: darkgrey;}
+
+  .help{
+      float:left;
+  }
+/*general */
+#header{
+    background-color: #333333;
+    color: white;
+    height: 22px;
+    font-size: 15px;
+    text-align: justify;
+
+}
+#form_body{
+    border: 1px solid black;
+    font-weight: bold;
+    padding: 5px;
+    text-align: center;
+}
+button{
+    font-weight: bold;
+}
+#goBack{
+    
+    position: relative;
+    float: right;
+}
+  /**
+*Style the connection table
+*/
+#connection{
+    display: block;
+    position: absolute;
+    height: 100px;
+    width: 350px;
+}
+#mainmenu{
+    display: block;
+    position: absolute;
+    height: 100px;
+    width: 380px;
+}
+#thc_prompt,#interview,#thi,#tfi,#thi_questionare,#thi_result,#tfi_result{
+    border: 1px solid black;
+    font-weight: bold;
+}
+
+#thc_prompt{
+    width:300px;
+}
+#visitid,#thcnumber,#visitno{
+    width:35px;
+    font-weight: bold;
+}
+#date,#name{
+    width:113px;
+    font-weight: bold;
+}
+#thi_but,#tfi_but{
+    width: 150px;
+    height:60px;
+}
+#thi{
+    width: 803px;
+    text-align: center;
+}
+#thi_option{
+    float: right;
+}
+#thi_result,#tfi_result,#interview{
+    width:400px;
+}
+#tfi_questionare{
+    text-align: left;
+}
+#lookup_result,#row_name{
+    text-align: center;
+    border: 1px solid black;
+}
+tr,td,th{
+    border-left: 1px solid black;
+    border-bottom:1px solid black;
+}

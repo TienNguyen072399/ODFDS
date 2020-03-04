@@ -1,0 +1,23 @@
+<%- include('Header') %>
+<div id = 'container'>
+    <form id = 'connection' method ='post' enctype='multipart/form-data'>
+        <div id ='header'>
+            <p>Connection</p>
+        </div>
+        <div id = 'form_body'>
+            Host:        
+            <input type ='text' name = 'host'><br>
+            User:         
+            <input type ='text' name = 'user'><br>
+            Password:          
+            <input type ='password' name = 'password'><br>
+            Port:          
+            <input type ='text' name = 'port'><br>
+            Database          
+            <input type ='text' name = 'database'><br>
+            <button formaction = '/connect' name ='connect_button' >Connect</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>
