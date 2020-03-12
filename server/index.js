@@ -1,30 +1,32 @@
-const bodyParser = require("body-parser");
-const express = require("express");
+var express = require('express');
+//connects to database and various tables
 
+//router is the login router
+const router = express.Router();
+//express server
 const app = express();
-
-let server = app.listen(3000, () => {
-  console.log("Listening on port 3000");
-});
-
-//Body Parser middleware
+const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
-//Initialize route for general user (middleware)
-app.use("/api/users", require("./api/users"));
 
-// //Initialize route for drivers (middleware)
-app.use("/api/drivers", require("./api/drivers"));
 
-// //Initialize route for restaurants (middleware)
-app.use("/api/restaurants", require("./api/restaurants"));
+//Initialize route for registration
+app.use("/api/registration", require("./api/registration"));
+router.use(function (req, res, next) {
+    console.log('Time:', Date.now())
+    next()
+})
 
-//Error handling middlware
-app.use(function(err, req, res, next) {
-  //   console.log(err);
-  res.status(422).send({ error: err.message });
+//when you have localhost:3000/Login this message shows
+router.get('/', function (req, res) {
+    res.send("hello this is the login");
+    //takes email/password as parameters
 });
 
-app.get("/", (req, res) => {
-  res.send("Hello world");
+app.get('/', function (req, res) {
+    res.send("hello");
 });
+
+
+app.use('/Login', router);
+app.listen(process.env.PORT || '3000', () => console.log('Example app listening on port'))
