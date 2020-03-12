@@ -1,7 +1,16 @@
 const bodyParser = require("body-parser");
 const express = require("express");
+const mongoose = require("mongoose");
 
 const app = express();
+
+//Connect to mongodb via mongoose
+mongoose.connect(
+  "mongodb+srv://ODFDS:CS160group3@cluster0-jyaj4.mongodb.net/test?retryWrites=true&w=majority",
+  { useNewUrlParser: true, useUnifiedTopology: true }
+);
+mongoose.set("useFindAndModify", false);
+mongoose.Promise = global.Promise;
 
 let server = app.listen(3000, () => {
   console.log("Listening on port 3000");
