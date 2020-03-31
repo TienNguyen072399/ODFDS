@@ -49,4 +49,28 @@ router.post("/registration", (req, res, next) => {
   }
 });
 
+//Login API
+router.post("/login", (req, res, next) => {
+  let type = req.body.type;
+  if (type == "business") {
+    Restaurant.findOne({ email: req.body.email }).then(user => {
+      if (user) {
+        res.send({ user });
+        //Password check, need registration done first
+      } else {
+        res.send({ error: "cannot find user" });
+      }
+    });
+  } else {
+    Driver.findOne({ email: req.body.email }).then(user => {
+      if (user) {
+        res.send({ user });
+        //Password check, need registration done first
+      } else {
+        res.send({ error: "cannot find user" });
+      }
+    });
+  }
+});
+
 module.exports = router;
