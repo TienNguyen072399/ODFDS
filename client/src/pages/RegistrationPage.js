@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import CustomButtons from "../components/CustomButtons";
+import { Link } from "react-router-dom";
 import "./TempCSS.css";
 
 class Registration extends Component {
@@ -12,19 +13,103 @@ class Registration extends Component {
     businessName: "",
     address: "",
     driversLicense: "",
-    car: ""
+    vehicle: "",
   };
 
-  handleChooseType = e => {
+  handleChooseType = (e) => {
     console.log(e.target.value);
     this.setState({ type: e.target.value, step: 2 });
   };
 
-  handleGoBack = e => {
-    this.setState({ step: 1 });
+  handleGoBack = (e) => {
+    this.setState({
+      step: 1,
+      name: "",
+      email: "",
+      password: "",
+      businessName: "",
+      address: "",
+      driversLicense: "",
+      vehicle: "",
+    });
   };
 
-  handleSignUp = e => {
+  handleSignUp = (e) => {
+    if (this.state.type == "business") {
+      if (
+        !this.state.name ||
+        !this.state.email ||
+        !this.state.password ||
+        !this.state.businessName ||
+        !this.state.address
+      ) {
+        alert("Please fill out the entire form");
+        e.preventDefault();
+        return;
+      } else {
+        fetch("http://localhost:5000/api/users/registration", {
+          method: "POST",
+
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            type: this.state.type,
+            name: this.state.name,
+            email: this.state.email.toLowerCase(),
+            password: this.state.password,
+            businessName: this.state.businessName,
+            address: this.state.address,
+          }),
+        })
+          .then((response) => response.json())
+          .then((res) => {
+            if (res.user) {
+              console.log(res.user);
+            } else {
+              alert(res.error);
+            }
+          });
+      }
+    } else {
+      if (
+        !this.state.name ||
+        !this.state.email ||
+        !this.state.password ||
+        !this.state.driversLicense ||
+        !this.state.vehicle
+      ) {
+        alert("Please fill out the entire form");
+        e.preventDefault();
+        return;
+      } else {
+        fetch("http://localhost:5000/api/users/registration", {
+          method: "POST",
+
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            type: this.state.type,
+            name: this.state.name,
+            email: this.state.email.toLowerCase(),
+            password: this.state.password,
+            driversLicense: this.state.driversLicense,
+            vehicle: this.state.vehicle,
+          }),
+        })
+          .then((response) => response.json())
+          .then((res) => {
+            if (res.user) {
+              console.log(res.user);
+            } else {
+              alert(res.error);
+            }
+          });
+      }
+    }
     e.preventDefault();
   };
 
@@ -38,7 +123,7 @@ class Registration extends Component {
             flexDirection: "column",
             alignItems: "center",
             fontSize: 30,
-            color: "#4E4E4E"
+            color: "#4E4E4E",
           }}
         >
           <div className="registrationInput">
@@ -47,7 +132,7 @@ class Registration extends Component {
               type="text"
               name="name"
               value={this.state.name}
-              onChange={e => {
+              onChange={(e) => {
                 this.setState({ name: e.target.value });
               }}
               placeholder="Name"
@@ -58,7 +143,7 @@ class Registration extends Component {
             <input
               type="text"
               name="email"
-              onChange={e => {
+              onChange={(e) => {
                 this.setState({ email: e.target.value });
               }}
               placeholder="Email"
@@ -69,7 +154,7 @@ class Registration extends Component {
             <input
               type="password"
               name="businessName"
-              onChange={e => {
+              onChange={(e) => {
                 this.setState({ password: e.target.value });
               }}
               placeholder="Password"
@@ -80,7 +165,7 @@ class Registration extends Component {
             <input
               type="text"
               name="businessName"
-              onChange={e => {
+              onChange={(e) => {
                 this.setState({ businessName: e.target.value });
               }}
               placeholder="Business Name"
@@ -91,7 +176,7 @@ class Registration extends Component {
             <input
               type="text"
               name="address"
-              onChange={e => {
+              onChange={(e) => {
                 this.setState({ address: e.target.value });
               }}
               placeholder="Address"
@@ -117,7 +202,7 @@ class Registration extends Component {
             flexDirection: "column",
             alignItems: "center",
             fontSize: 30,
-            color: "#4E4E4E"
+            color: "#4E4E4E",
           }}
         >
           <div className="registrationInput">
@@ -126,7 +211,7 @@ class Registration extends Component {
               type="text"
               name="name"
               value={this.state.name}
-              onChange={e => {
+              onChange={(e) => {
                 this.setState({ name: e.target.value });
               }}
               placeholder="Name"
@@ -137,7 +222,7 @@ class Registration extends Component {
             <input
               type="text"
               name="email"
-              onChange={e => {
+              onChange={(e) => {
                 this.setState({ email: e.target.value });
               }}
               placeholder="Email"
@@ -147,8 +232,8 @@ class Registration extends Component {
             <label>Password</label>
             <input
               type="password"
-              name="businessName"
-              onChange={e => {
+              name="password"
+              onChange={(e) => {
                 this.setState({ password: e.target.value });
               }}
               placeholder="Password"
@@ -159,7 +244,7 @@ class Registration extends Component {
             <input
               type="text"
               name="driversLicense"
-              onChange={e => {
+              onChange={(e) => {
                 this.setState({ driversLicense: e.target.value });
               }}
               placeholder="Driver's License"
@@ -170,8 +255,8 @@ class Registration extends Component {
             <input
               type="text"
               name="car"
-              onChange={e => {
-                this.setState({ car: e.target.value });
+              onChange={(e) => {
+                this.setState({ vehicle: e.target.value });
               }}
               placeholder="Car Type"
             />
@@ -198,7 +283,7 @@ class Registration extends Component {
           style={{
             display: "flex",
             flexDirection: "column",
-            height: "100%"
+            height: "100%",
             // justifyContent: "",
             // backgroundColor: "blue"
           }}
@@ -208,7 +293,7 @@ class Registration extends Component {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              color: "#4E4E4E"
+              color: "#4E4E4E",
               // backgroundColor: "pink"
             }}
           >
@@ -222,7 +307,7 @@ class Registration extends Component {
               display: "flex",
               flexDirection: "row",
               justifyContent: "center",
-              marginTop: 40
+              marginTop: 40,
               // backgroundColor: "red"
             }}
           >
@@ -239,6 +324,13 @@ class Registration extends Component {
               onClick={this.handleChooseType}
             />
           </div>
+          <Link to="/">
+            <div
+              style={{ position: "absolute", left: 10, bottom: 10, width: 200 }}
+            >
+              <CustomButtons text="<" color="#4E4E4E" width="50%" />
+            </div>
+          </Link>
         </div>
       );
     }
@@ -253,7 +345,7 @@ class Registration extends Component {
             style={{
               display: "flex",
               flexDirection: "column",
-              height: "100%"
+              height: "100%",
               // justifyContent: "",
               // backgroundColor: "blue"
             }}
@@ -263,7 +355,7 @@ class Registration extends Component {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                color: "#4E4E4E"
+                color: "#4E4E4E",
                 // backgroundColor: "pink"
               }}
             >
@@ -293,7 +385,7 @@ class Registration extends Component {
             style={{
               display: "flex",
               flexDirection: "column",
-              height: "100%"
+              height: "100%",
               // justifyContent: "",
               // backgroundColor: "blue"
             }}
@@ -303,7 +395,7 @@ class Registration extends Component {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                color: "#4E4E4E"
+                color: "#4E4E4E",
                 // backgroundColor: "pink"
               }}
             >
