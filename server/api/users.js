@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const cors = require("cors");
 
 //Models
 const Driver = require("../database/models/driver");
@@ -40,12 +41,72 @@ findOne({fieldLookingFor: req.body.fieldLookingFor},
   })
 */
 
-router.post("/registration", (req, res, next) => {
+router.post("/registration", cors(), (req, res, next) => {
   console.log(req.body);
   let type = req.body.type;
 
   if (type == "business") {
+    Restaurant.findOne({ email: req.body.email }).then((user) => {
+      //Email exist
+      if (user) {
+        console.log("email exist");
+        res.send({
+          error: "An account exist under this email. Please try another email",
+        });
+      } else {
+        Restaurant.create(req.body).then((user) => {
+          if (user) {
+            console.log(user);
+            res.send({ user });
+          } else {
+            res.send({ error: "Signup failed" });
+          }
+        });
+      }
+    });
   } else {
+    Driver.findOne({ email: req.body.email }).then((user) => {
+      //Email exist
+      if (user) {
+        console.log("email exist");
+        res.send({
+          error: "An account exist under this email. Please try another email",
+        });
+      } else {
+        Driver.create(req.body).then((user) => {
+          if (user) {
+            console.log(user);
+            res.send({ user });
+          } else {
+            res.send({ error: "Signup failed" });
+          }
+        });
+      }
+    });
+  }
+});
+
+//Login API
+router.post("/login", (req, res, next) => {
+  let type = req.body.type;
+  if (type == "business") {
+    Restaurant.findOne({ email: req.body.email }).then((user) => {
+      if (user) {
+        res.send({ user });
+        //Password check, need registration done first
+      } else {
+        res.send({ error: "cannot find user" });
+      }
+    });
+  } else {
+    Driver.findOne({ email: req.body.email }).then((user) => {
+      if (user) {
+        res.send({ user });
+        //Password check, need registration done first
+      } else {
+        res.send({ error: "cannot find user" });
+      }
+    });
   }
 });
 

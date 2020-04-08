@@ -14,6 +14,10 @@ const DriverSchema = new Schema({
     type: String,
     require: [true, "Vehicle is required"]
   },
+  driversLicense: {
+    type: String,
+    require: [true, "Vehicle is required"]
+  },
   password: {
     type: String,
     require: [true, "Password is required"]

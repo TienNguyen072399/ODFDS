@@ -1,7 +1,7 @@
 const bodyParser = require("body-parser");
 const express = require("express");
 const mongoose = require("mongoose");
-
+const cors = require("cors");
 const app = express();
 
 //Connect to mongodb via mongoose
@@ -12,9 +12,11 @@ mongoose.connect(
 mongoose.set("useFindAndModify", false);
 mongoose.Promise = global.Promise;
 
-let server = app.listen(3000, () => {
-  console.log("Listening on port 3000");
+let server = app.listen(5000, () => {
+  console.log("Listening on port 5000");
 });
+
+app.options("*", cors()); // include before other routes
 
 //Body Parser middleware
 app.use(bodyParser.json());
@@ -29,7 +31,7 @@ app.use("/api/drivers", require("./api/drivers"));
 app.use("/api/restaurants", require("./api/restaurants"));
 
 //Error handling middlware
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   //   console.log(err);
   res.status(422).send({ error: err.message });
 });
