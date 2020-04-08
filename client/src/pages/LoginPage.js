@@ -1,6 +1,13 @@
-import React, { Component } from "react";
+import React, {
+  Component
+} from "react";
 import styled from "styled-components";
-import { Link, Redirect, useHistory } from "react-router-dom";
+import {
+  Link,
+  Redirect,
+  useHistory
+} from "react-router-dom";
+import CustomButtons from "../components/CustomButtons";
 
 class Login extends Component {
   constructor(props) {
@@ -14,84 +21,131 @@ class Login extends Component {
 
   handleChangeEmail = async (event) => {
     const email = event.target.value;
-    this.setState({ email });
+    this.setState({
+      email
+    });
   };
 
   handleChangePassword = async (event) => {
     const password = event.target.value;
-    this.setState({ password });
+    this.setState({
+      password
+    });
   };
 
   handleChangeType = async (event) => {
     const type = event.target.value;
     console.log(event.target.value);
-    this.setState({ type });
+    this.setState({
+      type
+    });
   };
 
   handleLogin = async () => {
-    const { email, password, type } = this.state;
-    const user = { email, password, type };
+    const {
+      email,
+      password,
+      type
+    } = this.state;
+    const user = {
+      email,
+      password,
+      type
+    };
     console.log("handleLogin");
   };
 
   render() {
-    const { email, password, type } = this.state;
+    const {
+      email,
+      password,
+      type
+    } = this.state;
     console.log(type);
-    return (
-      <form className="form-signin">
-        <h1 className="h3 mb-3 font-weight-normal">Driver Sign in</h1>
-        <label htmlFor="inputEmail" className="sr-only">
-          Email address
-        </label>
-        <input
-          type="email"
-          id="inputEmail"
-          className="form-control"
-          placeholder="Email address"
-          required
-          autoFocus
-          value={email}
-          onChange={this.handleChangeEmail}
-        />
-        <label htmlFor="inputPassword" className="sr-only">
-          Password
-        </label>
-        <input
-          type="password"
-          id="inputPassword"
-          className="form-control"
-          placeholder="Password"
-          required
-          value={password}
-          onChange={this.handleChangePassword}
-        />
-        <div className="checkbox mb-3">
-          <label>
-            <input
-              onClick={this.handleChangeType}
-              type="checkbox"
-              value="business"
-            />{" "}
-            Business Login
-          </label>
-        </div>
-        <button
-          onClick={this.handleLogin}
-          className="btn btn-lg btn-primary btn-block"
-          type="submit"
-        >
-          Sign in
-        </button>
-        <Link to="signup">
-          <button
-            onClick={this.handleSignup}
-            className="btn btn-lg btn-primary btn-block"
-            type="submit"
-          >
-            Sign up
-          </button>
-        </Link>
-      </form>
+    return ( <
+      form className = "form-signin"
+      style = {
+        {
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          fontSize: 30,
+          color: "#4E4E4E",
+        }
+      } >
+      <
+      h1 > Driver Sign in < /h1> <
+      label htmlFor = "inputEmail"
+      className = "sr-only" >
+      Email address <
+      /label> <
+      input type = "email"
+      id = "inputEmail"
+      className = "form-control"
+      placeholder = "Email address"
+      required autoFocus value = {
+        email
+      }
+      onChange = {
+        this.handleChangeEmail
+      }
+      /> <
+      label htmlFor = "inputPassword" >
+      Password <
+      /label> <
+      input type = "password"
+      id = "inputPassword"
+      className = "form-control"
+      placeholder = "Password"
+      required value = {
+        password
+      }
+      onChange = {
+        this.handleChangePassword
+      }
+      /> <
+      div >
+      <
+      label >
+      <
+      input onClick = {
+        this.handleChangeType
+      }
+      type = "checkbox"
+      value = "business" /
+      >
+      {
+        " "
+      }
+      Business Login <
+      /label>  < /
+      div >
+      <
+      div style = {
+        {
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          marginTop: 40,
+          // backgroundColor: "red"
+        }
+      } >
+      <
+      CustomButtons text = "Sign in"
+      color = "#DB3979"
+      width = "200%"
+      onClick = {
+        this.handleLogin
+      }
+      />    <
+      Link to = "signup" > < CustomButtons text = "Sign up"
+      color = "#DB3979"
+      width = "200%"
+      onClick = {
+        this.handleSignup
+      }
+      /></Link > < /div> < /
+      form >
     );
   }
 }
