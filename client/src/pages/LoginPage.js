@@ -75,7 +75,7 @@ class Login extends Component {
       } >
       <
       div className = "loginInput" > <
-      h1 > Driver Sign in < /h1> <
+      h1 > Driver Login < /h1> <
       label >
       Email address <
       /label> <
@@ -124,14 +124,14 @@ class Login extends Component {
       <
       div className = "registrationInput" >
       <
-      CustomButtons text = "Sign in"
+      CustomButtons text = "LOGIN"
       color = "#DB3979"
       width = "100%"
       onClick = {
         this.handleLogin
       }
       />    <
-      Link to = "signup" > < CustomButtons text = "Sign up"
+      Link to = "signup" > < CustomButtons text = "REGISTER"
       color = "#DB3979"
       width = "100%"
       onClick = {
