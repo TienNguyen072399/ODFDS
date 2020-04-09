@@ -74,9 +74,9 @@ class Login extends Component {
         }
       } >
       <
+      div className = "loginInput" > <
       h1 > Driver Sign in < /h1> <
-      label htmlFor = "inputEmail"
-      className = "sr-only" >
+      label >
       Email address <
       /label> <
       input type = "email"
@@ -90,7 +90,7 @@ class Login extends Component {
         this.handleChangeEmail
       }
       /> <
-      label htmlFor = "inputPassword" >
+      label >
       Password <
       /label> <
       input type = "password"
@@ -118,29 +118,22 @@ class Login extends Component {
         " "
       }
       Business Login <
-      /label>  < /
+      /label> < /
+      div > < /
       div >
       <
-      div style = {
-        {
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          marginTop: 40,
-          // backgroundColor: "red"
-        }
-      } >
+      div className = "registrationInput" >
       <
       CustomButtons text = "Sign in"
       color = "#DB3979"
-      width = "200%"
+      width = "100%"
       onClick = {
         this.handleLogin
       }
       />    <
       Link to = "signup" > < CustomButtons text = "Sign up"
       color = "#DB3979"
-      width = "200%"
+      width = "100%"
       onClick = {
         this.handleSignup
       }
