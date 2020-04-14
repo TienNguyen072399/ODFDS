@@ -4,7 +4,11 @@ const Schema = mongoose.Schema;
 const RequestSchema = new Schema({
     bid: {
         type: String,
-        require: [true, "Business id is required"]
+        default: ""
+    },
+    did: {
+        type: String,
+        default: ""
     },
     startloc: {
         type: String,
