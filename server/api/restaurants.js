@@ -118,6 +118,26 @@ router.post("/order/start", cors(), (req, res, next) => {
     });
 
 });
+router.put("/order/confirm", cors(), (req, res, next) => {
+    //this is when the driver confirms the order, req will send the drivers email
+    //finds the drivers id by finding email
+    Driver.findOne({ email: req.body.email }).then((user) => {
+        if (user) {
+            //update request to have driver id
+            Request.findOneAndUpdate({ id: user.id }, { did: user.id}, {
+                new: true
+            }).then((user) => {
+                if (user) {
+                    console.log("good");
+                } else {
+                    res.send({ error: "no request found" });
+                }
+            });
+        } else {
+            res.send({ error: "no request found" });
+        }
+    });
+});
 router.put("/order/pickup", cors(), (req, res, next) => {
     //updating request
 
