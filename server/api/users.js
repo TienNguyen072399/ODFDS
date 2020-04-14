@@ -87,24 +87,26 @@ router.post("/registration", cors(), (req, res, next) => {
 });
 
 //Login API
-router.post("/login", (req, res, next) => {
+router.post("/login", cors(), (req, res, next) => {
   let type = req.body.type;
   if (type == "business") {
+    console.log(req.body);
     Restaurant.findOne({ email: req.body.email }).then((user) => {
       if (user) {
         res.send({ user });
         //Password check, need registration done first
       } else {
-        res.send({ error: "cannot find user" });
+        res.send({ error: "Invalid Email or Password" });
       }
     });
   } else {
+    console.log(req.body);
     Driver.findOne({ email: req.body.email }).then((user) => {
       if (user) {
         res.send({ user });
         //Password check, need registration done first
       } else {
-        res.send({ error: "cannot find user" });
+        res.send({ error: "Invalid Email or Password" });
       }
     });
   }
