@@ -3,12 +3,12 @@ import "../pages/TempCSS.css";
 
 class Navbar extends Component {
     state = {
-        type: this.props.type,
+        type: this.props.type
     };
 
     render() {
         
-            if (this.type == "business"){
+            if (this.state.type === "business"){
                 return (
                 <div class = "navcontainer" > 
                 <div class = "navbar" >

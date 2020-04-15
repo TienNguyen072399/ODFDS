@@ -17,7 +17,7 @@ function App() {
   return ( 
     <Router>
     <Header/>
-    
+    <Navbar type="business"/>
     <Switch>
     <Route path = "/" exact component = {Login}/>{" "} 
     <Route path = "/users" exact component = {Login}/>{" "} 

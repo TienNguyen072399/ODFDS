@@ -14,7 +14,7 @@ class DriverDashboard extends Component {
   render() {
     
     return (
-      <Navbar type={this.type}/>
+      <Navbar type={this.state.type}/>
       
     );
   }
