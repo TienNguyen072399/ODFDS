@@ -81,7 +81,7 @@ class Login extends Component {
           color: "#4E4E4E",
         }}
       >
-        <div className="loginInput">
+        <div className="formInput">
           {" "}
           <h1> Driver Login </h1> <label>Email address </label>{" "}
           <input
@@ -115,7 +115,7 @@ class Login extends Component {
             </label>{" "}
           </div>{" "}
         </div>
-        <div className="registrationInput">
+        <div className="formInput">
           <CustomButtons
             text="LOGIN"
             color="#DB3979"
