@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import styled from "styled-components";
+import "../App.css";
 import { Link, Redirect, useHistory } from "react-router-dom";
 import CustomButtons from "../components/CustomButtons";
-
+import Navbar from "../components/NavBar";
 class NewOrder extends Component {
   constructor(props) {
     super(props);
@@ -49,13 +50,15 @@ class NewOrder extends Component {
 
 
   handleSubmit = async (e) => {
-    
+    return <Redirect to='/restaurant/dashboard' />
   };
 
   render() {
     const { customerName, address, zipCode,city, businessName,deliveryAddress,timePickUp,timeDelivered} = this.state;
     
     return (
+        <div><Navbar type="business"/>
+    
       <form
         className="form-signin"
         style={{
@@ -109,17 +112,17 @@ class NewOrder extends Component {
           
         </div>
         <div className="formInput">
-          <Link to="">
-            {" "}
+          
             <CustomButtons
               text="SUBMIT"
               color="#DB3979"
               width="100%"
               onClick={this.handleSubmit}
             />
-          </Link>{" "}
+          
         </div>{" "}
       </form>
+      </div>
     );
   }
 }

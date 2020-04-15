@@ -7,7 +7,7 @@ class DriverDashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        type='driver'
+        type:'driver'
     };
   }
 

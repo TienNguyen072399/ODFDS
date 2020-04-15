@@ -8,24 +8,24 @@ class Navbar extends Component {
 
     render() {
         
-            if (this.state.type === "business"){
+            if (this.state.type === "driver"){
                 return (
                 <div class = "navcontainer" > 
                 <div class = "navbar" >
-                <a href=""> Settings </a> 
-                <a href=""> Order Map </a> 
-                <a href=""> Current Orders </a> 
-                <a href=""> Log Out </a> 
+                <a href="/driver/setting"> Settings </a> 
+                <a href="/driver/map"> Order Map </a> 
+                <a href="/driver/dashboard"> Current Orders </a> 
+                <a href="/"> Log Out </a> 
                 </div> </div >)
             }
             else{
                 return (
                 <div class = "navcontainer" > 
                 <div class = "navbar" >
-                <a href="">Settings</a>
-                <a href="">New Order</a>
-                <a href="">Current Orders</a>
-                <a href="">Log Out</a>
+                <a href="/restaurant/setting">Settings</a>
+                <a href="/restaurant/neworder">New Order</a>
+                <a href="/restaurant/dashboard">Current Orders</a>
+                <a href="/">Log Out</a>
                 </div> </div >)
             }
             

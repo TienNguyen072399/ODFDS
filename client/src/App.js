@@ -12,7 +12,9 @@ import {
 } from "react-router-dom";
 
 import Login from "./pages/LoginPage";
-
+import NewOrder from "./pages/NewOrderPage";
+import BusinessDashboard from "./pages/BusinessDashboard";
+import DriverDashboard from "./pages/DriverDashboard";
 function App() {
   return ( 
     <Router>
@@ -23,7 +25,10 @@ function App() {
     <Route path = "/users" exact component = {Login}/>{" "} 
     <Route path = "/drivers" exact component = {Login}/>{" "} 
     <Route path = "/restaurant" exact component = {Login}/>{" "} 
-    <Route path = "/signup" exact component = {Registration}/>{" "} 
+    <Route path = "/signup" exact component = {Registration}/>{" "}
+    <Route path = "/restaurant/neworder" exact component = {NewOrder}/> 
+    <Route path = "/restaurant/dashboard" exact component = {BusinessDashboard}/> 
+    <Route path = "/driver/dashboard" exact component = {DriverDashboard}/>
     </Switch> 
     </Router>
   );

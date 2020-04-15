@@ -61,7 +61,9 @@ class Login extends Component {
           if (res.error) {
             alert(res.error);
           } else {
+            
             alert("sucessfully logged in");
+            //return <Redirect to='/driver/dashboard' />
           }
         });
     }
