@@ -57,7 +57,8 @@ class NewOrder extends Component {
     const { customerName, address, zipCode,city, businessName,deliveryAddress,timePickUp,timeDelivered} = this.state;
     
     return (
-        <div><Navbar type="business"/>
+        <div >
+          <Navbar type="business"/>
     
       <form
         className="form-signin"
