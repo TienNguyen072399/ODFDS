@@ -1,0 +1,108 @@
+#dash-box {
+    width: 600px;
+    height: 300px;
+    border: brown;
+    background-color: #ffffff;
+    position: relative;
+
+}
+
+/*To be filled in with a map? Low Priority on backlog.*/
+
+#boxtop {
+    background-color: #A8A8A8;
+    height: 100px;
+    width: auto;   
+}
+
+/*Containers */
+
+#container{
+    padding: 3%;
+}
+
+#titlecontainer{
+    padding-left: 2%;
+    float: left;
+}
+
+/*Used in Driver Dashboard*/
+
+#button-container {
+    height: max-content;
+    width: auto;
+    bottom: 15px;
+    right: -30px;
+    position: absolute;
+}
+
+/*Used in Business Dashboard*/
+#button-container2 {
+    height: max-content;
+    width: auto;
+    bottom: 15px;
+    right: 10px;
+    position: absolute;
+}
+
+#star-container {
+    /**/
+}
+
+/*React Rating Star Colors*/
+
+.react-rater {
+    height: max-content;
+    width: max-content;
+    padding-left: 15%;
+    padding-top: 3%;
+    position: absolute;
+    display: flex;
+    line-height: normal
+    ;
+}
+
+/*Active star color*/
+.react-rater-star.is-active {
+    color: #DB3979;
+} 
+
+/*inactive star color*/
+.react-rater-star {
+    color: #A8A8A8;
+    float: left;
+    padding-right: 10px;
+    position: relative;
+}
+
+/*To be filled with user icon? Low Priority on backlog.*/
+
+.iconcircle {
+    width: 70px;
+    height: 70px;
+    border-radius: 360%;
+    background-color: #DB3979;
+    float: left;
+}
+
+/*Header CSS for name of Restaurant*/
+
+h2 {
+    color: #4e4e4e;
+    font: Bold 25px/25px Arial;
+}
+
+#time {
+    color: #4e4e4e;
+    font: 25px/25px Arial;
+    float: right;
+    padding-right: 3%;
+}
+
+#description {
+    color: #4e4e4e;
+    font: 20px/20px Arial;
+    float: left;
+    padding-left: 5%;
+    padding-top: 2%;
+}

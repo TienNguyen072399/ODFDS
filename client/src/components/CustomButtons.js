@@ -7,7 +7,7 @@ class CustomButtons extends Component {
     return (
       <button
         style={{
-          fontSize: 30,
+          fontSize: this.props.fontSize,
           backgroundColor: this.props.color,
           borderColor: this.props.color,
           borderRadius: 5,

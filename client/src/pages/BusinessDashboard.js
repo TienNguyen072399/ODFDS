@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Link, Redirect, useHistory } from "react-router-dom";
 import CustomButtons from "../components/CustomButtons";
 import Navbar from "../components/NavBar";
+import BuisDash from "../components/BuisDash";
 class BusinessDashboard extends Component {
   constructor(props) {
     super(props);
@@ -35,6 +36,7 @@ class BusinessDashboard extends Component {
     return (
       <div>
         <Navbar type={this.state.type}/>
+        <center><BuisDash/></center>
         {this.state.orders.map(item => (<div>
           <div>ID: {item.__id}</div>
           <div>Customer Name: {item.customerName}</div>

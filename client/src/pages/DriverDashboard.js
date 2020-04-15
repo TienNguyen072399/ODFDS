@@ -3,9 +3,13 @@ import styled from "styled-components";
 import { Link, Redirect, useHistory } from "react-router-dom";
 import CustomButtons from "../components/CustomButtons";
 import Navbar from "../components/NavBar";
+import DriverDash from "../components/DriverDash";
+
 class DriverDashboard extends Component {
   constructor(props) {
     super(props);
+
+    
     this.state = {
         type:'driver',
         orders: [{businessName: "Restaurant 1",
@@ -35,6 +39,7 @@ class DriverDashboard extends Component {
     return (
         <div>
         <Navbar type={this.state.type}/>
+        <center><DriverDash/></center>
         {this.state.orders.map(item => (<div>
           <div>ID: {item.__id}</div>
           <div>Business Name: {item.businessName}</div>
