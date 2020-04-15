@@ -6,13 +6,15 @@ import Navbar from "../components/NavBar";
 class DriverDashboard extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+        type='driver'
+    };
   }
 
   render() {
     
     return (
-      <Navbar/>
+      <Navbar type={this.type}/>
       
     );
   }
