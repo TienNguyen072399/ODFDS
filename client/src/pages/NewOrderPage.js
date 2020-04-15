@@ -57,13 +57,7 @@ class NewOrder extends Component {
     const { customerName, address, zipCode,city, businessName,deliveryAddress,timePickUp,timeDelivered} = this.state;
     
     return (
-        <div style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          fontSize: 20,
-          color: "#4E4E4E",
-        }}>
+        <div >
           <Navbar type="business"/>
     
       <form
