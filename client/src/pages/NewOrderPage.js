@@ -117,6 +117,7 @@ class NewOrder extends Component {
               text="SUBMIT"
               color="#DB3979"
               width="100%"
+              fontSize="30px"
               onClick={this.handleSubmit}
             />
           
