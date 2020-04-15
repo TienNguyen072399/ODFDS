@@ -18,6 +18,8 @@ const OrdersSchema = new Schema({
     type: String,
     require: [true, "Delivery Address is required"],
   },
+  assigned: {},
+
   timePickUp: {
     type: String,
     default: "",
