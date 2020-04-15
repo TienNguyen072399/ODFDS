@@ -18,7 +18,7 @@ class Navbar extends Component {
                 <a href="/"> Log Out </a> 
                 </div> </div >)
             }
-            else{
+            else {
                 return (
                 <div class = "navcontainer" > 
                 <div class = "navbar" >

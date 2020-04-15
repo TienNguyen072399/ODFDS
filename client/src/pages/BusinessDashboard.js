@@ -7,15 +7,43 @@ class BusinessDashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      type: "business"
+      type: "business",
+      orders: [{businessName: "Restaurant 1",
+      address: "123 Green St",
+      customerName: "Mark",
+      deliveryAddress: "456 Baker ct",
+      timePickUp: "12:50",
+      timeDelivered: "13:10",
+      driver: "Jack",
+      __id: 1,
+    },      
+      {businessName: "Restaurant 1",
+      address: "123 Green St",
+      customerName: "Jack",
+      deliveryAddress: "456 Hoover ct",
+      timePickUp: "13:30",
+      timeDelivered: "13:40",
+      driver: "David",
+      __id: 2,
+    },
+    ],
     };
   }
 
   render() {
     
     return (
-      <Navbar type={this.state.type}/>
-      
+      <div>
+        <Navbar type={this.state.type}/>
+        {this.state.orders.map(item => (<div>
+          <div>ID: {item.__id}</div>
+          <div>Customer Name: {item.customerName}</div>
+          <div>Delivery address: {item.deliveryAddress}</div>
+          <div>Pick up: {item.timePickUp}</div>
+          <div>Delivered: {item.timeDelivered}</div>
+          <div>Driver: {item.driver}</div>
+          </div> ))}
+        </div>
     );
   }
 }
