@@ -33,7 +33,13 @@ class DriverDashboard extends Component {
   render() {
     
     return (
-        <div>
+        <div style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          fontSize: 20,
+          color: "#4E4E4E",
+        }}>
         <Navbar type={this.state.type}/>
         {this.state.orders.map(item => (<div>
           <div>ID: {item.__id}</div>

@@ -4,6 +4,8 @@ import { Link, Redirect, useHistory } from "react-router-dom";
 import CustomButtons from "../components/CustomButtons";
 import Navbar from "../components/NavBar";
 import "../mapbox-gl.css";
+import Map from "../components/map";
+
 class DriverMap extends Component {
   constructor(props) {
     super(props);
@@ -34,23 +36,20 @@ class DriverMap extends Component {
     };
   }
 
-  componentDidMount(){
-    var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
-    mapboxgl.accessToken = 'pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';
-    var map = new mapboxgl.Map({
-    container: 'drivermap',
-    style: 'mapbox://styles/mapbox/streets-v11',
-    zoom: 4,
-    center: [77.4126, 23.2599]
-    });
-  }
+  
   render() {
     
     
     return (
-        <div>
+        <div style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          fontSize: 20,
+          color: "#4E4E4E",
+        }}>
         <Navbar type={this.state.type}/>
-        <div id="drivermap">Map here</div>
+        <Map/>
            
         {this.state.orders.map(item => (<div>
           <div>ID: {item.__id}</div>
