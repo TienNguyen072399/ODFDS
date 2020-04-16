@@ -42,14 +42,12 @@ class BusinessDashboard extends Component {
         color: "#4E4E4E",
       }}>
         <Navbar type={this.state.type}/>
-        <center><BuisDash/></center>
-        {this.state.orders.map(item => (<div>
-          <div>ID: {item.__id}</div>
-          <div>Customer Name: {item.customerName}</div>
-          <div>Delivery address: {item.deliveryAddress}</div>
-          <div>Pick up: {item.timePickUp}</div>
-          <div>Delivered: {item.timeDelivered}</div>
-          <div>Driver: {item.driver}</div>
+        
+        {this.state.orders.map(item => (
+          
+          <div>
+          <center><BuisDash order={item}/></center>
+          
           </div> ))}
         </div>
     );

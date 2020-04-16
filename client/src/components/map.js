@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import "../pages/TempCSS.css";
 import "../mapbox-gl.css";
-class Map extends React.Component {
+class Map extends Component {
+  state={
+    order: this.props.order,
+  };
     componentDidMount(){
         var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
         var MapboxGeocoder = require('@mapbox/mapbox-gl-geocoder');
