@@ -26,24 +26,6 @@ router.post("/order/start", cors(), (req, res, next) => {
         if (user) {
             console.log("restaurant found");
 
-            //calculating cost, 5 is base cost
-            let cost_order = 5;
-
-            //have to get starting and ending location from map api
-            //may we can also get the distance from the two locations from the map api
-            //worse case, we only get longitude and lattitude
-            //get longitude and latitude 
-            let sloc = { latitude: "1", longitude: "2" };
-            let endloc = { latitude: "1", longitude: "2" };
-            let lat1 = sloc.latitude;
-            let lon1 = sloc.longitude;
-            let lat2 = endloc.latitude;
-            let lon2 = endloc.longitude;
-
-
-            //doing the calculations of cost for one order
-            miles = calc_dist(lat1, lon1, lat2, lon2);
-            cost_order = calc_costs(miles);
             //this should be in driver
             let thecost = 0;
             if (req.body.numorder == "2") {
@@ -115,21 +97,17 @@ router.post("/order/start", cors(), (req, res, next) => {
     });
 
 });
+//may not need this, request update can be done at drivers confirmation of order
 router.put("/order/confirm", cors(), (req, res, next) => {
     //this is when the driver confirms the order, req will send the drivers name and business name
     //finds the drivers id by name
-    Driver.findOne({ name: req.body.name }).then((user) => {
+    //update order to have driver name, user in this case is the driver found
+    Orders.findOne({ assigned: user.name}, { assigned: user.}, {
+        new: true
+    }).then((user) => {
         if (user) {
-            //update orderto have driver name, user in this case is the driver found
-            Orders.findOneAndUpdate({ businessName: user.businessName }, { assigned: user.}, {
-                new: true
-            }).then((user) => {
-                if (user) {
-                    console.log("good");
-                } else {
-                    res.send({ error: "no request found" });
-                }
-            });
+            console.log("good");
+            res.send("driver found");
         } else {
             res.send({ error: "no request found" });
         }
@@ -139,42 +117,63 @@ router.put("/order/pickup", cors(), (req, res, next) => {
     //updating request
 
     //req sends in driver email and request time
-    //finds and update based off request id, not sure how to get the server time
-    Driver.findOne({ name: req.body.name  }).then((user) => {
+    //finds and update based off drivers name(assigned), not sure how to get the server time
+    Request.findOneAndUpdate({ assigned: user.name }, { timePickUp: req.body.date }, {
+        new: true
+    }).then((user) => {
         if (user) {
-            Request.findOneAndUpdate({ assigned: user.name }, { timePickUp: req.body.date }, {
-                new: true
-            }).then((user) => {
-                if (user) {
-                    console.log("good");
-                } else {
-                    res.send({ error: "no request found" });
-                }
-            });
+            console.log("good");
+            res.send("driver found");
         } else {
             res.send({ error: "no request found" });
         }
     });
 });
 router.put("/order/done", cors(), (req, res, next) => {
-    //finishing request
+    //finishing request, calculate costs
        //req sends in driver email and request time
     //var date = new Date();
-    //finds and update based off request id, 
-    Driver.findOne({ name: req.body.name }).then((user) => {
+    //finds and update based off drivers name, 
+    Orders.findOneAndUpdate({ assigned: user.name }, { timeDelivered: req.body.date }, {
+        new: true
+    }).then((user) => {
         if (user) {
-            //update request end time
-            Request.findOneAndUpdate({ assigned: user.name }, { timeDelivered: req.body.date }, {
-                new: true
-            }).then((user) => {
-                if (user) {
-                    console.log("good");
-                } else {
-                    res.send({ error: "no request found" });
-                }
-            });
+            res.send("drivery completed");
+            console.log("good");
+        } else {
+            res.send({ error: "no request found" });
         }
     });
+    //calculating cost, 5 is base cost
+    let cost_order = 5;
+
+    //have to get starting and ending location from map api
+    //may we can also get the distance from the two locations from the map api
+    //worse case, we only get longitude and lattitude
+    //get longitude and latitude 
+    let sloc = { latitude: "1", longitude: "2" };
+    let endloc = { latitude: "1", longitude: "2" };
+    let lat1 = sloc.latitude;
+    let lon1 = sloc.longitude;
+    let lat2 = endloc.latitude;
+    let lon2 = endloc.longitude;
+
+
+    //doing the calculations of cost for one order
+    miles = calc_dist(lat1, lon1, lat2, lon2);
+    cost_order = calc_costs(miles);
+
+    Orders.findOneAndUpdate({ assigned: user.name }, { cost: cost_order }, {
+        new: true
+    }).then((user) => {
+        if (user) {
+            res.send("drivery completed");
+            console.log("good");
+        } else {
+            res.send({ error: "no request found" });
+        }
+    });
+
 });
 //calculate costs of 1 order
 function calc_costs(miles) {

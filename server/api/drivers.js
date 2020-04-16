@@ -9,15 +9,14 @@ const Restaurant = require("../database/models/restaurant");
 const Requests = require("../database/models/request");
 const BankInfo = require("../database/models/bankinfo");
 const Location = require("../database/models/location");
-
+const Orders = require("../database/models/Order");
 
 router.get("/", (req, res, next) => {
   res.send({ type: "GET" });
 });
 
 router.put("/order/get-order", cors(), (req, res, next) => {
-    //in req, there will be some delievery information, 
-    //and a status update
+    //in req, there will be some delievery information, business name?
     //find 
 });
 
