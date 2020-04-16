@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
+import { connect } from "react-redux";
+import { handleSetUser } from "../redux/actions";
 import { Link, Redirect, useHistory } from "react-router-dom";
 import CustomButtons from "../components/CustomButtons";
 
@@ -10,6 +12,7 @@ class Login extends Component {
       email: "",
       password: "",
       type: "driver",
+      redirect: null,
     };
   }
 
@@ -61,9 +64,13 @@ class Login extends Component {
           if (res.error) {
             alert(res.error);
           } else {
-            
-            alert("sucessfully logged in");
-            //return <Redirect to='/driver/dashboard' />
+            this.props.dispatch(handleSetUser(res.user));
+            if (this.state.type === "business") {
+              this.setState({ redirect: "/business/dashboard" });
+            } else {
+              this.setState({ redirect: "/driver/dashboard" });
+            }
+            // alert("sucessfully logged in");
           }
         });
     }
@@ -72,6 +79,9 @@ class Login extends Component {
   render() {
     const { email, password, type } = this.state;
     console.log(type);
+    if (this.state.redirect) {
+      return <Redirect to={this.state.redirect} />;
+    }
     return (
       <form
         className="form-signin"
@@ -140,4 +150,4 @@ class Login extends Component {
     );
   }
 }
-export default Login;
+export default connect()(Login);

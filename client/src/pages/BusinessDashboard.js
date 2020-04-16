@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import styled from "styled-components";
+import { connect } from "react-redux";
 import { Link, Redirect, useHistory } from "react-router-dom";
 import CustomButtons from "../components/CustomButtons";
 import Navbar from "../components/NavBar";
@@ -9,48 +10,67 @@ class BusinessDashboard extends Component {
     super(props);
     this.state = {
       type: "business",
-      orders: [{businessName: "Restaurant 1",
-      address: "123 Green St",
-      customerName: "Mark",
-      deliveryAddress: "456 Baker ct",
-      timePickUp: "12:50",
-      timeDelivered: "13:10",
-      driver: "Jack",
-      __id: 1,
-    },      
-      {businessName: "Restaurant 1",
-      address: "123 Green St",
-      customerName: "Jack",
-      deliveryAddress: "456 Hoover ct",
-      timePickUp: "13:30",
-      timeDelivered: "13:40",
-      driver: "David",
-      __id: 2,
-    },
-    ],
+      orders: [],
     };
   }
 
+  componentDidMount() {
+    console.log(this.props.user);
+    fetch("http://localhost:5000/api/restaurants/orders/" + this.props.user._id)
+      .then((response) => response.json())
+      .then((res) => {
+        this.setState({ orders: res });
+      });
+  }
+
   render() {
-    
     return (
-      <div style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        fontSize: 20,
-        color: "#4E4E4E",
-      }}>
-        <Navbar type={this.state.type}/>
-        
-        {this.state.orders.map(item => (
-          
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          fontSize: 20,
+          color: "#4E4E4E",
+        }}
+      >
+        <Navbar type={this.state.type} />
+        {this.state.orders.map((item) => (
           <div>
-          <center><BuisDash order={item}/></center>
+            <div>ID: {item.__id}</div>
+            <div>Customer Name: {item.customerName}</div>
+            <div>Delivery address: {item.deliveryAddress}</div>
+            <div>Order Time: {item.orderTime}</div>
+            <div>Pick up: {item.timePickUp}</div>
+            <div>Delivered: {item.timeDelivered}</div>
+            <div>Driver: {item.assignedr}</div>
+          </div>
+        ))}
+      </div>
+
+//       <div style={{
+//         display: "flex",
+//         flexDirection: "column",
+//         alignItems: "center",
+//         fontSize: 20,
+//         color: "#4E4E4E",
+//       }}>
+//         <Navbar type={this.state.type}/>
+        
+//         {this.state.orders.map(item => (
           
-          </div> ))}
-        </div>
+//           <div>
+//           <center><BuisDash order={item}/></center>
+          
+//           </div> ))}
+//         </div>
+
     );
   }
 }
-export default BusinessDashboard;
+
+const mapStateToProps = (state) => ({
+  user: state.user,
+});
+
+export default connect(mapStateToProps)(BusinessDashboard);

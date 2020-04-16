@@ -6,9 +6,13 @@ const OrdersSchema = new Schema({
     type: String,
     require: [true, "Name of business is required"],
   },
-  address: {
+  businessId: {
     type: String,
-    require: [true, "Address is required"],
+    require: [true, "Business Id is required"],
+  },
+  businessAddress: {
+    type: String,
+    require: [true, "Business Address is required"],
   },
   customerName: {
     type: String,
@@ -18,8 +22,14 @@ const OrdersSchema = new Schema({
     type: String,
     require: [true, "Delivery Address is required"],
   },
-  assigned: {},
-
+  orderTime: {
+    type: String,
+    default: "",
+  },
+  assigned: {
+    type: String,
+    default: "",
+  },
   timePickUp: {
     type: String,
     default: "",
