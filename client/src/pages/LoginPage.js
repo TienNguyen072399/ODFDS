@@ -132,6 +132,7 @@ class Login extends Component {
             text="LOGIN"
             color="#DB3979"
             width="100%"
+            fontSize="30px"
             onClick={this.handleLogin}
           />{" "}
           <Link to="signup">
@@ -140,6 +141,7 @@ class Login extends Component {
               text="REGISTER"
               color="#DB3979"
               width="100%"
+              fontSize="30px"
               onClick={this.handleSignup}
             />
           </Link>{" "}

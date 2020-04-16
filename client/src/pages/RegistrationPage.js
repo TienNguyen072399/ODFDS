@@ -187,6 +187,7 @@ class Registration extends Component {
               text="Sign Up"
               color="#DB3979"
               width="100%"
+              fontSize="30px"
               onClick={this.handleSignUp}
             />
           </div>
@@ -267,6 +268,7 @@ class Registration extends Component {
               text="Sign Up"
               color="#DB3979"
               width="100%"
+              fontSize="30px"
               onClick={this.handleSignUp}
             />
           </div>
@@ -315,12 +317,14 @@ class Registration extends Component {
               text="business"
               color="#DB3979"
               width="40%"
+              fontSize="30px"
               onClick={this.handleChooseType}
             />
             <CustomButtons
               text="driver"
               color="#DB3979"
               width="40%"
+              fontSize="30px"
               onClick={this.handleChooseType}
             />
           </div>
@@ -328,7 +332,7 @@ class Registration extends Component {
             <div
               style={{ position: "absolute", left: 10, bottom: 10, width: 200 }}
             >
-              <CustomButtons text="<" color="#4E4E4E" width="50%" />
+              <CustomButtons text="<" color="#4E4E4E" width="50%" fontSize="30px"/>
             </div>
           </Link>
         </div>
@@ -372,6 +376,7 @@ class Registration extends Component {
                 text="<"
                 color="#4E4E4E"
                 width="50%"
+                fontSize="30px"
                 onClick={this.handleGoBack}
               />
             </div>
@@ -412,6 +417,7 @@ class Registration extends Component {
                 text="<"
                 color="#4E4E4E"
                 width="50%"
+                fontSize="30px"
                 onClick={this.handleGoBack}
               />
             </div>

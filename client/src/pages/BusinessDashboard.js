@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { Link, Redirect, useHistory } from "react-router-dom";
 import CustomButtons from "../components/CustomButtons";
 import Navbar from "../components/NavBar";
+import BuisDash from "../components/BuisDash";
 class BusinessDashboard extends Component {
   constructor(props) {
     super(props);
@@ -46,6 +47,24 @@ class BusinessDashboard extends Component {
           </div>
         ))}
       </div>
+
+//       <div style={{
+//         display: "flex",
+//         flexDirection: "column",
+//         alignItems: "center",
+//         fontSize: 20,
+//         color: "#4E4E4E",
+//       }}>
+//         <Navbar type={this.state.type}/>
+        
+//         {this.state.orders.map(item => (
+          
+//           <div>
+//           <center><BuisDash order={item}/></center>
+          
+//           </div> ))}
+//         </div>
+
     );
   }
 }

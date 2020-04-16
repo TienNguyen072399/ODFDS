@@ -49,18 +49,9 @@ class DriverMap extends Component {
           color: "#4E4E4E",
         }}>
         <Navbar type={this.state.type}/>
-        <Map/>
+        
            
-        {this.state.orders.map(item => (<div>
-          <div>ID: {item.__id}</div>
-          <div>Business Name: {item.businessName}</div>
-          <div>Business address: {item.address}</div>
-          <div>Customer Name: {item.customerName}</div>
-          <div>Delivery address: {item.deliveryAddress}</div>
-          <div>Pick up: {item.timePickUp}</div>
-          <div>Delivered: {item.timeDelivered}</div>
-          
-          </div> ))}
+        {this.state.orders.map(item => (<Map order={item}/> ))}
         </div>
     );
   }
