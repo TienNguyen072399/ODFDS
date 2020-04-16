@@ -9,25 +9,21 @@ const Restaurant = require("../database/models/restaurant");
 const Requests = require("../database/models/request");
 const BankInfo = require("../database/models/bankinfo");
 const Location = require("../database/models/location");
-
+const Orders = require("../database/models/Order");
 
 router.post("/order/submit", function (req, res, next) {
     var id = req.body.id;
     res.redirect('/' + id);
 });
-//to get an order
+//to get an order, creates an order and 
 router.post("/order/start", cors(), (req, res, next) => {
     //req will have email, request time
 
-    //startloc, endloc, requestime, pickuptime, endtime,cost will be found in server
-
-    //it wont have a did because server can only handle drivers, 
-    //so we find a driver in server
+    //
 
     //code below finds the restaurant id and saves it
     Business.findOne({email: req.body.email}).then((user) => {
         if (user) {
-            let adriver = user.id;
             console.log("restaurant found");
 
             //calculating cost, 5 is base cost
@@ -90,17 +86,18 @@ router.post("/order/start", cors(), (req, res, next) => {
             // we will update request
             // pickuptime: req.body.pickuptime,
             // endtime: req.body.endtime,
+            //no cost
 
-            var date = new Date();
-            //make a request ,then we save the request to the request model, no driver id
-            
-            let arequest = new Request({
-                bid: user.id,
-                startloc: sloc,
-                endloc: endloc,
-                requesttime: date,
-                cost: cost_order,
-                status: "in progress" 
+            //assigned is drivers name, hopefully req will have customer name and delivery address
+            let arequest = new Orders({
+                businessName: user.businessName,
+                address: "business address",
+                customerName: req.customerName,
+                delieveryAddress: req.deliveryAddress,
+                assigned: "",
+                timePickUp: "",
+                timeDelivered: "",
+                cost: ""
             });
             Requests.create(arequest).then((user) => {
                 if (user) {
@@ -113,18 +110,18 @@ router.post("/order/start", cors(), (req, res, next) => {
             //notify driver of a request
 
         } else {
-            res.send({ error: "no drivers availible" });
+            res.send({ error: "noo restaurant found" });
         }
     });
 
 });
 router.put("/order/confirm", cors(), (req, res, next) => {
-    //this is when the driver confirms the order, req will send the drivers email
-    //finds the drivers id by finding email
-    Driver.findOne({ email: req.body.email }).then((user) => {
+    //this is when the driver confirms the order, req will send the drivers name and business name
+    //finds the drivers id by name
+    Driver.findOne({ name: req.body.name }).then((user) => {
         if (user) {
-            //update request to have driver id
-            Request.findOneAndUpdate({ id: user.id }, { did: user.id}, {
+            //update orderto have driver name, user in this case is the driver found
+            Orders.findOneAndUpdate({ businessName: user.businessName }, { assigned: user.}, {
                 new: true
             }).then((user) => {
                 if (user) {
@@ -142,11 +139,10 @@ router.put("/order/pickup", cors(), (req, res, next) => {
     //updating request
 
     //req sends in driver email and request time
-    //var date = new Date();
     //finds and update based off request id, not sure how to get the server time
-    Driver.findOne({ email: req.body.email }).then((user) => {
+    Driver.findOne({ name: req.body.name  }).then((user) => {
         if (user) {
-            Request.findOneAndUpdate({ id: user.id }, { pickuptime: req.body.date }, {
+            Request.findOneAndUpdate({ assigned: user.name }, { timePickUp: req.body.date }, {
                 new: true
             }).then((user) => {
                 if (user) {
@@ -163,22 +159,12 @@ router.put("/order/pickup", cors(), (req, res, next) => {
 router.put("/order/done", cors(), (req, res, next) => {
     //finishing request
        //req sends in driver email and request time
-    var date = new Date();
+    //var date = new Date();
     //finds and update based off request id, 
-    Driver.findOne({ email: req.body.email }).then((user) => {
+    Driver.findOne({ name: req.body.name }).then((user) => {
         if (user) {
             //update request end time
-            Request.findOneAndUpdate({ did: user.id }, { endtime: req.body.date }, {
-                new: true
-            }).then((user) => {
-                if (user) {
-                    console.log("good");
-                } else {
-                    res.send({ error: "no request found" });
-                }
-            });
-            //update status
-            Request.findOneAndUpdate({ did: user.id }, { status: "complete" }, {
+            Request.findOneAndUpdate({ assigned: user.name }, { timeDelivered: req.body.date }, {
                 new: true
             }).then((user) => {
                 if (user) {
@@ -190,7 +176,7 @@ router.put("/order/done", cors(), (req, res, next) => {
         }
     });
 });
-//calculate costs of order
+//calculate costs of 1 order
 function calc_costs(miles) {
     //calculating cost, 5 is base cost
     let cost_order = 5;
