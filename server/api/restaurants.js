@@ -23,7 +23,7 @@ router.post("/order/start", cors(), (req, res, next) => {
 
     //
 
-    //code below finds the restaurant id and saves it
+    //finds the restaurant from the name
     Business.findOne({email: req.body.email}).then((user) => {
         if (user) {
             console.log("restaurant found");
@@ -45,16 +45,17 @@ router.post("/order/start", cors(), (req, res, next) => {
 
             let arequest = new Orders({
                 businessName: user.businessName,
-                address: "business address",
-                customerName: req.customerName,
-                delieveryAddress: req.deliveryAddress,
+                businessId: "",
+                BusinessAddress: req.body.businessAddress,
+                customerName: req.body.customerName,
+                deliveryAddress: req.body.deliveryAddress,
                 orderTime: orderTime1,
                 assigned: "",
                 timePickUp: "",
                 timeDelivered: "",
                 cost: ""
             });
-            Requests.create(arequest).then((user) => {
+            Orders.create(arequest).then((user) => {
                 if (user) {
                     console.log(user);
                     res.send({ user });
@@ -75,7 +76,7 @@ router.put("/order/confirm", cors(), (req, res, next) => {
     //this is when the driver confirms the order, req will send the drivers name and business name
     //finds the drivers id by name
     //update order to have driver name, user in this case is the driver found
-    Orders.findOne({ assigned: user.name}, { assigned: user.name}, {
+    Orders.findOneAndUpdate({ businessName: req.businessName}, { assigned: req.body.name}, {
         new: true
     }).then((user) => {
         if (user) {
@@ -86,6 +87,7 @@ router.put("/order/confirm", cors(), (req, res, next) => {
         }
     });
 });
+//when the driver picks up the order, it updates the db on pickup time
 router.put("/order/pickup", cors(), (req, res, next) => {
     //updating request
     let d = new Date();

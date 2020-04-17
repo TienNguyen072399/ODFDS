@@ -14,47 +14,131 @@ const Orders = require("../database/models/Order");
 router.get("/", (req, res, next) => {
   res.send({ type: "GET" });
 });
-
+   //driver picks froma list of orders
 router.put("/order/get-order", cors(), (req, res, next) => {
-    //in req, there will be some delievery information, business name
-    //find 
+    //req will have business name and driver name, and order info?
+    let num_orders = 0;
+    //find all the orders with the drivers name
+    Orders.find({ assigned: req.name }).then((order) => {
 
-    //in res send name of driverd
-    //this should be in driver
+        num_orders = orders.length;
+        console.log(orders.length);
+        res.send(orders);
+    });
+
     let thecost = 0;
-    if (req.body.numorder == "2") {
-        if (req.body.res1 == req.body.res2) {
-            //doing cost
-            let cost_order1 = 5;
-            let sloc1 = 3;
-            let endloc1 = 20;
-            let miles1 = endloc1 - sloc1;
-            if (miles1 <= 1)
-                cost_order1 = 5;
-            else
-                cost_order1 = cost_order1 + (miles1 * 2);
-
-            let cost_order2 = 5;
-            let sloc2 = 3;
-            let endloc2 = 20;
-            let miles2 = endloc2 - sloc2;
-            if (miles2 <= 1)
-                cost_order2 = 5;
-            else
-                cost_order2 = cost_order2 + (miles2 * 2);
-
-            if (cost_order2 < cost_order1) {
-                thecost = cost_order1 + cost_order2;
+    if (num_orders == 0) {
+        //for single orders
+        Orders.findOne({ businessName: req.businessName }, { assigned: user.name }, {
+            new: true
+        }).then((user) => {
+            if (user) {
                 console.log("good");
-                console.log(thecost);
+                res.send("driver found");
             } else {
-                console.log("error");
+                res.send({ error: "no request found" });
             }
+        });
+    } else if (num_orders == 1) { //this where we calculate the two orders
+        //Each driver can pick up 1-2 different orders from the same restaurant but not from different restaurants.  
+        //If 2 orders are being dispatch from the same restaurant to 2 different locations, 
+        //the delivery cost of the 2nd order cannot be more than the cost of the original distance from the restaurant to the customer address. 
+
+        //find an order with the drivers name
+        Orders.findOne({assigned: req.body.name}).then((order) => {
+            if (order) {
+                //calcuting cost of this order, 2nd order cannot be greater than this
+
+                //calculating miles , hopefully can get distance from map api,
+                // let miles = order.businessAddress- order.deliveryAddress;
+
+                //temp miles
+                let sloc = { latitude: "1", longitude: "2" };
+                let endloc = { latitude: "1", longitude: "2" };
+                let lat1 = sloc.latitude;
+                let lon1 = sloc.longitude;
+                let lat2 = endloc.latitude;
+                let lon2 = endloc.longitude;
+
+                let miles = calc_dist(lat1, lon1, lat2, lon2);
+
+                let cost_order = calc_costs(miles);
+
+                //calculating second order, still needs distance from map api
+                let sloc2 = { latitude: "3", longitude: "10" };
+                let endloc2 = { latitude: "3", longitude: "20" };
+                lat1 = sloc2.latitude;
+                lon1 = sloc2.longitude;
+                lat2 = endloc2.latitude;
+                lon2 = endloc2.longitude;
+
+                let miles = calc_dist(lat1, lon1, lat2, lon2);
+                let cost_order2 = calc_costs(miles2);
+
+                if (cost_order2 < cost_order1) {
+                    let d = new Date();
+                    let hours = d.getHours();
+                    let minutes = d.getMinutes();
+                    let orderTime1 = hours + ":" + minutes;
+
+                    let arequest = new Orders({
+                        businessName: user.businessName,
+                        businessId: "",
+                        BusinessAddress: req.body.businessAddress,
+                        customerName: req.body.customerName,
+                        deliveryAddress: req.body.deliveryAddress,
+                        orderTime: orderTime1,
+                        assigned: "",
+                        timePickUp: "",
+                        timeDelivered: "",
+                        cost: ""
+                    });
+                    Orders.create(arequest).then((user) => {
+                        if (user) {
+                            console.log(user);
+                            res.send({ user });
+                        } else {
+                            res.send({ error: "request failed to send" });
+                        }
+                    });
+                }
 
 
+            } else {
+                res.send({ error: "no request found" });
+            }
+        });
 
-        }
+    } else {
+        //this is when orders is more than 2
+        res.send("can not get more than two orders");
     }
 });
+//calculate costs of 1 order
+function calc_costs(miles) {
+    //calculating cost, 5 is base cost
+    let cost_order = 5;
 
+    if (miles <= 1)
+        cost_order = 5;
+    else
+        cost_order = cost_order + (miles * 2);
+    return cost_order;
+}
+//calculate distance from two points
+function calc_dist(lat1, lon1, lat2, lon2) {
+    var R = 6371e3; // metres
+    var phi1 = lat1.toRadians();
+    var phi2 = lat2.toRadians();
+    var phidifference = (lat2 - lat1).toRadians();
+    var lamdadifference = (lon2 - lon1).toRadians();
+
+    var a = Math.sin(phidifference / 2) * Math.sin(phidifference / 2) +
+        Math.cos(phi1) * Math.cos(phi2) *
+        Math.sin(lamdadifference / 2) * Math.sin(lamdadifference / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    var d = R * c;
+    return d;
+}
 module.exports = router;
