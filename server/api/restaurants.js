@@ -11,9 +11,11 @@ const BankInfo = require("../database/models/bankinfo");
 const Location = require("../database/models/location");
 const Orders = require("../database/models/Order");
 
-router.post("/order/submit", function (req, res, next) {
-    var id = req.body.id;
-    res.redirect('/' + id);
+router.get("/orders/:id", cors(), (req, res, next) => {
+    Orders.find({ businessId: req.params.id }).then((orders) => {
+        console.log(orders);
+        res.send(orders);
+    });
 });
 //to get an order, creates an order and 
 router.post("/order/start", cors(), (req, res, next) => {
@@ -26,41 +28,6 @@ router.post("/order/start", cors(), (req, res, next) => {
         if (user) {
             console.log("restaurant found");
 
-            //this should be in driver
-            let thecost = 0;
-            if (req.body.numorder == "2") {
-                if (req.body.res1 == req.body.res2) {
-                    //doing cost
-                    let cost_order1 = 5;
-                    let sloc1 = 3;
-                    let endloc1 = 20;
-                    let miles1 = endloc1 - sloc1;
-                    if (miles1 <= 1)
-                        cost_order1 = 5;
-                    else
-                        cost_order1 = cost_order1 + (miles1 * 2);
-
-                    let cost_order2 = 5;
-                    let sloc2 = 3;
-                    let endloc2 = 20;
-                    let miles2 = endloc2 - sloc2;
-                    if (miles2 <= 1)
-                        cost_order2 = 5;
-                    else
-                        cost_order2 = cost_order2 + (miles2 * 2);
-
-                    if (cost_order2 < cost_order1) {
-                        thecost = cost_order1 + cost_order2;
-                        console.log("good");
-                        console.log(thecost);
-                    } else {
-                        console.log("error");
-                    }
-
-
-
-                } 
-            }
 
             //status should be not completed
 
@@ -71,11 +38,17 @@ router.post("/order/start", cors(), (req, res, next) => {
             //no cost
 
             //assigned is drivers name, hopefully req will have customer name and delivery address
+            let d = new Date();
+            let hours = d.getHours();
+            let minutes = d.getMinutes();
+            let orderTime1 = hours + ":" + minutes;
+
             let arequest = new Orders({
                 businessName: user.businessName,
                 address: "business address",
                 customerName: req.customerName,
                 delieveryAddress: req.deliveryAddress,
+                orderTime: orderTime1,
                 assigned: "",
                 timePickUp: "",
                 timeDelivered: "",
@@ -102,7 +75,7 @@ router.put("/order/confirm", cors(), (req, res, next) => {
     //this is when the driver confirms the order, req will send the drivers name and business name
     //finds the drivers id by name
     //update order to have driver name, user in this case is the driver found
-    Orders.findOne({ assigned: user.name}, { assigned: user.}, {
+    Orders.findOne({ assigned: user.name}, { assigned: user.name}, {
         new: true
     }).then((user) => {
         if (user) {
@@ -115,10 +88,13 @@ router.put("/order/confirm", cors(), (req, res, next) => {
 });
 router.put("/order/pickup", cors(), (req, res, next) => {
     //updating request
-
-    //req sends in driver email and request time
+    let d = new Date();
+    let hours = d.getHours();
+    let minutes = d.getMinutes();
+    let orderTime1 = hours + ":" + minutes;
+    //req sends in driver email
     //finds and update based off drivers name(assigned), not sure how to get the server time
-    Request.findOneAndUpdate({ assigned: user.name }, { timePickUp: req.body.date }, {
+    Request.findOneAndUpdate({ assigned: user.name }, { timePickUp: orderTime1 }, {
         new: true
     }).then((user) => {
         if (user) {
@@ -131,10 +107,13 @@ router.put("/order/pickup", cors(), (req, res, next) => {
 });
 router.put("/order/done", cors(), (req, res, next) => {
     //finishing request, calculate costs
-       //req sends in driver email and request time
-    //var date = new Date();
+       //req sends in driver email 
     //finds and update based off drivers name, 
-    Orders.findOneAndUpdate({ assigned: user.name }, { timeDelivered: req.body.date }, {
+    let d = new Date();
+    let hours = d.getHours();
+    let minutes = d.getMinutes();
+    let orderTime1 = hours + ":" + minutes;
+    Orders.findOneAndUpdate({ assigned: user.name }, { timeDelivered: orderTime1 }, {
         new: true
     }).then((user) => {
         if (user) {
