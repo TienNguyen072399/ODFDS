@@ -45,8 +45,9 @@ router.put("/order/get-order", cors(), (req, res, next) => {
         //the delivery cost of the 2nd order cannot be more than the cost of the original distance from the restaurant to the customer address. 
 
         //find an order with the drivers name
-        Orders.findOne({assigned: req.body.name}).then((order) => {
-            if (order) {
+        Orders.findOne({ assigned: req.body.name }).then((order) => {
+            //checks if order's restaurant name is the name as the one found in database
+            if (order && (req.body.businessName == order.businessName)) {
                 //calcuting cost of this order, 2nd order cannot be greater than this
 
                 //calculating miles , hopefully can get distance from map api,
