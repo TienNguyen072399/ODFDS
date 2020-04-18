@@ -53,6 +53,7 @@ router.post("/order/start", cors(), (req, res, next) => {
                 assigned: "",
                 timePickUp: "",
                 timeDelivered: "",
+                status: "waiting to be assigned",
                 cost: ""
             });
             Orders.create(arequest).then((user) => {
@@ -96,7 +97,7 @@ router.put("/order/pickup", cors(), (req, res, next) => {
     let orderTime1 = hours + ":" + minutes;
     //req sends in driver email
     //finds and update based off drivers name(assigned), not sure how to get the server time
-    Request.findOneAndUpdate({ assigned: user.name }, { timePickUp: orderTime1 }, {
+    Orders.findOneAndUpdate({ assigned: req.body.name }, { timePickUp: orderTime1 }, {
         new: true
     }).then((user) => {
         if (user) {
@@ -106,16 +107,38 @@ router.put("/order/pickup", cors(), (req, res, next) => {
             res.send({ error: "no request found" });
         }
     });
+    Orders.findOneAndUpdate({ assigned: req.body.name }, { status: "driver picked up"}, {
+        new: true
+    }).then((user) => {
+        if (user) {
+            console.log("good");
+            res.send("driver found");
+        } else {
+            res.send({ error: "no request found" });
+        }
+    });
+
 });
 router.put("/order/done", cors(), (req, res, next) => {
     //finishing request, calculate costs
-       //req sends in driver email 
+       //req sends in driver name 
     //finds and update based off drivers name, 
     let d = new Date();
     let hours = d.getHours();
     let minutes = d.getMinutes();
     let orderTime1 = hours + ":" + minutes;
-    Orders.findOneAndUpdate({ assigned: user.name }, { timeDelivered: orderTime1 }, {
+    Orders.findOneAndUpdate({ assigned: req.body.name }, { timeDelivered: orderTime1 }, {
+        new: true
+    }).then((user) => {
+        if (user) {
+            res.send("drivery completed");
+            console.log("good");
+        } else {
+            res.send({ error: "no request found" });
+        }
+        });
+
+    Orders.findOneAndUpdate({ assigned: req.body.name }, { status: "completed"}, {
         new: true
     }).then((user) => {
         if (user) {

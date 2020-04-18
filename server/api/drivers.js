@@ -14,12 +14,96 @@ const Orders = require("../database/models/Order");
 router.get("/", (req, res, next) => {
   res.send({ type: "GET" });
 });
+//driver picks up the order
+router.put("/order/pick-up-order", cors(), (req, res, next) => {
+    //updating request
+    let d = new Date();
+    let hours = d.getHours();
+    let minutes = d.getMinutes();
+    let orderTime1 = hours + ":" + minutes;
+    //req sends in driver email
+    //finds and update based off drivers name(assigned),
+    Orders.findOneAndUpdate({ assigned: req.body.name }, { timePickUp: orderTime1 }, {
+        new: true
+    }).then((user) => {
+        if (user) {
+            console.log("good");
+            res.send("driver found");
+        } else {
+            res.send({ error: "no request found" });
+        }
+    });
+    Orders.findOneAndUpdate({ assigned: req.body.name }, { status: "driver picked up" }, {
+        new: true
+    }).then((user) => {
+        if (user) {
+            console.log("good");
+            res.send("driver found");
+        } else {
+            res.send({ error: "no request found" });
+        }
+    });
+});
+//driver picks up the order
+router.put("/order/order-delivered", cors(), (req, res, next) => {
+    //updating request
+    let d = new Date();
+    let hours = d.getHours();
+    let minutes = d.getMinutes();
+    let orderTime1 = hours + ":" + minutes;
+    //req sends in driver email
+    //finds and update based off drivers name(assigned),
+    Orders.findOneAndUpdate({ assigned: req.body.name }, { timePickUp: orderTime1 }, {
+        new: true
+    }).then((user) => {
+        if (user) {
+            console.log("good");
+            res.send("driver found");
+        } else {
+            res.send({ error: "no request found" });
+        }
+    });
+    Orders.findOneAndUpdate({ assigned: req.body.name }, { status: "completed" }, {
+        new: true
+    }).then((user) => {
+        if (user) {
+            console.log("good");
+            res.send("driver found");
+        } else {
+            res.send({ error: "no request found" });
+        }
+    });
+
+    //then we update costs too
+    let sloc = { latitude: "1", longitude: "2" };
+    let endloc = { latitude: "1", longitude: "2" };
+    let lat1 = sloc.latitude;
+    let lon1 = sloc.longitude;
+    let lat2 = endloc.latitude;
+    let lon2 = endloc.longitude;
+
+
+    //doing the calculations of cost for one order
+    miles = calc_dist(lat1, lon1, lat2, lon2);
+    cost_order = calc_costs(miles);
+
+    Orders.findOneAndUpdate({ assigned: req.body.name }, { cost: cost_order }, {
+        new: true
+    }).then((user) => {
+        if (user) {
+            res.send("drivery completed");
+            console.log("good");
+        } else {
+            res.send({ error: "no request found" });
+        }
+    });
+});
    //driver picks froma list of orders
 router.put("/order/get-order", cors(), (req, res, next) => {
     //req will have business name and driver name, and order info?
     let num_orders = 0;
     //find all the orders with the drivers name
-    Orders.find({ assigned: req.name }).then((order) => {
+    Orders.find({ assigned: req.body.name }).then((order) => {
 
         num_orders = orders.length;
         console.log(orders.length);
@@ -29,7 +113,7 @@ router.put("/order/get-order", cors(), (req, res, next) => {
     let thecost = 0;
     if (num_orders == 0) {
         //for single orders
-        Orders.findOne({ businessName: req.businessName }, { assigned: user.name }, {
+        Orders.findOne({ businessName: req.body.businessName }, { assigned: req.body.name }, {
             new: true
         }).then((user) => {
             if (user) {
@@ -73,7 +157,7 @@ router.put("/order/get-order", cors(), (req, res, next) => {
                 lat2 = endloc2.latitude;
                 lon2 = endloc2.longitude;
 
-                let miles = calc_dist(lat1, lon1, lat2, lon2);
+                let miles2 = calc_dist(lat1, lon1, lat2, lon2);
                 let cost_order2 = calc_costs(miles2);
 
                 if (cost_order2 < cost_order1) {
@@ -92,6 +176,7 @@ router.put("/order/get-order", cors(), (req, res, next) => {
                         assigned: "",
                         timePickUp: "",
                         timeDelivered: "",
+                        status: "waiting to be assigned",
                         cost: ""
                     });
                     Orders.create(arequest).then((user) => {

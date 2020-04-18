@@ -38,6 +38,10 @@ const OrdersSchema = new Schema({
         type: String,
         default: "",
     },
+    status: {
+        type: String,
+        default: "",
+    },
     cost: {
         type: String,
         default: "",
