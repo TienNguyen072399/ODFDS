@@ -16,7 +16,7 @@ class DriverDash extends Component {
 
   getDestination = () => {
     switch (this.state.order.status){
-      case 'waiting':
+      case 'Waiting':
         return this.state.order.businessAddress;
       case 'onroutePickup':
         return this.state.order.businessAddress;
