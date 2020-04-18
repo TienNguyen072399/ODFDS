@@ -37,6 +37,7 @@ class BusinessDashboard extends Component {
         <Navbar type={this.state.type} />
         {this.state.orders.map((item) => (
           <div>
+            <BuisDash order = {item}/>
             <div>ID: {item.__id}</div>
             <div>Customer Name: {item.customerName}</div>
             <div>Delivery address: {item.deliveryAddress}</div>
