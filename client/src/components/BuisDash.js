@@ -14,8 +14,8 @@ class BuisDash extends Component {
   };
 
   getDriver = () => {
-    if (this.state.order.assignedr) {
-      return this.state.order.assignedr;
+    if (this.state.order.assigned) {
+      return this.state.order.assigned;
     } else{
       return "Waiting to assigned";
     }
@@ -23,7 +23,7 @@ class BuisDash extends Component {
 
   getDestination = () => {
     switch (this.state.order.status){
-      case 'waiting':
+      case 'Waiting':
         return "N/A";
       case 'onroutePickup':
         return this.state.order.businessAddress;
@@ -56,7 +56,7 @@ class BuisDash extends Component {
         <div id="boxtop"></div>
         <div id = "container"><div className ="iconcircle"></div></div>
         <div id ="titlecontainer">ID: {this.state.order._id}</div><br/>
-        <div id ="titlecontainer">Customer: {this.state.order.customerName}</div>
+        <div id ="titlecontainer">Customer: {this.state.order.customerName}</div><br/>
         <div id ="titlecontainer"><h2>Driver: {this.getDriver()}</h2></div>
         <div id="time">{this.getRealTime()} mins ago</div>
         <div id="container">

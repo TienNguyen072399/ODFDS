@@ -16,7 +16,7 @@ class DriverDash extends Component {
 
   getDestination = () => {
     switch (this.state.order.status){
-      case 'waiting':
+      case 'Waiting':
         return this.state.order.businessAddress;
       case 'onroutePickup':
         return this.state.order.businessAddress;
@@ -27,7 +27,7 @@ class DriverDash extends Component {
       case 'cancelled':
         return "N/A";
       default:
-        return "N/A";   
+        return this.state.order.businessAddress;   
     }
   }
 
@@ -45,23 +45,56 @@ class DriverDash extends Component {
     return realTime;
   }
 
+  getNumOrder = () => {
+    //don't think we need this
+   // get number of orders from that restaurant 
+  }
+  getRoute = () => {
+    // get number of miles between businessAddress and deliveryAddress
+  }
+
   handleAccept = async (event) => {
-    // accept request - change status to 'onRoutePickup'.
+    // accept request - change status to 'onRoutePickup', insert driver to assigned.
   }
 
   handleDecline = async (event) => {
     // decline request - delete this order request from list.
   }
 
+  distance = (lat1, lon1, lat2, lon2, unit) => {
+    if ((lat1 == lat2) && (lon1 == lon2)) {
+      return 0;
+    }
+    else {
+      var radlat1 = Math.PI * lat1/180;
+      var radlat2 = Math.PI * lat2/180;
+      var theta = lon1-lon2;
+      var radtheta = Math.PI * theta/180;
+      var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+      if (dist > 1) {
+        dist = 1;
+      }
+      dist = Math.acos(dist);
+      dist = dist * 180/Math.PI;
+      dist = dist * 60 * 1.1515;
+      if (unit=="K") { dist = dist * 1.609344 }
+      if (unit=="N") { dist = dist * 0.8684 }
+      return dist;
+    }
+  };
+
   render() {
     return <div id = "container">
     <div id="dash-box">
         <div id="boxtop"></div>
         <div id = "container"><div className ="iconcircle"></div></div>
-        <div id ="titlecontainer"><h2>{this.getBusiness()}</h2></div>
+        <div id ="titlecontainer">ID: {this.state.order._id}</div><br/>
+        <div id ="titlecontainer"><h2>{this.getBusiness()}</h2></div><br/>
+        
         <div id="time">{this.getRealTime()} mins ago</div>
         <div id="container">
-  <div id="description">Requesting {this.getNumOrder()} delivery {this.getDistance()} miles away at {this.getDestination()}</div>
+        <div id="description">Requesting {this.getNumOrder()} delivery {this.getDistance()} miles away<br/><div id="description">Delivery route: {this.getRoute()} miles</div></div>
+        
         </div><br/><br/><br/>
         <div id="button-container"><CustomButtons onclick= {this.handleDecline()}text="Decline Order" color="#DB3979" width="60%" fontSize="13px"/><CustomButtons onclick={this.handleAccept()} text="Accept Order ->" color="#5c8eb9" width="60%"fontSize="13px"/></div>
     </div>
