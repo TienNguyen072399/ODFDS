@@ -27,7 +27,7 @@ class DriverDash extends Component {
       case 'cancelled':
         return "N/A";
       default:
-        return "N/A";   
+        return this.state.order.businessAddress;   
     }
   }
 
@@ -45,8 +45,16 @@ class DriverDash extends Component {
     return realTime;
   }
 
+  getNumOrder = () => {
+    //don't think we need this
+   // get number of orders from that restaurant 
+  }
+  getRoute = () => {
+    // get number of miles between businessAddress and deliveryAddress
+  }
+
   handleAccept = async (event) => {
-    // accept request - change status to 'onRoutePickup'.
+    // accept request - change status to 'onRoutePickup', insert driver to assigned.
   }
 
   handleDecline = async (event) => {
@@ -58,10 +66,13 @@ class DriverDash extends Component {
     <div id="dash-box">
         <div id="boxtop"></div>
         <div id = "container"><div className ="iconcircle"></div></div>
-        <div id ="titlecontainer"><h2>{this.getBusiness()}</h2></div>
+        <div id ="titlecontainer">ID: {this.state.order._id}</div><br/>
+        <div id ="titlecontainer"><h2>{this.getBusiness()}</h2></div><br/>
+        
         <div id="time">{this.getRealTime()} mins ago</div>
         <div id="container">
-  <div id="description">Requesting {this.getNumOrder()} delivery {this.getDistance()} miles away at {this.getDestination()}</div>
+        <div id="description">Requesting {this.getNumOrder()} delivery {this.getDistance()} miles away<br/><div id="description">Delivery route: {this.getRoute()} miles</div></div>
+        
         </div><br/><br/><br/>
         <div id="button-container"><CustomButtons onclick= {this.handleDecline()}text="Decline Order" color="#DB3979" width="60%" fontSize="13px"/><CustomButtons onclick={this.handleAccept()} text="Accept Order ->" color="#5c8eb9" width="60%"fontSize="13px"/></div>
     </div>

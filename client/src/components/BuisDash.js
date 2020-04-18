@@ -12,8 +12,8 @@ class BuisDash extends Component {
   };
 
   getDriver = () => {
-    if (this.state.order.assignedr) {
-      return this.state.order.assignedr;
+    if (this.state.order.assigned) {
+      return this.state.order.assigned;
     } else{
       return "Waiting to assigned";
     }
