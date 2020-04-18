@@ -37,13 +37,7 @@ class BusinessDashboard extends Component {
         <Navbar type={this.state.type} />
         {this.state.orders.map((item) => (
           <div>
-            <div>ID: {item.__id}</div>
-            <div>Customer Name: {item.customerName}</div>
-            <div>Delivery address: {item.deliveryAddress}</div>
-            <div>Order Time: {item.orderTime}</div>
-            <div>Pick up: {item.timePickUp}</div>
-            <div>Delivered: {item.timeDelivered}</div>
-            <div>Driver: {item.assignedr}</div>
+            <BuisDash order = {item}/>
           </div>
         ))}
       </div>
@@ -64,6 +58,14 @@ class BusinessDashboard extends Component {
           
 //           </div> ))}
 //         </div>
+
+/* <div>ID: {item.__id}</div>
+            <div>Customer Name: {item.customerName}</div>
+            <div>Delivery address: {item.deliveryAddress}</div>
+            <div>Order Time: {item.orderTime}</div>
+            <div>Pick up: {item.timePickUp}</div>
+            <div>Delivered: {item.timeDelivered}</div>
+            <div>Driver: {item.assignedr}</div> */
 
     );
   }

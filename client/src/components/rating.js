@@ -9,11 +9,13 @@ import PropTypes from 'prop-types';
 //npm install react-rater
 
 class Rating extends Component {
-  state = {};
+  state = {
+    driver : this.props.driver,
+  };
 
   render() {
     return <Rater rating={3} total={5} interactive={false}></Rater>;
   }
 }
-
+//return <Rater rating={this.state.driver.rating} total={5} interactive={false}></Rater>;
 export default Rating;
