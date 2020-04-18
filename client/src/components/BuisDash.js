@@ -8,7 +8,9 @@ import Rating from "./rating";
 class BuisDash extends Component {
   
   state = {
+
       order : this.props.order,
+
   };
 
   getDriver = () => {
@@ -47,6 +49,7 @@ class BuisDash extends Component {
   }
   
   render() {
+
     
     return <div id = "container">
     <div id="dash-box">

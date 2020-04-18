@@ -38,6 +38,14 @@ const OrdersSchema = new Schema({
     type: String,
     default: "",
   },
+  status: {
+    type: String,
+    default: "Waiting",
+  },
+  cost: {
+    type: String,
+    default: "",
+  },
 });
 
 const Orders = mongoose.model("orders", OrdersSchema);
