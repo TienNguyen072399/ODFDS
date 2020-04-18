@@ -38,13 +38,6 @@ class BusinessDashboard extends Component {
         {this.state.orders.map((item) => (
           <div>
             <BuisDash order = {item}/>
-            <div>ID: {item.__id}</div>
-            <div>Customer Name: {item.customerName}</div>
-            <div>Delivery address: {item.deliveryAddress}</div>
-            <div>Order Time: {item.orderTime}</div>
-            <div>Pick up: {item.timePickUp}</div>
-            <div>Delivered: {item.timeDelivered}</div>
-            <div>Driver: {item.assignedr}</div>
           </div>
         ))}
       </div>
@@ -65,6 +58,14 @@ class BusinessDashboard extends Component {
           
 //           </div> ))}
 //         </div>
+
+/* <div>ID: {item.__id}</div>
+            <div>Customer Name: {item.customerName}</div>
+            <div>Delivery address: {item.deliveryAddress}</div>
+            <div>Order Time: {item.orderTime}</div>
+            <div>Pick up: {item.timePickUp}</div>
+            <div>Delivered: {item.timeDelivered}</div>
+            <div>Driver: {item.assignedr}</div> */
 
     );
   }
