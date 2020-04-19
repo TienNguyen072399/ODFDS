@@ -25,6 +25,7 @@ class DriverMap extends Component {
             businessAddress:"125 Lido st",
             customerName:"Bane",
             deliveryAddress:"123 Hoover st,San Jose, CA 94123",
+            status: "Waiting for pick up",
             __v:0,
           },
           {
@@ -38,6 +39,7 @@ class DriverMap extends Component {
             businessAddress:"125 Lido st",
             customerName:"Harry",
             deliveryAddress:"456 Barry st,Santa Clara, CA 91242",
+            status: "Out for delivery", 
             __v:0,
           },
         ],
@@ -51,8 +53,33 @@ class DriverMap extends Component {
     // driver arrived -> change status base on pickup or delivery
   };
 
+  handleDelivered = async (event) => {
+    // driver arrived -> change status base on pickup or delivery
+  };
+
   handleCancel = async (event) => {
     // trip cancel -> change status base on pickup or delivery
+  };
+
+  getButton = (order) =>{
+    switch (order.status){
+      case 'Waiting for pick up':
+        return (
+          <div id="button-container-map">
+                <CustomButtons onclick= {this.handleArrived()}text="Picked up" color="#DB3979" width="60%" fontSize="20px"/>
+                <CustomButtons onclick={this.handleCancel()} text="Cancel trip" color="#5c8eb9" width="60%"fontSize="20px"/>
+          </div>
+        );
+      case 'Out for delivery':
+        return (
+          <div id="button-container-map">
+                <CustomButtons onclick= {this.handleDelivered()}text="Delivered" color="#DB3979" width="60%" fontSize="20px"/>
+                <CustomButtons onclick={this.handleCancel()} text="Cancel trip" color="#5c8eb9" width="60%"fontSize="20px"/>
+          </div>
+        );
+      default:
+        return null;   
+    }
   };
 
   render() {
@@ -74,10 +101,7 @@ class DriverMap extends Component {
             <div id="boxtopmap">
               <div id ="titlemap">ID: {item._id}</div>
               <div id ="titlemap">From: {item.businessName}</div>
-              <div id="button-container-map">
-              <CustomButtons onclick= {this.handleArrived()}text="Arrived" color="#DB3979" width="60%" fontSize="20px"/>
-              <CustomButtons onclick={this.handleCancel()} text="Cancel trip" color="#5c8eb9" width="60%"fontSize="20px"/>
-              </div>
+              {this.getButton(item)}
           </div>
             <Map order={item}/><br/>
           </div>
