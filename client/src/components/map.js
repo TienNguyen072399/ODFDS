@@ -191,13 +191,7 @@ class Map extends Component {
           positionOptions={{enableHighAccuracy: true}}
           trackUserLocation={true}
         />
-        <Geocoder 
-          mapRef={this.mapRef}
-          onResult={this.handleOnResult}
-          onViewportChange={this.handleGeocoderViewportChange}
-          mapboxApiAccessToken={token}
-          position='top-right'
-        />
+        
         </ReactMapGL>
         
       </div>
@@ -206,4 +200,12 @@ class Map extends Component {
     }
   }
   
+
+  // <Geocoder 
+  //         mapRef={this.mapRef}
+  //         onResult={this.handleOnResult}
+  //         onViewportChange={this.handleGeocoderViewportChange}
+  //         mapboxApiAccessToken={token}
+  //         position='top-right'
+  //       />
   export default Map;
