@@ -13,10 +13,10 @@ class CustomButtons extends Component {
           borderRadius: 5,
           color: "white",
           width: this.props.width,
-          marginRight: 10
+          marginRight: 10,
         }}
         onClick={this.props.onClick}
-        value={this.props.text}
+        value={this.props.value}
       >
         {this.props.text}
       </button>

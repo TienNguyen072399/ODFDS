@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import styled from "styled-components";
 import "../App.css";
-import { Link, Redirect, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import CustomButtons from "../components/CustomButtons";
 import Navbar from "../components/NavBar";

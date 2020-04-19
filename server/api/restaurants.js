@@ -53,7 +53,7 @@ router.post("/order/submit", cors(), function (req, res, next) {
       console.log(order);
       res.send({ success: "Your order has been inputed" });
     } else {
-      console.log({
+      res.send({
         error: "We were not able to process your order. Please try again",
       });
     }

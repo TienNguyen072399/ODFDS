@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import styled from "styled-components";
 import { connect } from "react-redux";
 import { handleSetUser } from "../redux/actions";
-import { Link, Redirect, useHistory } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import CustomButtons from "../components/CustomButtons";
 
 class Login extends Component {

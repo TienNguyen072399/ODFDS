@@ -1,9 +1,11 @@
 import React, { Component } from "react";
+import { Link, Redirect, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
+
 import Navbar from "../components/NavBar";
 import DriverDash from "../components/DriverDash";
 
-class DriverDashboard extends Component {
+class DriverOpenOrders extends Component {
   constructor(props) {
     super(props);
 
@@ -15,7 +17,7 @@ class DriverDashboard extends Component {
 
   componentDidMount() {
     console.log(this.props.user);
-    fetch("http://localhost:5000/api/drivers/myorders/" + this.props.user._id)
+    fetch("http://localhost:5000/api/drivers/orders")
       .then((response) => response.json())
       .then((res) => {
         console.log(res);
@@ -25,7 +27,21 @@ class DriverDashboard extends Component {
 
   handleAccept = (e) => {
     e.preventDefault();
-    console.log(e.target);
+    console.log(e.target.value);
+    fetch("http://localhost:5000/api/drivers/order/accept", {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        orderId: e.target.value,
+        driverName: this.props.user.name,
+        driverId: this.props.user._id,
+      }),
+    })
+      .then((response) => response.json())
+      .then((res) => {});
   };
 
   render() {
@@ -56,4 +72,4 @@ const mapStateToProps = (state) => ({
   user: state.user,
 });
 
-export default connect(mapStateToProps)(DriverDashboard);
+export default connect(mapStateToProps)(DriverOpenOrders);
