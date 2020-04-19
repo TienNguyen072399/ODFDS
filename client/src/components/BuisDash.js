@@ -54,16 +54,19 @@ class BuisDash extends Component {
     return <div id = "container">
     <div id="dash-box">
         <div id="boxtop"></div>
+        
         <div id = "container"><div className ="iconcircle"></div></div>
+        <div id="status">Status: {this.state.order.status}</div>
         <div id ="titlecontainer">ID: {this.state.order._id}</div><br/>
         <div id ="titlecontainer">Customer: {this.state.order.customerName}</div><br/>
-        <div id ="titlecontainer"><h2>Driver: {this.getDriver()}</h2></div>
+        
+        <div id ="titlecontainer"><h2>Driver: {this.getDriver()}</h2></div><br/>
         <div id="time">{this.getRealTime()} mins ago</div>
-        <div id="container">
+        <div id="container"><br/>
         <div id="description">Currently on route to {this.getDestination()}</div>
-        </div><br/><br/><br/>
+        </div><br/>
         <div id="starcontainer"><Rating driver={this.state.order.assignedr}/></div>
-        <div id="button-container2"><CustomButtons text="View Driver Profile ->" color="#5c8eb9" width="100%"fontSize="13px"/></div>
+        <div id="button-container2"><CustomButtons text="View Driver Location ->" color="#5c8eb9" width="100%"fontSize="20px"/></div>
     </div>
     </div>;
   }

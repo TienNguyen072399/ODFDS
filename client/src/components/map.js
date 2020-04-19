@@ -1,10 +1,11 @@
 import React, { Component } from "react";
-import ReactMapGL, {GeolocateControl} from "react-map-gl";
+import ReactMapGL, {PloyLine,GeolocateControl,CanvasOverlay} from "react-map-gl";
 import MapGL from "react-map-gl";
 import DeckGL, { GeoJsonLayer } from "deck.gl";
 import Geocoder from "react-map-gl-geocoder";
 import "../pages/TempCSS.css";
 import "../mapbox-gl.css";
+
 class Map extends Component {
   state={
     order: this.props.order,
@@ -14,11 +15,11 @@ class Map extends Component {
     geojson : {},
     token: 'pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg',
     viewport:{
-      width: "100vw",
-      height: "100vh",
+      width: "100",
+      height: "50vh",
       latitude: 37.83368330777276,
       longtitude: -122.49378204345702,
-      zoom: 12
+      zoom: 5
     },
     searchResultLayer: null
   };
@@ -56,14 +57,21 @@ class Map extends Component {
     // componentDidMount(){
     //     var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
     //     var MapboxGeocoder = require('@mapbox/mapbox-gl-geocoder');
+    //     var MapboxDirections = require('@mapbox/mapbox-gl-directions');
     //     mapboxgl.accessToken = 'pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';
     //     var map = new mapboxgl.Map({
     //       container: 'drivermap',
     //       style: 'mapbox://styles/mapbox/streets-v11',
-    //       center: this.state.start,
-    //       zoom: this.state.zoom
+    //       center: [-79.4512, 43.6568],
+    //       zoom: 13
     //     });
-        
+    //   map.addControl(
+    //     new MapboxDirections({
+    //     accessToken: mapboxgl.accessToken
+    //     }),
+    //     'top-left'
+    //     );    
+
     //     var geocoder = new MapboxGeocoder({
     //       accessToken: mapboxgl.accessToken,
     //       types: 'poi',
@@ -144,27 +152,34 @@ class Map extends Component {
     //     trackUserLocation: true
     //     })
     //     );
-    //   }
+      // }
   
     // componentWillUnmount() {
     //   this.map.remove();
     // }
   
     render() {
+      const geolocateStyle = {
+        float: 'left',
+        margin: '50px',
+        padding: '10px'
+      };
+
       const style = {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         top: 0,
         bottom: 0,
-        width: '70%',
-        height: '50%'
+        width: '100%',
+        height: '100%'
       };
 
       const { viewport, searchResultLayer, token} = this.state
       return (
-      //<div style={style} id="drivermap"> </div> 
+      // <div style={style} id="drivermap"> </div> 
       <div >
+        
         <ReactMapGL 
         ref={this.mapRef}
         {...viewport}
@@ -184,7 +199,7 @@ class Map extends Component {
           position='top-right'
         />
         </ReactMapGL>
-        <DeckGL {...viewport} layers={[searchResultLayer]} />
+        
       </div>
       
       );
