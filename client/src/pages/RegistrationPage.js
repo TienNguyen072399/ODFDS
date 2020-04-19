@@ -35,7 +35,7 @@ class Registration extends Component {
   };
 
   handleSignUp = (e) => {
-    if (this.state.type == "business") {
+    if (this.state.type === "business") {
       if (
         !this.state.name ||
         !this.state.email ||
@@ -315,6 +315,7 @@ class Registration extends Component {
           >
             <CustomButtons
               text="business"
+              value="business"
               color="#DB3979"
               width="40%"
               fontSize="30px"
@@ -322,6 +323,7 @@ class Registration extends Component {
             />
             <CustomButtons
               text="driver"
+              value="driver"
               color="#DB3979"
               width="40%"
               fontSize="30px"
@@ -332,7 +334,12 @@ class Registration extends Component {
             <div
               style={{ position: "absolute", left: 10, bottom: 10, width: 200 }}
             >
-              <CustomButtons text="<" color="#4E4E4E" width="50%" fontSize="30px"/>
+              <CustomButtons
+                text="<"
+                color="#4E4E4E"
+                width="50%"
+                fontSize="30px"
+              />
             </div>
           </Link>
         </div>

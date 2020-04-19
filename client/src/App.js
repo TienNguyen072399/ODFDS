@@ -17,6 +17,7 @@ import NewOrder from "./pages/NewOrderPage";
 import BusinessDashboard from "./pages/BusinessDashboard";
 import DriverDashboard from "./pages/DriverDashboard";
 import DriverMap from "./pages/DriverMap";
+import DriverOpenOrders from "./pages/DriverOpenOrders";
 import { createStore } from "redux";
 
 const store = createStore(rootReducer);
@@ -38,6 +39,7 @@ function App() {
           />
           <Route path="/driver/dashboard" exact component={DriverDashboard} />
           <Route path="/driver/map" exact component={DriverMap} />
+          <Route path="/driver/openorders" exact component={DriverOpenOrders} />
         </Switch>
       </Router>
     </Provider>

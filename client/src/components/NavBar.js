@@ -13,8 +13,9 @@ class Navbar extends Component {
         <div class="navcontainer">
           <div class="navbar">
             <a href="/driver/setting"> Settings </a>
-            <a href="/driver/map"> Order Map </a>
-            <a href="/driver/dashboard"> Current Orders </a>
+            <Link to="map">Order Map</Link>
+            <Link to="openorders">Open Orders</Link>
+            <Link to="dashboard">Current Orders</Link>
             <a href="/"> Log Out </a>
           </div>{" "}
         </div>

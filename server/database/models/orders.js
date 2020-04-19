@@ -30,6 +30,10 @@ const OrdersSchema = new Schema({
     type: String,
     default: "",
   },
+  driverId: {
+    type: String,
+    default: "",
+  },
   timePickUp: {
     type: String,
     default: "",
