@@ -15,6 +15,29 @@
     width: auto;   
 }
 
+#boxtopmap {
+    background-color: rgb(63, 61, 61);
+    height: 75px;
+    width: auto;   
+}
+
+#titlemap{
+    padding-left: 2%;
+    padding-top: 2%;
+    float: center;
+    color: #f0e0e0;
+    font: Bold 20px/20px Arial;
+    
+}
+
+#button-container-map {
+    height: max-content;
+    width: auto;
+    top: 10px;
+    right: -60px;
+    position: absolute;
+}
+
 /*Containers */
 
 #container{
@@ -112,6 +135,7 @@ h2 {
     color: #4e4e4e;
     font: 20px/20px Arial;
     float: left;
+    
     padding-left: 5%;
     padding-top: 2%;
 }

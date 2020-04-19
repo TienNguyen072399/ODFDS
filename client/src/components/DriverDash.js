@@ -91,7 +91,7 @@ class DriverDash extends Component {
         <div id ="titlecontainer">ID: {this.state.order._id}</div><br/>
         <div id ="titlecontainer"><h2>{this.getBusiness()}</h2></div><br/>
         
-        <div id="time">{this.getRealTime()} mins ago</div>
+        <div id="time">{this.getRealTime()} mins ago</div><br/>
         <div id="container">
         <div id="description">Requesting {this.getNumOrder()} delivery {this.getDistance()} miles away<br/><div id="description">Delivery route: {this.getRoute()} miles</div></div>
         

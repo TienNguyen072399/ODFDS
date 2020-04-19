@@ -5,6 +5,8 @@ import CustomButtons from "../components/CustomButtons";
 import Navbar from "../components/NavBar";
 import "../mapbox-gl.css";
 import Map from "../components/map";
+//import DirectionMap from "../components/DirectionMap";
+import "./DashCSS.css";
 
 class DriverMap extends Component {
   constructor(props) {
@@ -45,27 +47,43 @@ class DriverMap extends Component {
     };
   }
 
-  
+  handleArrived = async (event) => {
+    // driver arrived -> change status base on pickup or delivery
+  };
+
+  handleCancel = async (event) => {
+    // trip cancel -> change status base on pickup or delivery
+  };
+
   render() {
-    
-    
-    return (
-        <div style={{
+      return (
+      <div 
+        style={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           fontSize: 20,
           color: "#4E4E4E",
-        }}>
+        }}
+      >
         <Navbar type={this.state.type}/>
-        
-           
+                  
         {this.state.orders.map(item => (
-
-        <Map order={item}/>
-        ))}
-
+        <div id = "container" >
+          <div id="dash-box">
+            <div id="boxtopmap">
+              <div id ="titlemap">ID: {item._id}</div>
+              <div id ="titlemap">From: {item.businessName}</div>
+              <div id="button-container-map">
+              <CustomButtons onclick= {this.handleArrived()}text="Arrived" color="#DB3979" width="60%" fontSize="20px"/>
+              <CustomButtons onclick={this.handleCancel()} text="Cancel trip" color="#5c8eb9" width="60%"fontSize="20px"/>
+              </div>
+          </div>
+            <Map order={item}/><br/>
+          </div>
         </div>
+        ))}
+      </div>
     );
   }
 }
