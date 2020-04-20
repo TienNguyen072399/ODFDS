@@ -1,8 +1,12 @@
 import React, { Component } from "react";
+//import mapboxgl from 'mapbox-gl';
 import ReactMapGL, {PloyLine,GeolocateControl,CanvasOverlay} from "react-map-gl";
 import MapGL from "react-map-gl";
 import DeckGL, { GeoJsonLayer } from "deck.gl";
 import Geocoder from "react-map-gl-geocoder";
+import 'mapbox-gl/dist/mapbox-gl.css'
+import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
+import "../mapbox-gl-directions.css";
 import "../pages/TempCSS.css";
 import "../mapbox-gl.css";
 
@@ -15,7 +19,7 @@ class Map extends Component {
     geojson : {},
     token: 'pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg',
     viewport:{
-      width: "100",
+      width: "50vw",
       height: "50vh",
       latitude: 37.83368330777276,
       longtitude: -122.49378204345702,
@@ -24,135 +28,143 @@ class Map extends Component {
     searchResultLayer: null
   };
 
-  mapRef = React.createRef()
+  // mapRef = React.createRef()
 
-  handleViewportChange = viewport => {
-    this.setState({
-      viewport: { ...this.state.viewport, ...viewport }
-    })
-  }
-  // if you are happy with Geocoder default settings, you can just use handleViewportChange directly
-  handleGeocoderViewportChange = viewport => {
-    const geocoderDefaultOverrides = { transitionDuration: 1000 };
+  // handleViewportChange = viewport => {
+  //   this.setState({
+  //     viewport: { ...this.state.viewport, ...viewport }
+  //   })
+  // }
+  
+  // // if you are happy with Geocoder default settings, you can just use handleViewportChange directly
+  // handleGeocoderViewportChange = viewport => {
+  //   const geocoderDefaultOverrides = { transitionDuration: 1000 };
 
-    return this.handleViewportChange({
-      ...viewport,
-      ...geocoderDefaultOverrides
-    });
-  };
+  //   return this.handleViewportChange({
+  //     ...viewport,
+  //     ...geocoderDefaultOverrides
+  //   });
+  // };
 
-  handleOnResult = event => {
-    this.setState({
-      searchResultLayer: new GeoJsonLayer({
-        id: "search-result",
-        data: event.result.geometry,
-        getFillColor: [255, 0, 0, 128],
-        getRadius: 1000,
-        pointRadiusMinPixels: 10,
-        pointRadiusMaxPixels: 10
-      })
-    })
-  }
+  // handleOnResult = event => {
+  //   this.setState({
+  //     searchResultLayer: new GeoJsonLayer({
+  //       id: "search-result",
+  //       data: event.result.geometry,
+  //       getFillColor: [255, 0, 0, 128],
+  //       getRadius: 1000,
+  //       pointRadiusMinPixels: 10,
+  //       pointRadiusMaxPixels: 10
+  //     })
+  //   })
+  // }
 
-    // componentDidMount(){
-    //     var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
-    //     var MapboxGeocoder = require('@mapbox/mapbox-gl-geocoder');
-    //     var MapboxDirections = require('@mapbox/mapbox-gl-directions');
-    //     mapboxgl.accessToken = 'pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';
-    //     var map = new mapboxgl.Map({
-    //       container: 'drivermap',
-    //       style: 'mapbox://styles/mapbox/streets-v11',
-    //       center: [-79.4512, 43.6568],
-    //       zoom: 13
-    //     });
-    //   map.addControl(
-    //     new MapboxDirections({
-    //     accessToken: mapboxgl.accessToken
-    //     }),
-    //     'top-left'
-    //     );    
+  
+    componentDidMount(){
+        var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
+        var MapboxGeocoder = require('@mapbox/mapbox-gl-geocoder');
+        var MapboxDirections = require('@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions');
+        mapboxgl.accessToken = 'pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';
+        
+      
 
-    //     var geocoder = new MapboxGeocoder({
-    //       accessToken: mapboxgl.accessToken,
-    //       types: 'poi',
-    //       // see https://docs.mapbox.com/api/search/#geocoding-response-object for information about the schema of each response feature
-    //       render: function(item) {
-    //       // extract the item's maki icon or use a default
-    //       var maki = item.properties.maki || 'marker';
-    //       return (
-    //       "<div class='geocoder-dropdown-item'><img class='geocoder-dropdown-icon' src='https://unpkg.com/@mapbox/maki@6.1.0/icons/" +
-    //       maki +
-    //       "-15.svg'><span class='geocoder-dropdown-text'>" +
-    //       item.text +
-    //       '</span></div>'
-    //       );
-    //       },
-    //       mapboxgl: mapboxgl
-    //       });
-    //       map.addControl(geocoder);
+        var map = new mapboxgl.Map({
+          container: 'drivermap'+ this.state.order._id,
+          style: 'mapbox://styles/mapbox/streets-v11',
+          center: [-122.48369693756104, 37.83381888486939],
+          zoom: 15,
+          
+        });
 
-    //     // Add zoom and rotation controls to the map.
-    //     //map.addControl(new mapboxgl.NavigationControl());
+        // var geocoder = new MapboxGeocoder({
+        //   accessToken: mapboxgl.accessToken,
+        //   types: 'poi',
+        //   // see https://docs.mapbox.com/api/search/#geocoding-response-object for information about the schema of each response feature
+        //   render: function(item) {
+        //   // extract the item's maki icon or use a default
+        //   var maki = item.properties.maki || 'marker';
+        //   return (
+        //   "<div class='geocoder-dropdown-item'><img class='geocoder-dropdown-icon' src='https://unpkg.com/@mapbox/maki@6.1.0/icons/" +
+        //   maki +
+        //   "-15.svg'><span class='geocoder-dropdown-text'>" +
+        //   item.text +
+        //   '</span></div>'
+        //   );
+        //   },
+        //   mapboxgl: mapboxgl
+        //   });
+        //   map.addControl(geocoder);
 
-    //     map.on('load', function() {
-    //       map.addSource('route', {
-    //       'type': 'geojson',
-    //       'data': {
-    //         'type': 'Feature',
-    //         'properties': {},
-    //         'geometry': {
-    //         'type': 'LineString',
-    //         'coordinates': [
-    //         [-122.48369693756104, 37.83381888486939],
-    //         [-122.48348236083984, 37.83317489144141],
-    //         [-122.48339653015138, 37.83270036637107],
-    //         [-122.48356819152832, 37.832056363179625],
-    //         [-122.48404026031496, 37.83114119107971],
-    //         [-122.48404026031496, 37.83049717427869],
-    //         [-122.48348236083984, 37.829920943955045],
-    //         [-122.48356819152832, 37.82954808664175],
-    //         [-122.48507022857666, 37.82944639795659],
-    //         [-122.48610019683838, 37.82880236636284],
-    //         [-122.48695850372314, 37.82931081282506],
-    //         [-122.48700141906738, 37.83080223556934],
-    //         [-122.48751640319824, 37.83168351665737],
-    //         [-122.48803138732912, 37.832158048267786],
-    //         [-122.48888969421387, 37.83297152392784],
-    //         [-122.48987674713133, 37.83263257682617],
-    //         [-122.49043464660643, 37.832937629287755],
-    //         [-122.49125003814696, 37.832429207817725],
-    //         [-122.49163627624512, 37.832564787218985],
-    //         [-122.49223709106445, 37.83337825839438],
-    //         [-122.49378204345702, 37.83368330777276]
-    //         ]
-    //         }
-    //         }
-    //       });
-    //       map.addLayer({
-    //       'id': 'route',
-    //       'type': 'line',
-    //       'source': 'route',
-    //       'layout': {
-    //       'line-join': 'round',
-    //       'line-cap': 'round'
-    //       },
-    //       'paint': {
-    //       'line-color': '#888',
-    //       'line-width': 8
-    //       }
-    //       });
-    //       });
+        // Add zoom and rotation controls to the map.
+        //map.addControl(new mapboxgl.NavigationControl());
 
-    //     // Add geolocate control to the map.
-    //     map.addControl(
-    //     new mapboxgl.GeolocateControl({
-    //     positionOptions: {
-    //     enableHighAccuracy: true
-    //     },
-    //     trackUserLocation: true
-    //     })
-    //     );
-      // }
+        map.on('load', function() {
+          map.addSource('route', {
+          'type': 'geojson',
+          'data': {
+            'type': 'Feature',
+            'properties': {},
+            'geometry': {
+            'type': 'LineString',
+            'coordinates': [
+            [-122.48369693756104, 37.83381888486939],
+            [-122.48348236083984, 37.83317489144141],
+            [-122.48339653015138, 37.83270036637107],
+            [-122.48356819152832, 37.832056363179625],
+            [-122.48404026031496, 37.83114119107971],
+            [-122.48404026031496, 37.83049717427869],
+            [-122.48348236083984, 37.829920943955045],
+            [-122.48356819152832, 37.82954808664175],
+            [-122.48507022857666, 37.82944639795659],
+            [-122.48610019683838, 37.82880236636284],
+            [-122.48695850372314, 37.82931081282506],
+            [-122.48700141906738, 37.83080223556934],
+            [-122.48751640319824, 37.83168351665737],
+            [-122.48803138732912, 37.832158048267786],
+            [-122.48888969421387, 37.83297152392784],
+            [-122.48987674713133, 37.83263257682617],
+            [-122.49043464660643, 37.832937629287755],
+            [-122.49125003814696, 37.832429207817725],
+            [-122.49163627624512, 37.832564787218985],
+            [-122.49223709106445, 37.83337825839438],
+            [-122.49378204345702, 37.83368330777276]
+            ]
+            }
+            }
+          });
+          map.addLayer({
+          'id': 'route',
+          'type': 'line',
+          'source': 'route',
+          'layout': {
+          'line-join': 'round',
+          'line-cap': 'round'
+          },
+          'paint': {
+          'line-color': '#888',
+          'line-width': 8
+          }
+          });
+          });
+
+        // Add geolocate control to the map.
+        map.addControl(
+        new mapboxgl.GeolocateControl({
+        positionOptions: {
+        enableHighAccuracy: true
+        },
+        trackUserLocation: true
+        })
+        );
+        
+        var directions = new MapboxDirections({
+          accessToken: mapboxgl.accessToken,
+          });
+        map.addControl(
+          directions,
+          'top-left'
+          );
+      }
   
     // componentWillUnmount() {
     //   this.map.remove();
@@ -177,24 +189,25 @@ class Map extends Component {
 
       const { viewport, searchResultLayer, token} = this.state
       return (
-      // <div style={style} id="drivermap"> </div> 
-      <div >
+       <div style={style} id={"drivermap"+this.state.order._id}> </div> 
+      
+       // <div >
         
-        <ReactMapGL 
-        ref={this.mapRef}
-        {...viewport}
-        mapStyle="mapbox://styles/mapbox/streets-v11"
-        onViewportChange={viewport => this.setState({viewport})}
-        mapboxApiAccessToken={token}
-        >
-        <GeolocateControl
-          positionOptions={{enableHighAccuracy: true}}
-          trackUserLocation={true}
-        />
+      //   <ReactMapGL 
+      //   ref={this.mapRef}
+      //   {...viewport}
+      //   mapStyle="mapbox://styles/mapbox/streets-v11"
+      //   onViewportChange={viewport => this.setState({viewport})}
+      //   mapboxApiAccessToken={token}
+      //   >
+      //   <GeolocateControl
+      //     positionOptions={{enableHighAccuracy: true}}
+      //     trackUserLocation={true}
+      //   />
         
-        </ReactMapGL>
+      //   </ReactMapGL>
         
-      </div>
+      // </div>
       
       );
     }

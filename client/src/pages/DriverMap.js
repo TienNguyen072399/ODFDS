@@ -42,6 +42,7 @@ class DriverMap extends Component {
             __v:0,
             status: "Out for delivery"
           },
+          
         ],
     lng: 5,
     lat: 34,
@@ -49,14 +50,15 @@ class DriverMap extends Component {
     };
   }
 
-  handleArrived = async (event) => {
+  handleArrived = async (event,order) => {
     // driver arrived -> change status base on pickup or delivery
+    
   };
-  handleDelivered = async (event) => {
+  handleDelivered = async (event,order) => {
     // driver arrived -> change status base on pickup or delivery
   };
 
-  handleCancel = async (event) => {
+  handleCancel = async (event,order) => {
     // trip cancel -> change status base on pickup or delivery
   };
 
@@ -65,15 +67,15 @@ class DriverMap extends Component {
       case 'Waiting for pick up':
         return (
           <div id="button-container-map">
-                <CustomButtons onclick= {this.handleArrived()}text="Picked up" color="#DB3979" width="60%" fontSize="20px"/>
-                <CustomButtons onclick={this.handleCancel()} text="Cancel trip" color="#5c8eb9" width="60%"fontSize="20px"/>
+                <CustomButtons onclick= {this.handleArrived(order)}text="Picked up" color="#DB3979" width="60%" fontSize="20px"/>
+                <CustomButtons onclick={this.handleCancel(order)} text="Cancel trip" color="#5c8eb9" width="60%"fontSize="20px"/>
           </div>
         );
       case 'Out for delivery':
         return (
           <div id="button-container-map">
-                <CustomButtons onclick= {this.handleDelivered()}text="Delivered" color="#DB3979" width="60%" fontSize="20px"/>
-                <CustomButtons onclick={this.handleCancel()} text="Cancel trip" color="#5c8eb9" width="60%"fontSize="20px"/>
+                <CustomButtons onclick= {this.handleDelivered(order)}text="Delivered" color="#DB3979" width="60%" fontSize="20px"/>
+                <CustomButtons onclick={this.handleCancel(order)} text="Cancel trip" color="#5c8eb9" width="60%"fontSize="20px"/>
           </div>
         );
       default:
