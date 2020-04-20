@@ -15,6 +15,10 @@ class NewOrder extends Component {
       deliveryAddress: "",
       timePickUp: "",
       timeDelivered: "",
+      token:
+        "pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg",
+      latitude: 0,
+      longitude: 0,
     };
   }
 
@@ -49,7 +53,31 @@ class NewOrder extends Component {
   handleSubmit = async (e) => {
     e.preventDefault();
     console.log(this.props);
-    fetch("http://localhost:5000/api/restaurants/order/submit", {
+    if (!this.state.deliveryAddress) {
+      alert("Please enter a valid address");
+    } else if (this.state.city.toLowerCase() !== "san jose") {
+      alert("OFDS is only available in San Jose");
+    } else {
+      await fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${this.state.deliveryAddress}, ${this.state.city}, CA ${this.state.zipCode}.json?access_token=${this.state.token}`
+      )
+        .then((response) => response.json())
+        .then((res) => {
+          if (res.features.length == 0) {
+            alert("Invalid Address");
+          } else {
+            // console.log(res);
+            this.setState({
+              latitude: res.features[0].center[1],
+              longitude: res.features[0].center[0],
+            });
+          }
+        });
+
+      console.log(`${this.state.latitude}, ${this.state.longitude}`);
+    }
+
+    await fetch("http://localhost:5000/api/restaurants/order/submit", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -66,6 +94,8 @@ class NewOrder extends Component {
           this.state.city +
           ", CA " +
           this.state.zipCode,
+        latitude: this.state.latitude,
+        longitude: this.state.longitude,
       }),
     })
       .then((response) => response.json())

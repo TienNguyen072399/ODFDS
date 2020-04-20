@@ -17,13 +17,17 @@ class DriverOpenOrders extends Component {
 
   componentDidMount() {
     console.log(this.props.user);
+    this.getOrders();
+  }
+
+  getOrders = () => {
     fetch("http://localhost:5000/api/drivers/orders")
       .then((response) => response.json())
       .then((res) => {
         console.log(res);
         this.setState({ orders: res });
       });
-  }
+  };
 
   handleAccept = (e) => {
     e.preventDefault();
@@ -41,7 +45,15 @@ class DriverOpenOrders extends Component {
       }),
     })
       .then((response) => response.json())
-      .then((res) => {});
+      .then((res) => {
+        if (res.error) {
+          alert(res.error);
+          this.getOrders();
+        } else {
+          alert(res.success);
+          this.getOrders();
+        }
+      });
   };
 
   render() {

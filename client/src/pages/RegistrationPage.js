@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import CustomButtons from "../components/CustomButtons";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import "./TempCSS.css";
 
 class Registration extends Component {
@@ -14,6 +14,10 @@ class Registration extends Component {
     address: "",
     driversLicense: "",
     vehicle: "",
+    latitude: 0,
+    longitude: 0,
+    redirect: "",
+    status: "",
   };
 
   handleChooseType = (e) => {
@@ -34,7 +38,8 @@ class Registration extends Component {
     });
   };
 
-  handleSignUp = (e) => {
+  handleSignUp = async (e) => {
+    e.preventDefault();
     if (this.state.type === "business") {
       if (
         !this.state.name ||
@@ -47,7 +52,23 @@ class Registration extends Component {
         e.preventDefault();
         return;
       } else {
-        fetch("http://localhost:5000/api/users/registration", {
+        await fetch(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${this.state.address}.json?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg`
+        )
+          .then((response) => response.json())
+          .then((res) => {
+            if (res.features.length == 0) {
+              alert("Invalid Address");
+            } else {
+              this.setState({
+                latitude: res.features[0].center[1],
+                longitude: res.features[0].center[0],
+              });
+            }
+          });
+        console.log(`${this.state.latitude}, ${this.state.longitude}`);
+
+        await fetch("http://localhost:5000/api/users/registration", {
           method: "POST",
 
           headers: {
@@ -61,12 +82,15 @@ class Registration extends Component {
             password: this.state.password,
             businessName: this.state.businessName,
             address: this.state.address,
+            latitude: this.state.latitude,
+            longitude: this.state.longitude,
           }),
         })
           .then((response) => response.json())
           .then((res) => {
             if (res.user) {
               console.log(res.user);
+              this.setState({ status: "done" });
             } else {
               alert(res.error);
             }
@@ -104,13 +128,13 @@ class Registration extends Component {
           .then((res) => {
             if (res.user) {
               console.log(res.user);
+              this.setState({ status: "done" });
             } else {
               alert(res.error);
             }
           });
       }
     }
-    e.preventDefault();
   };
 
   renderForm = () => {
@@ -278,79 +302,11 @@ class Registration extends Component {
   };
 
   render() {
-    //Step 1 /2 of registration
-    if (this.state.step === 1) {
-      return (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            height: "100%",
-            // justifyContent: "",
-            // backgroundColor: "blue"
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              color: "#4E4E4E",
-              // backgroundColor: "pink"
-            }}
-          >
-            <h1 style={{ fontSize: window.innerWidth * 0.04 }}>Step 1/2</h1>
-            <h2 style={{ fontSize: window.innerWidth * 0.02 }}>
-              Are you a business or a driver?
-            </h2>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "center",
-              marginTop: 40,
-              // backgroundColor: "red"
-            }}
-          >
-            <CustomButtons
-              text="business"
-              value="business"
-              color="#DB3979"
-              width="40%"
-              fontSize="30px"
-              onClick={this.handleChooseType}
-            />
-            <CustomButtons
-              text="driver"
-              value="driver"
-              color="#DB3979"
-              width="40%"
-              fontSize="30px"
-              onClick={this.handleChooseType}
-            />
-          </div>
-          <Link to="/">
-            <div
-              style={{ position: "absolute", left: 10, bottom: 10, width: 200 }}
-            >
-              <CustomButtons
-                text="<"
-                color="#4E4E4E"
-                width="50%"
-                fontSize="30px"
-              />
-            </div>
-          </Link>
-        </div>
-      );
-    }
-    //Step 2
-    else {
-      let registrationText = "";
-      if (this.state.type === "business") {
-        registrationText =
-          "Hello! We're so glad to see you're interested in our service. Let's collect some information to get started.";
+    if (this.state.status === "done") {
+      return <Redirect to="" />;
+    } else {
+      //Step 1 /2 of registration
+      if (this.state.step === 1) {
         return (
           <div
             style={{
@@ -370,66 +326,153 @@ class Registration extends Component {
                 // backgroundColor: "pink"
               }}
             >
-              <h1 style={{ fontSize: window.innerWidth * 0.04 }}>Step 2/2</h1>
+              <h1 style={{ fontSize: window.innerWidth * 0.04 }}>Step 1/2</h1>
               <h2 style={{ fontSize: window.innerWidth * 0.02 }}>
-                {registrationText}
+                Are you a business or a driver?
               </h2>
             </div>
-            <div>{this.renderForm()}</div>
             <div
-              style={{ position: "absolute", left: 10, bottom: 10, width: 200 }}
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                marginTop: 40,
+                // backgroundColor: "red"
+              }}
             >
               <CustomButtons
-                text="<"
-                color="#4E4E4E"
-                width="50%"
+                text="business"
+                value="business"
+                color="#DB3979"
+                width="40%"
                 fontSize="30px"
-                onClick={this.handleGoBack}
+                onClick={this.handleChooseType}
+              />
+              <CustomButtons
+                text="driver"
+                value="driver"
+                color="#DB3979"
+                width="40%"
+                fontSize="30px"
+                onClick={this.handleChooseType}
               />
             </div>
+            <Link to="/">
+              <div
+                style={{
+                  position: "absolute",
+                  left: 10,
+                  bottom: 10,
+                  width: 200,
+                }}
+              >
+                <CustomButtons
+                  text="<"
+                  color="#4E4E4E"
+                  width="50%"
+                  fontSize="30px"
+                />
+              </div>
+            </Link>
           </div>
         );
-      } else {
-        registrationText =
-          "Hello! Thank you for your interest in driving for us. Let's collect some information to get started.";
-        return (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              height: "100%",
-              // justifyContent: "",
-              // backgroundColor: "blue"
-            }}
-          >
+      }
+      //Step 2
+      else {
+        let registrationText = "";
+        if (this.state.type === "business") {
+          registrationText =
+            "Hello! We're so glad to see you're interested in our service. Let's collect some information to get started.";
+          return (
             <div
               style={{
                 display: "flex",
                 flexDirection: "column",
-                alignItems: "center",
-                color: "#4E4E4E",
-                // backgroundColor: "pink"
+                height: "100%",
+                // justifyContent: "",
+                // backgroundColor: "blue"
               }}
             >
-              <h1 style={{ fontSize: window.innerWidth * 0.04 }}>Step 2/2</h1>
-              <h2 style={{ fontSize: window.innerWidth * 0.02 }}>
-                {registrationText}
-              </h2>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  color: "#4E4E4E",
+                  // backgroundColor: "pink"
+                }}
+              >
+                <h1 style={{ fontSize: window.innerWidth * 0.04 }}>Step 2/2</h1>
+                <h2 style={{ fontSize: window.innerWidth * 0.02 }}>
+                  {registrationText}
+                </h2>
+              </div>
+              <div>{this.renderForm()}</div>
+              <div
+                style={{
+                  position: "absolute",
+                  left: 10,
+                  bottom: 10,
+                  width: 200,
+                }}
+              >
+                <CustomButtons
+                  text="<"
+                  color="#4E4E4E"
+                  width="50%"
+                  fontSize="30px"
+                  onClick={this.handleGoBack}
+                />
+              </div>
             </div>
-            <div>{this.renderForm()}</div>
+          );
+        } else {
+          registrationText =
+            "Hello! Thank you for your interest in driving for us. Let's collect some information to get started.";
+          return (
             <div
-              style={{ position: "absolute", left: 10, bottom: 10, width: 200 }}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                height: "100%",
+                // justifyContent: "",
+                // backgroundColor: "blue"
+              }}
             >
-              <CustomButtons
-                text="<"
-                color="#4E4E4E"
-                width="50%"
-                fontSize="30px"
-                onClick={this.handleGoBack}
-              />
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  color: "#4E4E4E",
+                  // backgroundColor: "pink"
+                }}
+              >
+                <h1 style={{ fontSize: window.innerWidth * 0.04 }}>Step 2/2</h1>
+                <h2 style={{ fontSize: window.innerWidth * 0.02 }}>
+                  {registrationText}
+                </h2>
+              </div>
+              <div>{this.renderForm()}</div>
+              <div
+                style={{
+                  position: "absolute",
+                  left: 10,
+                  bottom: 10,
+                  width: 200,
+                }}
+              >
+                <CustomButtons
+                  text="<"
+                  color="#4E4E4E"
+                  width="50%"
+                  fontSize="30px"
+                  onClick={this.handleGoBack}
+                />
+              </div>
             </div>
-          </div>
-        );
+          );
+        }
       }
       // return <div>{form}</div>;
     }

@@ -44,11 +44,19 @@ const OrdersSchema = new Schema({
   },
   status: {
     type: String,
-    default: "Waiting",
+    default: "Waiting for driver",
   },
   cost: {
     type: String,
     default: "",
+  },
+  longitude: {
+    type: Number,
+    default: 0,
+  },
+  latitude: {
+    type: Number,
+    default: 0,
   },
 });
 
