@@ -9,8 +9,8 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 import "../mapbox-gl-directions.css";
 import "../pages/TempCSS.css";
 import "../mapbox-gl.css";
-import { usePosition } from 'use-position';
-import {useState, useEffect} from 'react';
+//import { usePosition } from 'use-position';
+//import {useState, useEffect} from 'react';
 
 class Map extends Component {
   state={
@@ -51,27 +51,27 @@ class Map extends Component {
       return coordinates;
   };
   
-getCurrentLocation = () => {
-  const watch = true;
-  const {
-    latitude,
-    longitude,
-    timestamp,
-    accuracy,
-    error,
-  } = usePosition(watch);
+// getCurrentLocation = () => {
+//   const watch = true;
+//   const {
+//     latitude,
+//     longitude,
+//     timestamp,
+//     accuracy,
+//     error,
+//   } = usePosition(watch);
  
-  return (
-    <code>
-      latitude: {latitude}<br/>
-      longitude: {longitude}<br/>
-      timestamp: {timestamp}<br/>
-      accuracy: {accuracy && `${accuracy}m`}<br/>
-      error: {error}
-    </code>
-  );
+//   return (
+//     <code>
+//       latitude: {latitude}<br/>
+//       longitude: {longitude}<br/>
+//       timestamp: {timestamp}<br/>
+//       accuracy: {accuracy && `${accuracy}m`}<br/>
+//       error: {error}
+//     </code>
+//   );
     
-};
+// };
   
     componentDidMount(){
         var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
