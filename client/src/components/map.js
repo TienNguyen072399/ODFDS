@@ -1,18 +1,24 @@
 import React, { Component } from "react";
 //import mapboxgl from 'mapbox-gl';
-import ReactMapGL, {PloyLine,GeolocateControl,CanvasOverlay} from "react-map-gl";
-import MapGL from "react-map-gl";
-import DeckGL, { GeoJsonLayer } from "deck.gl";
-import Geocoder from "react-map-gl-geocoder";
+//import ReactMapGL, {PloyLine,GeolocateControl,CanvasOverlay} from "react-map-gl";
+//import MapGL from "react-map-gl";
+//import DeckGL, { GeoJsonLayer } from "deck.gl";
+//import Geocoder from "react-map-gl-geocoder";
 import 'mapbox-gl/dist/mapbox-gl.css'
-import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
+//import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 import "../mapbox-gl-directions.css";
 import "../pages/TempCSS.css";
 import "../mapbox-gl.css";
+//import { usePosition } from 'use-position';
 
 class Map extends Component {
   state={
     order: this.props.order,
+    latitude: 0,
+    longitude: 0,
+    timestamp: 0,
+    accuracy: 0,
+    error: "",
     start: [-122.486052, 37.830348],
     end: [-122.49378204345702, 37.83368330777276],
     zoom: 15,
@@ -58,7 +64,22 @@ class Map extends Component {
   //     })
   //   })
   // }
-
+  
+  // getCurrentLocation = () => {
+  //   const watch = true;
+  //   const {
+  //     latitude,
+  //     longitude,
+  //     timestamp,
+  //     accuracy,
+  //     error,
+  //   } = usePosition(watch);
+    
+  //   this.setState({
+  //     latitude,longitude,timestamp,accuracy,error
+  //   });
+    
+  // };
   
     componentDidMount(){
         var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
@@ -66,7 +87,8 @@ class Map extends Component {
         var MapboxDirections = require('@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions');
         mapboxgl.accessToken = 'pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';
         
-      
+        
+        
 
         var map = new mapboxgl.Map({
           container: 'drivermap'+ this.state.order._id,
@@ -188,6 +210,7 @@ class Map extends Component {
       };
 
       const { viewport, searchResultLayer, token} = this.state
+      
       return (
        <div style={style} id={"drivermap"+this.state.order._id}> </div> 
       
