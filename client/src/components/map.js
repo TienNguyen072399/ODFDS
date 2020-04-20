@@ -9,7 +9,8 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 import "../mapbox-gl-directions.css";
 import "../pages/TempCSS.css";
 import "../mapbox-gl.css";
-//import { usePosition } from 'use-position';
+import { usePosition } from 'use-position';
+import {useState, useEffect} from 'react';
 
 class Map extends Component {
   state={
@@ -34,52 +35,43 @@ class Map extends Component {
     searchResultLayer: null
   };
 
-  // mapRef = React.createRef()
-
-  // handleViewportChange = viewport => {
-  //   this.setState({
-  //     viewport: { ...this.state.viewport, ...viewport }
-  //   })
-  // }
+  getCoordinates = (location) => {
+    console.log(location);
+    var coordinates;
+    var endpoint = 'mapbox.places';
+    var search_text = location;
+    const MAP_API = 'https://api.mapbox.com/geocoding/v5/';
+    const QUERY = endpoint+'/'+search_text+'.json';
+    const KEY = '?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';
+    fetch(MAP_API + QUERY + KEY, {
+      method: "GET",
+      }).then((response) => response.json())
+      .then((result) => {coordinates = result})
+      console.log(coordinates);
+      return coordinates;
+  };
   
-  // // if you are happy with Geocoder default settings, you can just use handleViewportChange directly
-  // handleGeocoderViewportChange = viewport => {
-  //   const geocoderDefaultOverrides = { transitionDuration: 1000 };
-
-  //   return this.handleViewportChange({
-  //     ...viewport,
-  //     ...geocoderDefaultOverrides
-  //   });
-  // };
-
-  // handleOnResult = event => {
-  //   this.setState({
-  //     searchResultLayer: new GeoJsonLayer({
-  //       id: "search-result",
-  //       data: event.result.geometry,
-  //       getFillColor: [255, 0, 0, 128],
-  //       getRadius: 1000,
-  //       pointRadiusMinPixels: 10,
-  //       pointRadiusMaxPixels: 10
-  //     })
-  //   })
-  // }
-  
-  // getCurrentLocation = () => {
-  //   const watch = true;
-  //   const {
-  //     latitude,
-  //     longitude,
-  //     timestamp,
-  //     accuracy,
-  //     error,
-  //   } = usePosition(watch);
+getCurrentLocation = () => {
+  const watch = true;
+  const {
+    latitude,
+    longitude,
+    timestamp,
+    accuracy,
+    error,
+  } = usePosition(watch);
+ 
+  return (
+    <code>
+      latitude: {latitude}<br/>
+      longitude: {longitude}<br/>
+      timestamp: {timestamp}<br/>
+      accuracy: {accuracy && `${accuracy}m`}<br/>
+      error: {error}
+    </code>
+  );
     
-  //   this.setState({
-  //     latitude,longitude,timestamp,accuracy,error
-  //   });
-    
-  // };
+};
   
     componentDidMount(){
         var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
@@ -212,36 +204,16 @@ class Map extends Component {
       const { viewport, searchResultLayer, token} = this.state
       
       return (
-       <div style={style} id={"drivermap"+this.state.order._id}> </div> 
       
-       // <div >
-        
-      //   <ReactMapGL 
-      //   ref={this.mapRef}
-      //   {...viewport}
-      //   mapStyle="mapbox://styles/mapbox/streets-v11"
-      //   onViewportChange={viewport => this.setState({viewport})}
-      //   mapboxApiAccessToken={token}
-      //   >
-      //   <GeolocateControl
-      //     positionOptions={{enableHighAccuracy: true}}
-      //     trackUserLocation={true}
-      //   />
-        
-      //   </ReactMapGL>
-        
-      // </div>
+       <div style={style} id={"drivermap"+this.state.order._id}> 
+       </div> 
+       
+       
       
       );
     }
   }
   
 
-  // <Geocoder 
-  //         mapRef={this.mapRef}
-  //         onResult={this.handleOnResult}
-  //         onViewportChange={this.handleGeocoderViewportChange}
-  //         mapboxApiAccessToken={token}
-  //         position='top-right'
-  //       />
+  
   export default Map;
