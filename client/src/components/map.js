@@ -9,148 +9,219 @@ import "../mapbox-gl.css";
 //import {useState, useEffect} from 'react';
 
 class Map extends Component {
-  state = {
-    order: this.props.order,
-    latitude: 0,
-    longitude: 0,
-    timestamp: 0,
-    accuracy: 0,
-    error: "",
-    start: [-122.486052, 37.830348],
-    end: [-122.49378204345702, 37.83368330777276],
-    zoom: 15,
-    geojson: {},
-    token:
-      "pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg",
-    viewport: {
-      width: "50vw",
-      height: "50vh",
-      latitude: 37.83368330777276,
-      longtitude: -122.49378204345702,
-      zoom: 5,
-    },
-    searchResultLayer: null,
-  };
-
-
-  getCoordinates = (location) => {
-    console.log(location);
-    var coordinates;
+  constructor(props) {
+    super(props);
+    this.state = {
+      order: this.props.order,
+      start: this.props.start,
+      end: this.props.end,
+      directions: this.props.directions,
+      zoom: 15,
+      geojson: {},
+      token:
+        "pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg",
+    };
+    this.getEndCoordinates = this.getEndCoordinates.bind(this);
+    this.getDirection = this.getDirection.bind(this)
+  }
+  
+  
+  
+  getEndCoordinates = () => {
     var endpoint = 'mapbox.places';
-    var search_text = location;
+    var search_text = '';
+    if(this.state.order.status === "Waiting for pick up"){
+      search_text = this.state.order.businessAddress.split(" ").join('%20');
+    }
+    else if (this.state.order.status === "Out for delivery") {
+      search_text = this.state.order.deliveryAddress.split(" ").join('%20');
+    }
     const MAP_API = 'https://api.mapbox.com/geocoding/v5/';
     const QUERY = endpoint+'/'+search_text+'.json';
     const KEY = '?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';
-    fetch(MAP_API + QUERY + KEY, {
-      method: "GET",
-      }).then((response) => response.json())
-      .then((result) => {coordinates = result})
-      console.log(coordinates);
-      return coordinates;
+    //console.log(`${MAP_API}${QUERY}${KEY}`);
+    fetch(`${MAP_API}${QUERY}${KEY}`).then((response) => response.json())
+      .then(data => {
+        this.setState(() => ({end: data.features[0].geometry.coordinates}))
+        //console.log(this.state.end);
+      })
+     // console.log(this.state.end);
+      //return "End Coordinates: " + this.state.end[0]+" , "+this.state.end[1]
   };
   
-// getCurrentLocation = () => {
-//   const watch = true;
-//   const {
-//     latitude,
-//     longitude,
-//     timestamp,
-//     accuracy,
-//     error,
-//   } = usePosition(watch);
- 
-//   return (
-//     <code>
-//       latitude: {latitude}<br/>
-//       longitude: {longitude}<br/>
-//       timestamp: {timestamp}<br/>
-//       accuracy: {accuracy && `${accuracy}m`}<br/>
-//       error: {error}
-//     </code>
-//   );
-    
-// };
+  getDirection = () => {
+    var profile = 'mapbox/driving-traffic';
+    var coordinates = this.state.start.longitude+','+this.state.start.latitude+';'+this.state.end[0]+','+this.state.end[1];
+    //var coordinates = this.state.start.longitude+','+this.state.start.latitude+';'+this.state.order.longitude+','+this.state.order.latitude;
+    const MAP_API = 'https://api.mapbox.com/directions/v5/';
+    const QUERY = profile+'/'+coordinates;
+    const KEY = '?geometries=geojson&steps=true&access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';
+    console.log(MAP_API + QUERY + KEY);
+    fetch("https://api.mapbox.com/directions/v5/mapbox/driving/-122.42,37.78;-77.03,38.91?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg").then((response) => response.json())
+      .then(data => {
+        this.setState(() => ({directions: data}))
+      })
+      //console.log(this.state.end);
+      //return "End Coordinates: " + this.state.end[0]+" , "+this.state.end[1]
+  };
   
-    componentDidMount(){
-        var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
-        var MapboxGeocoder = require('@mapbox/mapbox-gl-geocoder');
-        var MapboxDirections = require('@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions');
-        mapboxgl.accessToken = 'pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';
+
+componentDidMount(){
+  let currentComponent=this;
+  
+    navigator.geolocation.watchPosition(function(position) {
+       //console.log("Latitude is :", position.coords.latitude);
+       //console.log("Longitude is :", position.coords.longitude);
+      currentComponent.setState({start: position.coords});
+      
+    });
+
+    if(currentComponent.state.order){
+      currentComponent.getEndCoordinates();
+      if(currentComponent.state.start && currentComponent.state.end){
+        currentComponent.getDirection();
+      }
+    }
+
+    if(currentComponent.directions){
+      
+    }
+    
+}  
+
+componentDidUpdate(){
+  console.log(this.state.start)
+  console.log(this.state.end)
+  console.log(this.state.directions)
+  
+  // let currentComponent=this;
+  // navigator.geolocation.watchPosition(function(position) {
+  //   //console.log("Latitude is :", position.coords.latitude);
+  //   //console.log("Longitude is :", position.coords.longitude);
+  //  currentComponent.setState({start: position.coords});
+  // });
+
+  // if(this.state.start && this.state.end){
+  //   this.getDirection();
+  // }
+  var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
+  //var MapboxGeocoder = require('@mapbox/mapbox-gl-geocoder');
+  //var MapboxDirections = require('@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions');
+  mapboxgl.accessToken = 'pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';      
+  if(this.state.directions&&this.state.start&&this.state.end){
+    var map = new mapboxgl.Map({
+      container: 'drivermap'+ this.state.order._id,
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: [this.state.start.longitude, this.state.start.latitude],
+      zoom: 15,
+    });
+    var size = 100;
+    // implementation of CustomLayerInterface to draw a pulsing dot icon on the map
+    // see https://docs.mapbox.com/mapbox-gl-js/api/#customlayerinterface for more info
+    var pulsingDot = {
+      width: size,
+      height: size,
+      data: new Uint8Array(size * size * 4),
         
-        
-        var map = new mapboxgl.Map({
-          container: 'drivermap'+ this.state.order._id,
-          style: 'mapbox://styles/mapbox/streets-v11',
-          center: [-122.48369693756104, 37.83381888486939],
-          zoom: 15,
+      // get rendering context for the map canvas when layer is added to the map
+      onAdd: function() {
+        var canvas = document.createElement('canvas');
+        canvas.width = this.width;
+        canvas.height = this.height;
+        this.context = canvas.getContext('2d');
+      },
           
-        });
-
-        // var geocoder = new MapboxGeocoder({
-        //   accessToken: mapboxgl.accessToken,
-        //   types: 'poi',
-        //   // see https://docs.mapbox.com/api/search/#geocoding-response-object for information about the schema of each response feature
-        //   render: function(item) {
-        //   // extract the item's maki icon or use a default
-        //   var maki = item.properties.maki || 'marker';
-        //   return (
-        //   "<div class='geocoder-dropdown-item'><img class='geocoder-dropdown-icon' src='https://unpkg.com/@mapbox/maki@6.1.0/icons/" +
-        //   maki +
-        //   "-15.svg'><span class='geocoder-dropdown-text'>" +
-        //   item.text +
-        //   '</span></div>'
-        //   );
-        //   },
-        //   mapboxgl: mapboxgl
-        //   });
-        //   map.addControl(geocoder);
-
-        // Add zoom and rotation controls to the map.
-        //map.addControl(new mapboxgl.NavigationControl());
-
-        map.on('load', function() {
-          map.addSource('route', {
-          'type': 'geojson',
-          'data': {
-            'type': 'Feature',
-            'properties': {},
-            'geometry': {
-            'type': 'LineString',
-            'coordinates': [
-            [-122.48369693756104, 37.83381888486939],
-            [-122.48348236083984, 37.83317489144141],
-            [-122.48339653015138, 37.83270036637107],
-            [-122.48356819152832, 37.832056363179625],
-            [-122.48404026031496, 37.83114119107971],
-            [-122.48404026031496, 37.83049717427869],
-            [-122.48348236083984, 37.829920943955045],
-            [-122.48356819152832, 37.82954808664175],
-            [-122.48507022857666, 37.82944639795659],
-            [-122.48610019683838, 37.82880236636284],
-            [-122.48695850372314, 37.82931081282506],
-            [-122.48700141906738, 37.83080223556934],
-            [-122.48751640319824, 37.83168351665737],
-            [-122.48803138732912, 37.832158048267786],
-            [-122.48888969421387, 37.83297152392784],
-            [-122.48987674713133, 37.83263257682617],
-            [-122.49043464660643, 37.832937629287755],
-            [-122.49125003814696, 37.832429207817725],
-            [-122.49163627624512, 37.832564787218985],
-            [-122.49223709106445, 37.83337825839438],
-            [-122.49378204345702, 37.83368330777276]
-            ]
+      // called once before every frame where the icon will be used
+      render: function() {
+        var duration = 1000;
+        var t = (performance.now() % duration) / duration;
+              
+        var radius = (size / 2) * 0.3;
+        var outerRadius = (size / 2) * 0.7 * t + radius;
+        var context = this.context;
+              
+        // draw outer circle
+        context.clearRect(0, 0, this.width, this.height);
+        context.beginPath();
+        context.arc(
+          this.width / 2,
+          this.height / 2,
+          outerRadius,
+          0,
+          Math.PI * 2
+        );
+        context.fillStyle = 'rgba(255, 200, 200,' + (1 - t) + ')';
+        context.fill();
+            
+        // draw inner circle
+        context.beginPath();
+        context.arc(
+          this.width / 2,
+          this.height / 2,
+          radius,
+          0,
+          Math.PI * 2
+        );
+        context.fillStyle = 'rgba(255, 100, 100, 1)';
+        context.strokeStyle = 'white';
+        context.lineWidth = 2 + 4 * (1 - t);
+        context.fill();
+        context.stroke();
+            
+        // update this image's data with data from the canvas
+        this.data = context.getImageData(
+          0,
+          0,
+          this.width,
+          this.height
+        ).data;
+            
+        // continuously repaint the map, resulting in the smooth animation of the dot
+        map.triggerRepaint();
+            
+        // return `true` to let the map know that the image was updated
+        return true;
+      }
+    };
+          
+    map.on('load', function() {
+      map.addImage('pulsing-dot', pulsingDot, { pixelRatio: 2 });
+            
+      map.addSource('points', {
+        'type': 'geojson',
+        'data': {
+          'type': 'FeatureCollection',
+          'features': [
+            {
+              'type': 'Feature',
+              'geometry': {
+                'type': 'Point',
+                'coordinates': [-121.327209,37.989502]
+              }
             }
-            }
-          });
-          map.addLayer({
-          'id': 'route',
-          'type': 'line',
-          'source': 'route',
-          'layout': {
-          'line-join': 'round',
-          'line-cap': 'round'
-          },
-        },
+          ]
+        }
+      });
+      map.addLayer({
+        'id': 'points',
+        'type': 'symbol',
+        'source': 'points',
+        'layout': {
+          'icon-image': 'pulsing-dot'
+        }
+      });
+    });
+    map.on('load', function() {
+      map.addSource('route', {
+      'type': 'geojson',
+      'data': {
+        'type': 'Feature',
+        'properties': {},
+        'geometry': {
+        'type': 'LineString',
+        'coordinates': [[-121.327209,37.989502],[-121.326372,37.989852],[-121.325949,37.988103],[-121.337997,37.985051],[-121.356309,37.983795],[-121.3578,37.983584],[-121.358825,37.983196],[-121.360016,37.982319],[-121.361324,37.97977],[-121.362064,37.978804],[-121.362897,37.978227],[-121.363859,37.977837],[-121.364893,37.977653],[-121.36626,37.977615],[-121.366268,37.978751],[-121.366486,37.979739],[-121.368134,37.982617],[-121.36802,37.984573],[-121.367111,37.985619],[-121.367521,37.985829],[-121.368093,37.985868],[-121.368108,37.985397]]
+        }
+        }
       });
       map.addLayer({
         id: "route",
@@ -165,39 +236,40 @@ class Map extends Component {
           "line-width": 8,
         },
       });
-    });
+  });
 
-    // Add geolocate control to the map.
-    map.addControl(
-      new mapboxgl.GeolocateControl({
-        positionOptions: {
-          enableHighAccuracy: true,
-        },
+  // Add zoom and rotation controls to the map.
+  map.addControl(new mapboxgl.NavigationControl());
+  // Add geolocate control to the map.
+  map.addControl(
+  new mapboxgl.GeolocateControl({
+    positionOptions: {
+      enableHighAccuracy: true,
+    },
 
-        trackUserLocation: true
-        })
-        );
-        
-        var directions = new MapboxDirections({
-          accessToken: mapboxgl.accessToken,
-          });
-        map.addControl(
-          directions,
-          'top-left'
-          );
-      }
+    trackUserLocation: true
+    })
+    );
+
+  }
+       // var directions = new MapboxDirections({
+        //   accessToken: mapboxgl.accessToken,
+        //   });
+        // map.addControl(
+        //   directions,
+        //   'top-left'
+        //   );
+}
   
-    // componentWillUnmount() {
-    //   this.map.remove();
-    // }
+  
   
     render() {
-      const geolocateStyle = {
-        float: 'left',
-        margin: '50px',
-        padding: '10px'
-      };
 
+      // this.getStartCoordinates();
+      // this.getEndCoordinates();
+      // this.getDirection();
+      //console.log(this.state.start)
+      
       const style = {
         display: "flex",
         flexDirection: "column",
@@ -208,7 +280,6 @@ class Map extends Component {
         height: '100%'
       };
 
-      const { viewport, searchResultLayer, token} = this.state
       
       return (
       

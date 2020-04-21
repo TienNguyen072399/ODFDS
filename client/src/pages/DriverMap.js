@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import styled from "styled-components";
-import { Link, Redirect, useHistory } from "react-router-dom";
-import CustomButtons from "../components/CustomButtons";
+//import styled from "styled-components";
+//import { Link, Redirect, useHistory } from "react-router-dom";
+//import CustomButtons from "../components/CustomButtons";
 import Navbar from "../components/NavBar";
 import "../mapbox-gl.css";
-import Map from "../components/map";
+//import Map from "../components/map";
 import DirectionMap from "../components/DirectionMap";
 //import DirectionMap from "../components/DirectionMap";
 import "./DashCSS.css";
@@ -23,11 +23,13 @@ class DriverMap extends Component {
             timeDelivered:"",
             businessName:"Go Go Chicken",
             businessId:"5e9a23c75bc9ef5a84b08faa",
-            businessAddress:"123 Main St Boston MA 02111",
+            businessAddress:"2320 Lido cir Stockton CA 95207",
             customerName:"Bane",
             deliveryAddress:"4183 Riverbrook ct Stockton CA 95219",
             __v:0,
-            status: "Waiting for pick up"
+            status: "Waiting for pick up",
+            longitude:-121.877506,
+            latitude:37.340117
           },
           {
             _id:"5e9a5d254a288946140e4116",
@@ -37,11 +39,13 @@ class DriverMap extends Component {
             timeDelivered:"",
             businessName:"Go Go Chicken",
             businessId:"5e9a23c75bc9ef5a84b08faa",
-            businessAddress:"123 Main St Boston MA 02111",
+            businessAddress:"2320 Lido cir Stockton CA 95207",
             customerName:"Harry",
-            deliveryAddress:"2320 Lido cir Stockton CA 95207",
+            deliveryAddress:"4183 Riverbrook ct Stockton CA 95219",
             __v:0,
-            status: "Out for delivery"
+            status: "Out for delivery",
+            longitude:-121.880142,
+            latitude:37.333672
           },
           
         ],
@@ -88,7 +92,7 @@ class DriverMap extends Component {
         <Navbar type={this.state.type}/>
         {this.state.orders.map(item => (
           
-          <DirectionMap order={item}/>
+          <DirectionMap key = {item._id} order={item}/>
           
            ))}
       </div>
