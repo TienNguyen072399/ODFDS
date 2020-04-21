@@ -24,8 +24,7 @@ class Map extends Component {
       token:
         "pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg",
     };
-    this.getEndCoordinates = this.getEndCoordinates.bind(this);
-    this.getDirection = this.getDirection.bind(this)
+    
   }
   
   getLocationUpdate =() =>{
@@ -85,7 +84,7 @@ class Map extends Component {
   };
   
 
-componentWillMount(){
+componentDidMount(){
   let currentComponent=this;
     //currentComponent.getLocationUpdate();
     if(currentComponent.state.order){
