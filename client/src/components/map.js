@@ -196,7 +196,7 @@ componentDidUpdate(){
     
     map.on('load', function() {
       map.addImage('pulsing-dot', pulsingDot, { pixelRatio: 2 });
-      
+      // add route layer
       map.addSource('route', {
         'type': 'geojson',
         'data': {
@@ -223,7 +223,7 @@ componentDidUpdate(){
             "line-width": 8,
           },
         });
-        
+        // add current point to layer
         map.addSource('points', {
           'type': 'geojson',
           'data': {
