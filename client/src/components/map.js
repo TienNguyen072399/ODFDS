@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
-import 'mapbox-gl/dist/mapbox-gl.css'
 
+import 'mapbox-gl/dist/mapbox-gl.css'
 import "../mapbox-gl-directions.css";
 import "../pages/TempCSS.css";
 import "../mapbox-gl.css";
@@ -9,7 +9,7 @@ import "../mapbox-gl.css";
 //import {useState, useEffect} from 'react';
 
 class Map extends Component {
-  state={
+  state = {
     order: this.props.order,
     latitude: 0,
     longitude: 0,
@@ -19,17 +19,19 @@ class Map extends Component {
     start: [-122.486052, 37.830348],
     end: [-122.49378204345702, 37.83368330777276],
     zoom: 15,
-    geojson : {},
-    token: 'pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg',
-    viewport:{
+    geojson: {},
+    token:
+      "pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg",
+    viewport: {
       width: "50vw",
       height: "50vh",
       latitude: 37.83368330777276,
       longtitude: -122.49378204345702,
-      zoom: 5
+      zoom: 5,
     },
-    searchResultLayer: null
+    searchResultLayer: null,
   };
+
 
   getCoordinates = (location) => {
     console.log(location);
@@ -148,19 +150,30 @@ class Map extends Component {
           'line-join': 'round',
           'line-cap': 'round'
           },
-          'paint': {
-          'line-color': '#888',
-          'line-width': 8
-          }
-          });
-          });
-
-        // Add geolocate control to the map.
-        map.addControl(
-        new mapboxgl.GeolocateControl({
-        positionOptions: {
-        enableHighAccuracy: true
         },
+      });
+      map.addLayer({
+        id: "route",
+        type: "line",
+        source: "route",
+        layout: {
+          "line-join": "round",
+          "line-cap": "round",
+        },
+        paint: {
+          "line-color": "#888",
+          "line-width": 8,
+        },
+      });
+    });
+
+    // Add geolocate control to the map.
+    map.addControl(
+      new mapboxgl.GeolocateControl({
+        positionOptions: {
+          enableHighAccuracy: true,
+        },
+
         trackUserLocation: true
         })
         );
@@ -211,3 +224,4 @@ class Map extends Component {
 
   
   export default Map;
+
