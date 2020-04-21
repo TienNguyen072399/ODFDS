@@ -1,12 +1,9 @@
 import React, { Component } from "react";
-
-
 import 'mapbox-gl/dist/mapbox-gl.css'
 import "../mapbox-gl-directions.css";
 import "../pages/TempCSS.css";
 import "../mapbox-gl.css";
-//import { usePosition } from 'use-position';
-//import {useState, useEffect} from 'react';
+import CustomButtons from "./CustomButtons";
 
 class Map extends Component {
   constructor(props) {
@@ -17,25 +14,21 @@ class Map extends Component {
       end: null,
       directions: {"routes": [{"geometry": {
         'type': 'LineString',
-        'coordinates': [[-121.881699,37.33688],[-121.882232,37.337626],[-121.892506,37.332763],[-121.894288,37.335213]]
+        'coordinates': [this.start]
         }}]},
-      zoom: 15,
-      geojson: {},
       token:
         "pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg",
     };
     
   }
   
-  getLocationUpdate =() =>{
+  getLocationUpdate = async (event) =>{
     let currentComponent=this;
     
     if(navigator.geolocation){
       alert("browser are located to your location!")
       navigator.geolocation.watchPosition(function(position) {
-          //console.log("Latitude is :", position.coords.latitude);
-          //console.log("Longitude is :", position.coords.longitude);
-         currentComponent.setState({start: position.coords});
+          currentComponent.setState({start: [position.coords.longitude,position.coords.latitude]});
         });
     } else {
        alert("Sorry, browser does not support geolocation!");
@@ -65,7 +58,7 @@ class Map extends Component {
       //return "End Coordinates: " + this.state.end[0]+" , "+this.state.end[1]
   };
   
-  getDirection = () => {
+  getDirection = async (event) => {
     var profile = 'mapbox/driving-traffic';
     var coordinates = this.state.start[0]+','+this.state.start[1]+';'+this.state.end[0]+','+this.state.end[1];
     //var coordinates = this.state.start.longitude+','+this.state.start.latitude+';'+this.state.order.longitude+','+this.state.order.latitude;
@@ -83,7 +76,6 @@ class Map extends Component {
       //return "End Coordinates: " + this.state.end[0]+" , "+this.state.end[1]
   };
   
-
 componentDidMount(){
   let currentComponent=this;
     //currentComponent.getLocationUpdate();
@@ -99,7 +91,7 @@ componentDidMount(){
 componentDidUpdate(){
   console.log("start: "+this.state.start)
   console.log("end: "+this.state.end)
-  //console.log(this.state.directions)
+  
   if (this.state.directions){
     console.log("direction: "+this.state.directions)
     console.log(this.state.directions.routes[0].geometry);
@@ -107,22 +99,11 @@ componentDidUpdate(){
   }
   var mapstart = this.state.start;
   
-  // let currentComponent=this;
-  // navigator.geolocation.watchPosition(function(position) {
-  //   //console.log("Latitude is :", position.coords.latitude);
-  //   //console.log("Longitude is :", position.coords.longitude);
-  //  currentComponent.setState({start: position.coords});
-  // });
-
-  // if(this.state.start && this.state.end){
-  //   this.getDirection();
-  // }
-  
   var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
   //var MapboxGeocoder = require('@mapbox/mapbox-gl-geocoder');
   //var MapboxDirections = require('@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions');
   mapboxgl.accessToken = 'pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';      
-  if(this.state.end){
+  if(this.state.start){
     console.log("inside if end: "+this.state.end)
     
     //this.getDirection();
@@ -135,7 +116,6 @@ componentDidUpdate(){
     });
     var size = 150;
     // implementation of CustomLayerInterface to draw a pulsing dot icon on the map
-    // see https://docs.mapbox.com/mapbox-gl-js/api/#customlayerinterface for more info
     var pulsingDot = {
       width: size,
       height: size,
@@ -238,14 +218,13 @@ componentDidUpdate(){
                 'type': 'Feature',
                 'geometry': {
                   'type': 'Point',
-                  'coordinates': mapstart //try to get to starting point [this.state.start[0],this.state.start[1]]
+                  'coordinates': mapstart //get to starting point
                 }
               }
             ]
           }
         });
-        // var mylocationSource = map.getSource('points');
-        // mylocationSource.setCoordinates(this.state.start);
+        
         map.addLayer({
           'id': 'points',
           'type': 'symbol',
@@ -270,13 +249,6 @@ componentDidUpdate(){
     );
 
   }
-       // var directions = new MapboxDirections({
-        //   accessToken: mapboxgl.accessToken,
-        //   });
-        // map.addControl(
-        //   directions,
-        //   'top-left'
-        //   );
 }
   
   
@@ -295,10 +267,13 @@ componentDidUpdate(){
 
       
       return (
-      
+      <>
+        
+        <button onClick={this.getDirection}>Load directions</button>
+        <button onClick={this.getLocationUpdate}>Load current location</button>
        <div style={style} id={"drivermap"+this.state.order._id}> 
        </div> 
-       
+      </> 
        
       
       );
