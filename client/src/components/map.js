@@ -73,7 +73,7 @@ class Map extends Component {
     const QUERY = profile+'/'+coordinates;
     const KEY = '?geometries=geojson&steps=false&access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';
     
-    fetch("https://api.mapbox.com/directions/v5/mapbox/driving/-122.42,37.78;-77.03,38.91?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg").then((response) => response.json())
+    fetch(MAP_API + QUERY + KEY).then((response) => response.json())
       .then(data => {
         this.setState(() => ({directions: data}))
         console.log(MAP_API + QUERY + KEY);
@@ -102,7 +102,7 @@ componentDidUpdate(){
   //console.log(this.state.directions)
   if (this.state.directions){
     console.log("direction: "+this.state.directions)
-    console.log("geometry: "+this.state.directions.routes[0].geometry);
+    console.log(this.state.directions.routes[0].geometry);
     var mapdirection = this.state.directions;
   }
   var mapstart = this.state.start;
