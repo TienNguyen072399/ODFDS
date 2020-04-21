@@ -13,8 +13,8 @@ class Map extends Component {
     super(props);
     this.state = {
       order: this.props.order,
-      start: [],
-      end: [],
+      start: [-121.88130866919334,37.336324837847584],
+      end: [0,0],
       directions: {},
       zoom: 15,
       geojson: {},
@@ -25,7 +25,21 @@ class Map extends Component {
     this.getDirection = this.getDirection.bind(this)
   }
   
-  
+  getLocationUpdate =() =>{
+    let currentComponent=this;
+    
+    if(navigator.geolocation){
+      alert("browser are located to your location!")
+      navigator.geolocation.watchPosition(function(position) {
+          //console.log("Latitude is :", position.coords.latitude);
+          //console.log("Longitude is :", position.coords.longitude);
+         currentComponent.setState({start: position.coords});
+        });
+    } else {
+       alert("Sorry, browser does not support geolocation!");
+       currentComponent.setState({start: [-121.88130866919334,37.336324837847584]})
+    }
+ }
   
   getEndCoordinates = () => {
     var endpoint = 'mapbox.places';
@@ -51,7 +65,7 @@ class Map extends Component {
   
   getDirection = () => {
     var profile = 'mapbox/driving-traffic';
-    var coordinates = this.state.start.longitude+','+this.state.start.latitude+';'+this.state.end[0]+','+this.state.end[1];
+    var coordinates = this.state.start[0]+','+this.state.start[1]+';'+this.state.end[0]+','+this.state.end[1];
     //var coordinates = this.state.start.longitude+','+this.state.start.latitude+';'+this.state.order.longitude+','+this.state.order.latitude;
     const MAP_API = 'https://api.mapbox.com/directions/v5/';
     const QUERY = profile+'/'+coordinates;
@@ -66,16 +80,9 @@ class Map extends Component {
   };
   
 
-componentDidMount(){
+componentWillMount(){
   let currentComponent=this;
-  
-    navigator.geolocation.watchPosition(function(position) {
-       //console.log("Latitude is :", position.coords.latitude);
-       //console.log("Longitude is :", position.coords.longitude);
-      currentComponent.setState({start: position.coords});
-      
-    });
-
+    //currentComponent.getLocationUpdate();
     if(currentComponent.state.order){
       currentComponent.getEndCoordinates();
       if(currentComponent.state.start && currentComponent.state.end){
@@ -83,10 +90,6 @@ componentDidMount(){
       }
     }
 
-    if(currentComponent.directions){
-      
-    }
-    
 }  
 
 componentDidUpdate(){
@@ -109,11 +112,11 @@ componentDidUpdate(){
   //var MapboxGeocoder = require('@mapbox/mapbox-gl-geocoder');
   //var MapboxDirections = require('@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions');
   mapboxgl.accessToken = 'pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';      
-  if(this.state.directions&&this.state.start&&this.state.end){
+  if(this.state.start){
     var map = new mapboxgl.Map({
       container: 'drivermap'+ this.state.order._id,
       style: 'mapbox://styles/mapbox/streets-v11',
-      center: [this.state.start.longitude, this.state.start.latitude],
+      center: [this.state.start[0], this.state.start[1]],
       zoom: 15,
     });
     var size = 150;
@@ -195,7 +198,7 @@ componentDidUpdate(){
           'properties': {},
           'geometry': {
           'type': 'LineString',
-          'coordinates': [[-121.327209,37.989502],[-121.326372,37.989852],[-121.325949,37.988103],[-121.337997,37.985051],[-121.356309,37.983795],[-121.3578,37.983584],[-121.358825,37.983196],[-121.360016,37.982319],[-121.361324,37.97977],[-121.362064,37.978804],[-121.362897,37.978227],[-121.363859,37.977837],[-121.364893,37.977653],[-121.36626,37.977615],[-121.366268,37.978751],[-121.366486,37.979739],[-121.368134,37.982617],[-121.36802,37.984573],[-121.367111,37.985619],[-121.367521,37.985829],[-121.368093,37.985868],[-121.368108,37.985397]]
+          'coordinates': [[-121.881699,37.33688],[-121.882232,37.337626],[-121.892506,37.332763],[-121.894288,37.335213]]
           }
           }
         });
@@ -223,7 +226,7 @@ componentDidUpdate(){
                 'type': 'Feature',
                 'geometry': {
                   'type': 'Point',
-                  'coordinates': [-121.327209,37.989502]
+                  'coordinates': [-121.88130866919334, 37.336324837847584] //try to get to starting point [this.state.start[0],this.state.start[1]]
                 }
               }
             ]
@@ -266,12 +269,7 @@ componentDidUpdate(){
   
   
     render() {
-
-      // this.getStartCoordinates();
-      // this.getEndCoordinates();
-      // this.getDirection();
-      //console.log(this.state.start)
-      
+     
       const style = {
         display: "flex",
         flexDirection: "column",
