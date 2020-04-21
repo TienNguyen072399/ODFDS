@@ -13,9 +13,9 @@ class Map extends Component {
     super(props);
     this.state = {
       order: this.props.order,
-      start: this.props.start,
-      end: this.props.end,
-      directions: this.props.directions,
+      start: [],
+      end: [],
+      directions: {},
       zoom: 15,
       geojson: {},
       token:
@@ -104,6 +104,7 @@ componentDidUpdate(){
   // if(this.state.start && this.state.end){
   //   this.getDirection();
   // }
+  
   var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
   //var MapboxGeocoder = require('@mapbox/mapbox-gl-geocoder');
   //var MapboxDirections = require('@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions');
@@ -115,7 +116,7 @@ componentDidUpdate(){
       center: [this.state.start.longitude, this.state.start.latitude],
       zoom: 15,
     });
-    var size = 100;
+    var size = 150;
     // implementation of CustomLayerInterface to draw a pulsing dot icon on the map
     // see https://docs.mapbox.com/mapbox-gl-js/api/#customlayerinterface for more info
     var pulsingDot = {
@@ -186,57 +187,59 @@ componentDidUpdate(){
           
     map.on('load', function() {
       map.addImage('pulsing-dot', pulsingDot, { pixelRatio: 2 });
-            
-      map.addSource('points', {
+      
+      map.addSource('route', {
         'type': 'geojson',
         'data': {
-          'type': 'FeatureCollection',
-          'features': [
-            {
-              'type': 'Feature',
-              'geometry': {
-                'type': 'Point',
-                'coordinates': [-121.327209,37.989502]
+          'type': 'Feature',
+          'properties': {},
+          'geometry': {
+          'type': 'LineString',
+          'coordinates': [[-121.327209,37.989502],[-121.326372,37.989852],[-121.325949,37.988103],[-121.337997,37.985051],[-121.356309,37.983795],[-121.3578,37.983584],[-121.358825,37.983196],[-121.360016,37.982319],[-121.361324,37.97977],[-121.362064,37.978804],[-121.362897,37.978227],[-121.363859,37.977837],[-121.364893,37.977653],[-121.36626,37.977615],[-121.366268,37.978751],[-121.366486,37.979739],[-121.368134,37.982617],[-121.36802,37.984573],[-121.367111,37.985619],[-121.367521,37.985829],[-121.368093,37.985868],[-121.368108,37.985397]]
+          }
+          }
+        });
+
+        map.addLayer({
+          id: "route",
+          type: "line",
+          source: "route",
+          layout: {
+            "line-join": "round",
+            "line-cap": "round",
+          },
+          paint: {
+            "line-color": "#888",
+            "line-width": 8,
+          },
+        });
+        
+        map.addSource('points', {
+          'type': 'geojson',
+          'data': {
+            'type': 'FeatureCollection',
+            'features': [
+              {
+                'type': 'Feature',
+                'geometry': {
+                  'type': 'Point',
+                  'coordinates': [-121.327209,37.989502]
+                }
               }
-            }
-          ]
-        }
-      });
-      map.addLayer({
-        'id': 'points',
-        'type': 'symbol',
-        'source': 'points',
-        'layout': {
-          'icon-image': 'pulsing-dot'
-        }
-      });
+            ]
+          }
+        });
+        
+        map.addLayer({
+          'id': 'points',
+          'type': 'symbol',
+          'source': 'points',
+          'layout': {
+            'icon-image': 'pulsing-dot'
+          }
+        });
     });
-    map.on('load', function() {
-      map.addSource('route', {
-      'type': 'geojson',
-      'data': {
-        'type': 'Feature',
-        'properties': {},
-        'geometry': {
-        'type': 'LineString',
-        'coordinates': [[-121.327209,37.989502],[-121.326372,37.989852],[-121.325949,37.988103],[-121.337997,37.985051],[-121.356309,37.983795],[-121.3578,37.983584],[-121.358825,37.983196],[-121.360016,37.982319],[-121.361324,37.97977],[-121.362064,37.978804],[-121.362897,37.978227],[-121.363859,37.977837],[-121.364893,37.977653],[-121.36626,37.977615],[-121.366268,37.978751],[-121.366486,37.979739],[-121.368134,37.982617],[-121.36802,37.984573],[-121.367111,37.985619],[-121.367521,37.985829],[-121.368093,37.985868],[-121.368108,37.985397]]
-        }
-        }
-      });
-      map.addLayer({
-        id: "route",
-        type: "line",
-        source: "route",
-        layout: {
-          "line-join": "round",
-          "line-cap": "round",
-        },
-        paint: {
-          "line-color": "#888",
-          "line-width": 8,
-        },
-      });
-  });
+    
 
   // Add zoom and rotation controls to the map.
   map.addControl(new mapboxgl.NavigationControl());
@@ -246,7 +249,6 @@ componentDidUpdate(){
     positionOptions: {
       enableHighAccuracy: true,
     },
-
     trackUserLocation: true
     })
     );

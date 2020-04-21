@@ -19,58 +19,47 @@ class DirectionMap extends Component {
     directions : {},
     token: 'pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg',
     };
+
   }
   
 
   getStartCoordinates = () => {
-    //console.log(this.state.order.businessAddress);
-    //var coordinates;
+    navigator.geolocation.watchPosition(function(position) {
+      //console.log("Latitude is :", position.coords.latitude);
+      //console.log("Longitude is :", position.coords.longitude);
+     this.setState({start: position.coords});
+   });
+  };
+
+  getEndCoordinates = () => {
     var endpoint = 'mapbox.places';
-    var search_text = this.state.order.businessAddress.split(" ").join('%20');
+    var search_text = '';
+    if(this.state.order.status === "Waiting for pick up"){
+      search_text = this.state.order.businessAddress.split(" ").join('%20');
+    }
+    else if (this.state.order.status === "Out for delivery") {
+      search_text = this.state.order.deliveryAddress.split(" ").join('%20');
+    }
     const MAP_API = 'https://api.mapbox.com/geocoding/v5/';
     const QUERY = endpoint+'/'+search_text+'.json';
     const KEY = '?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';
     //console.log(`${MAP_API}${QUERY}${KEY}`);
     fetch(`${MAP_API}${QUERY}${KEY}`).then((response) => response.json())
-      .then((data) => {
-        this.setState({
-          start: data.features[0].geometry.coordinates
-        });
-        //this.setState(() => ({start: data.features[0].geometry.coordinates}))
-        console.log("fetch"+data.features[0].geometry.coordinates);
-        console.log("fetch state"+this.state.start);
-      }).catch((err)=>{console.log(err);});
-      console.log("state: "+this.state.start);
-      //return "Start Coordinates: " + this.state.start[0]+" , "+this.state.start[1]
-  };
-
-  getEndCoordinates = () => {
-    //console.log(this.state.order.deliveryAddress);
-    //var coordinates;
-    var endpoint = 'mapbox.places';
-    var search_text = this.state.order.deliveryAddress.split(" ").join('%20');
-    const MAP_API = 'https://api.mapbox.com/geocoding/v5/';
-    const QUERY = endpoint+'/'+search_text+'.json';
-    const KEY = '?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';
-    console.log(`${MAP_API}${QUERY}${KEY}`);
-    fetch(`${MAP_API}${QUERY}${KEY}`).then((response) => response.json())
       .then(data => {
         this.setState(() => ({end: data.features[0].geometry.coordinates}))
-        console.log(this.state.end);
+        //console.log(this.state.end);
       })
-      console.log(this.state.end);
+     // console.log(this.state.end);
       //return "End Coordinates: " + this.state.end[0]+" , "+this.state.end[1]
   };
   
   getDirection = () => {
-    //console.log(this.state.order.deliveryAddress);
-    //var coordinates;
-    
-    var profile = 'driving-traffic';
-    var coordinates = this.state.start[0]+','+this.state.start[1]+';'+this.state.end[0]+','+this.state.end[1];
-    const MAP_API = 'https://api.mapbox.com/directions/v5/mapbox/';
+    var profile = 'mapbox/driving-traffic';
+    var coordinates = this.state.start.longitude+','+this.state.start.latitude+';'+this.state.end[0]+','+this.state.end[1];
+    //var coordinates = this.state.start.longitude+','+this.state.start.latitude+';'+this.state.order.longitude+','+this.state.order.latitude;
+    const MAP_API = 'https://api.mapbox.com/directions/v5/';
     const QUERY = profile+'/'+coordinates;
-    const KEY = '?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';
+    const KEY = '?geometries=geojson&steps=true&access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';
     console.log(MAP_API + QUERY + KEY);
     fetch("https://api.mapbox.com/directions/v5/mapbox/driving/-122.42,37.78;-77.03,38.91?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg").then((response) => response.json())
       .then(data => {
@@ -82,9 +71,7 @@ class DirectionMap extends Component {
   
 
   componentDidMount(){
-    // this.getStartCoordinates();
-    //   this.getEndCoordinates();
-    //   this.getDirection();
+    
   };
 
   handlePickedUp = async (event) => {
@@ -101,10 +88,6 @@ class DirectionMap extends Component {
     event.preventDefault();
     alert("cancel");
     
-    console.log(" cancel");
-    this.getStartCoordinates();
-      this.getEndCoordinates();
-      this.getDirection();
   };
 
   getButton = () =>{
@@ -130,9 +113,7 @@ class DirectionMap extends Component {
 
 
     render() {
-      //  this.getStartCoordinates();
-      //  this.getEndCoordinates();
-      //  this.getDirection();
+      
       return (
        
           <div id = "container" >
