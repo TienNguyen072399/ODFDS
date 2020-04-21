@@ -14,8 +14,11 @@ class Map extends Component {
     this.state = {
       order: this.props.order,
       start: [-121.88130866919334,37.336324837847584],
-      end: [0,0],
-      directions: null,
+      end: null,
+      directions: {"routes": [{"geometry": {
+        'type': 'LineString',
+        'coordinates': [[-121.881699,37.33688],[-121.882232,37.337626],[-121.892506,37.332763],[-121.894288,37.335213]]
+        }}]},
       zoom: 15,
       geojson: {},
       token:
@@ -69,13 +72,14 @@ class Map extends Component {
     //var coordinates = this.state.start.longitude+','+this.state.start.latitude+';'+this.state.order.longitude+','+this.state.order.latitude;
     const MAP_API = 'https://api.mapbox.com/directions/v5/';
     const QUERY = profile+'/'+coordinates;
-    const KEY = '?geometries=geojson&steps=true&access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';
+    const KEY = '?geometries=geojson&steps=false&access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';
     
     fetch("https://api.mapbox.com/directions/v5/mapbox/driving/-122.42,37.78;-77.03,38.91?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg").then((response) => response.json())
       .then(data => {
         this.setState(() => ({directions: data}))
+        console.log(MAP_API + QUERY + KEY);
       })
-      console.log(MAP_API + QUERY + KEY);
+      
       //console.log(this.state.end);
       //return "End Coordinates: " + this.state.end[0]+" , "+this.state.end[1]
   };
@@ -94,13 +98,15 @@ componentWillMount(){
 }  
 
 componentDidUpdate(){
-  console.log(this.state.start)
-  console.log(this.state.end)
+  console.log("start: "+this.state.start)
+  console.log("end: "+this.state.end)
   //console.log(this.state.directions)
   if (this.state.directions){
-    console.log(this.state.directions)
-    console.log(this.state.directions.routes[0].geometry);
+    console.log("direction: "+this.state.directions)
+    console.log("geometry: "+this.state.directions.routes[0].geometry);
+    var mapdirection = this.state.directions;
   }
+  var mapstart = this.state.start;
   
   // let currentComponent=this;
   // navigator.geolocation.watchPosition(function(position) {
@@ -117,11 +123,15 @@ componentDidUpdate(){
   //var MapboxGeocoder = require('@mapbox/mapbox-gl-geocoder');
   //var MapboxDirections = require('@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions');
   mapboxgl.accessToken = 'pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';      
-  if(this.state.start){
+  if(this.state.end){
+    console.log("inside if end: "+this.state.end)
+    
+    //this.getDirection();
+    
     var map = new mapboxgl.Map({
       container: 'drivermap'+ this.state.order._id,
       style: 'mapbox://styles/mapbox/streets-v11',
-      center: [this.state.start[0], this.state.start[1]],
+      center: mapstart,
       zoom: 15,
     });
     var size = 150;
@@ -202,11 +212,7 @@ componentDidUpdate(){
         'data': {
           'type': 'Feature',
           'properties': {},
-          'geometry': {
-          'type': 'LineString',
-          // drivng route from mapbox direction 
-          'coordinates': [[-121.881699,37.33688],[-121.882232,37.337626],[-121.892506,37.332763],[-121.894288,37.335213]]
-          }
+          'geometry': mapdirection.routes[0].geometry
           }
         });
 
@@ -233,13 +239,14 @@ componentDidUpdate(){
                 'type': 'Feature',
                 'geometry': {
                   'type': 'Point',
-                  'coordinates': [-121.88130866919334, 37.336324837847584] //try to get to starting point [this.state.start[0],this.state.start[1]]
+                  'coordinates': mapstart //try to get to starting point [this.state.start[0],this.state.start[1]]
                 }
               }
             ]
           }
         });
-        
+        // var mylocationSource = map.getSource('points');
+        // mylocationSource.setCoordinates(this.state.start);
         map.addLayer({
           'id': 'points',
           'type': 'symbol',
