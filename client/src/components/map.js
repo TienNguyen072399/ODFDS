@@ -24,16 +24,40 @@ class Map extends Component {
   
   getLocationUpdate = async (event) =>{
     let currentComponent=this;
-    
-    if(navigator.geolocation){
-      alert("browser are located to your location!")
-      navigator.geolocation.watchPosition(function(position) {
-          currentComponent.setState({start: [position.coords.longitude,position.coords.latitude]});
-        });
-    } else {
-       alert("Sorry, browser does not support geolocation!");
-       currentComponent.setState({start: [-121.88130866919334,37.336324837847584]})
+    if(this.state.order.status === "Waiting for pick up"){
+      if(navigator.geolocation){
+        alert("browser are located to your location!")
+        navigator.geolocation.watchPosition(function(position) {
+            currentComponent.setState({start: [position.coords.longitude,position.coords.latitude]});
+          });
+      } else {
+         alert("Sorry, browser does not support geolocation!");
+         currentComponent.setState({start: [-121.88130866919334,37.336324837847584]})
+      }
     }
+    else if (this.state.order.status === "Out for delivery") {
+      if(navigator.geolocation){
+        alert("browser are located to your location!")
+        navigator.geolocation.watchPosition(function(position) {
+            currentComponent.setState({start: [position.coords.longitude,position.coords.latitude]});
+          });
+      } else {
+        alert("Sorry, browser does not support geolocation!");
+        var search_text = this.state.order.businessAddress.split(" ").join('%20');
+        var endpoint = 'mapbox.places';
+        const MAP_API = 'https://api.mapbox.com/geocoding/v5/';
+        const QUERY = endpoint+'/'+search_text+'.json';
+        const KEY = '?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';
+        
+        fetch(`${MAP_API}${QUERY}${KEY}`).then((response) => response.json())
+        .then(data => {
+        this.setState(() => ({start: data.features[0].geometry.coordinates}))
+        })
+      }
+    
+    }
+    
+    
  }
   
   getEndCoordinates = () => {
@@ -64,7 +88,7 @@ class Map extends Component {
     //var coordinates = this.state.start.longitude+','+this.state.start.latitude+';'+this.state.order.longitude+','+this.state.order.latitude;
     const MAP_API = 'https://api.mapbox.com/directions/v5/';
     const QUERY = profile+'/'+coordinates;
-    const KEY = '?geometries=geojson&steps=false&access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';
+    const KEY = '?geometries=geojson&steps=true&access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';
     
     fetch(MAP_API + QUERY + KEY).then((response) => response.json())
       .then(data => {
@@ -89,12 +113,12 @@ componentDidMount(){
 }  
 
 componentDidUpdate(){
-  console.log("start: "+this.state.start)
-  console.log("end: "+this.state.end)
+  // console.log("start: "+this.state.start)
+  // console.log("end: "+this.state.end)
   
   if (this.state.directions){
-    console.log("direction: "+this.state.directions)
-    console.log(this.state.directions.routes[0].geometry);
+    // console.log("direction: "+this.state.directions)
+    // console.log(this.state.directions.routes[0].geometry);
     var mapdirection = this.state.directions;
   }
   var mapstart = this.state.start;
@@ -104,7 +128,7 @@ componentDidUpdate(){
   //var MapboxDirections = require('@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions');
   mapboxgl.accessToken = 'pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';      
   if(this.state.start){
-    console.log("inside if end: "+this.state.end)
+    // console.log("inside if end: "+this.state.end)
     
     //this.getDirection();
     
