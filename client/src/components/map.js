@@ -93,7 +93,7 @@ class Map extends Component {
     fetch(MAP_API + QUERY + KEY).then((response) => response.json())
       .then(data => {
         this.setState(() => ({directions: data}))
-        console.log(MAP_API + QUERY + KEY);
+        //console.log(MAP_API + QUERY + KEY);
       })
       
       //console.log(this.state.end);
@@ -293,7 +293,7 @@ componentDidUpdate(){
       return (
       <>
         
-        <button onClick={this.getDirection}>Load directions</button>
+        <button onClick={this.getDirection}>Load direction</button>
         <button onClick={this.getLocationUpdate}>Load current location</button>
        <div style={style} id={"drivermap"+this.state.order._id}> 
        </div> 

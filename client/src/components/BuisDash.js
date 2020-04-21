@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "../pages/DashCSS.css";
 import CustomButtons from "../components/CustomButtons";
 import Rating from "./rating";
-
+import { Link } from "react-router-dom";
 //<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
 
 class BuisDash extends Component {
@@ -63,7 +63,11 @@ class BuisDash extends Component {
         <div id="description">{this.getDestination()}</div>
         </div><br/>
         <div id="starcontainer"><Rating driver={this.state.order.assignedr}/></div>
-        <div id="button-container2"><CustomButtons text="View Driver Location ->" color="#5c8eb9" width="100%"fontSize="20px"/></div>
+        <div id="button-container2">
+          <Link to={{pathname: '/order/map', order: this.state.order}}>
+            <CustomButtons text="View Driver Location ->" color="#5c8eb9" width="100%"fontSize="20px"/>
+          </Link>
+        </div>
     </div>
     </div>;
   }
