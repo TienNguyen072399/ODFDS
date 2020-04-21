@@ -17,7 +17,7 @@
 
 #boxtopmap {
     background-color: rgb(63, 61, 61);
-    height: 75px;
+    height: auto;
     width: auto;   
 }
 
@@ -33,7 +33,7 @@
 #button-container-map {
     height: max-content;
     width: auto;
-    top: 10px;
+    top: 15px;
     right: -60px;
     position: absolute;
 }
