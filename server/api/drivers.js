@@ -3,7 +3,8 @@ const router = express.Router();
 const cors = require("cors");
 const Orders = require("../database/models/orders");
 const Restaurant = require("../database/models/restaurant");
-
+const https = require("https");
+const util = require("util");
 const calculateDistance = () => {};
 
 router.get("/", (req, res, next) => {
@@ -54,7 +55,6 @@ router.put("/order/accept", cors(), async (req, res, next) => {
   //this is when the driver confirms the order, req will send the drivers name and business name
   //finds the drivers id by name
   //update order to have driver name, user in this case is the driver found
-
   console.log(req.body);
 
   //Check if how many orders the user has
@@ -76,10 +76,17 @@ router.put("/order/accept", cors(), async (req, res, next) => {
           });
         } else {
           console.log("Same restaurant");
+
           let restaurantLat;
           let restaurantLong;
+          let firstLat;
+          let firstLong;
+          let secondLat;
+          let secondLong;
+          let distFromRestToFirst;
+          let distFromFirstToSecond;
 
-          //Get lat and long of restaurant
+          //Get restaurant lat and long
           await Restaurant.findById({ _id: orders[0].businessId }).then(
             (restaurant) => {
               restaurantLat = restaurant.latitude;
@@ -87,39 +94,81 @@ router.put("/order/accept", cors(), async (req, res, next) => {
             }
           );
 
+          //First delivery location lat and long
+          firstLat = orders[0].latitude;
+          firstLong = orders[0].longitude;
+          secondLat = order.latitude;
+          secondLong = order.longitude;
+
           console.log(`Restaurant: ${restaurantLat}, ${restaurantLong}`);
-
-          //Get lat and long of first delivery
-          let firstLat = orders[0].latitude;
-          let firstLong = orders[0].longitude;
           console.log(`First Delivery: ${firstLat}, ${firstLong}`);
-
-          //Get lat and long of second delivery
-          let secondLat = order.latitude;
-          let secondLong = order.longitude;
           console.log(`Second Delivery: ${secondLat}, ${secondLong}`);
 
-          //Calculate distance between first delivery and restaurant
-          let distFromRestToFirst = calc_dist(
-            restaurantLat,
-            restaurantLong,
-            firstLat,
-            firstLong
-          );
-          console.log(
-            `Distance from restaurant to first location: ${distFromRestToFirst} miles`
-          );
+          let optionOne = {
+            host: "api.mapbox.com",
+            path: `/directions/v5/mapbox/driving-traffic/${restaurantLong},${restaurantLat};${firstLong},${firstLat}?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg`,
+            method: "GET",
+          };
 
-          //Calculate distance between first delivery and second delivery
-          let distFromFirstToSecond = calc_dist(
-            firstLat,
-            firstLong,
-            secondLat,
-            secondLong
-          );
-          console.log(
-            `Distance from first location to second location: ${distFromFirstToSecond} miles`
-          );
+          let optionTwo = {
+            host: "api.mapbox.com",
+            path: `/directions/v5/mapbox/driving-traffic/${firstLong},${firstLat};${secondLong},${secondLat}?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg`,
+            method: "GET",
+          };
+
+          //Get distance between restaurant and first delivery location using mapbox
+          let responseString = "";
+          await new Promise((resolve, reject) => {
+            const requ = https.request(optionOne, async (res) => {
+              console.log(`statusCode: ${res.statusCode}`);
+
+              res.on("data", (d) => {
+                responseString += d;
+              });
+
+              res.on("close", () => {
+                responseString = JSON.parse(responseString);
+                resolve(responseString);
+              });
+            });
+            req.on("error", (error) => {
+              console.love(error);
+              reject(error);
+            });
+            requ.end();
+          });
+          distFromRestToFirst = (
+            responseString.routes[0].distance * 0.000621371
+          ).toFixed(2);
+
+          console.log(distFromRestToFirst);
+
+          //Get distance from first location to second location
+          responseString = "";
+          await new Promise((resolve, reject) => {
+            const requ = https.request(optionTwo, async (res) => {
+              console.log(`statusCode: ${res.statusCode}`);
+
+              res.on("data", (d) => {
+                responseString += d;
+              });
+
+              res.on("close", () => {
+                responseString = JSON.parse(responseString);
+                resolve(responseString);
+              });
+            });
+            req.on("error", (error) => {
+              console.love(error);
+              reject(error);
+            });
+            requ.end();
+          });
+          distFromFirstToSecond = (
+            responseString.routes[0].distance * 0.000621371
+          ).toFixed(2);
+
+          console.log(distFromFirstToSecond);
 
           //Distance from first to second location is not more than original delivery
           if (distFromFirstToSecond < distFromRestToFirst) {
