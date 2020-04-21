@@ -22,29 +22,7 @@ class BusinessDashboard extends Component {
 
   render() {
     return (
-      // <div
-      //   style={{
-      //     display: "flex",
-      //     flexDirection: "column",
-      //     alignItems: "center",
-      //     fontSize: 20,
-      //     color: "#4E4E4E",
-      //   }}
-      // >
-      //   <Navbar type={this.state.type} />
-      //   {this.state.orders.map((item) => (
-      //     <div>
-      //       <div>ID: {item.__id}</div>
-      //       <div>Customer Name: {item.customerName}</div>
-      //       <div>Delivery address: {item.deliveryAddress}</div>
-      //       <div>Order Time: {item.orderTime}</div>
-      //       <div>Pick up: {item.timePickUp}</div>
-      //       <div>Delivered: {item.timeDelivered}</div>
-      //       <div>Driver: {item.assignedr}</div>
-      //     </div>
-      //   ))}
-      // </div>
-
+      
       <div
         style={{
           display: "flex",

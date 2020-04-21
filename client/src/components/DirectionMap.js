@@ -1,169 +1,136 @@
-
 import React, { Component } from "react";
-import { Dimensions, StyleSheet, Text, View, Image } from 'react-native';
+import Map from "./map";
+import CustomButtons from "./CustomButtons";
+import 'mapbox-gl/dist/mapbox-gl.css';
+import "../mapbox-gl-directions.css";
+import "../pages/TempCSS.css";
+import "../mapbox-gl.css";
+import "../pages/DashCSS.css";
 
-import { MapView, Permissions } from 'expo'
-import Polyline from '@mapbox/polyline'
 
-import { Marker } from 'react-native-maps'
+class DirectionMap extends Component {
+  state={
+    order: this.props.order,
+    start: [],
+    end: [],
+    zoom: 15,
+    directions : [],
+    token: 'pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg',
+    };
 
-const locations = require('./locations.json')
-
-
-export default class DirectionMap extends Component {
-  state = {
-    latitude: null,
-    longitude: null,
-    locations: locations
-  }
-
-  async componentDidMount() {
-    const { status } = await Permissions.getAsync(Permissions.LOCATION)
-
-    if (status !== 'granted') {
-      const response = await Permissions.askAsync(Permissions.LOCATION)
-    }
-    navigator.geolocation.getCurrentPosition(
-      ({ coords: { latitude, longitude } }) => this.setState({ latitude, longitude }, this.mergeCoords),
-      (error) => console.log('Error:', error)
-    )
-
-    const { locations: [ sampleLocation ] } = this.state
-
-    this.setState({
-      desLatitude: sampleLocation.coords.latitude,
-      desLongitude: sampleLocation.coords.longitude
-    }, this.mergeCoords)
-  }
-
-  mergeCoords = () => {
-    const {
-      latitude,
-      longitude,
-      desLatitude,
-      desLongitude
-    } = this.state
-
-    const hasStartAndEnd = latitude !== null && desLatitude !== null
-
-    if (hasStartAndEnd) {
-      const concatStart = `${latitude},${longitude}`
-      const concatEnd = `${desLatitude},${desLongitude}`
-      this.getDirections(concatStart, concatEnd)
-    }
-  }
-
-  async getDirections(startLoc, desLoc) {
-    try {
-      const resp = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=${startLoc}&destination=${desLoc}`)
-      const respJson = await resp.json();
-      const response = respJson.routes[0]
-      const distanceTime = response.legs[0]
-      const distance = distanceTime.distance.text
-      const time = distanceTime.duration.text
-      const points = Polyline.decode(respJson.routes[0].overview_polyline.points);
-      const coords = points.map(point => {
-        return {
-          latitude: point[0],
-          longitude: point[1]
-        }
+  getStartCoordinates = () => {
+    //console.log(this.state.order.businessAddress);
+    //var coordinates;
+    var endpoint = 'mapbox.places';
+    var search_text = this.state.order.businessAddress;
+    const MAP_API = 'https://api.mapbox.com/geocoding/v5/';
+    const QUERY = endpoint+'/'+search_text+'.json';
+    const KEY = '?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';
+    fetch(MAP_API + QUERY + KEY).then((response) => response.json())
+      .then(data => {
+        this.setState(() => ({start: data.features[0].geometry.coordinates}))
       })
-      this.setState({ coords, distance, time })
-    } catch(error) {
-      console.log('Error: ', error)
+      //console.log(this.state.start);
+      //return "Start Coordinates: " + this.state.start[0]+" , "+this.state.start[1]
+  };
+
+  getEndCoordinates = () => {
+    //console.log(this.state.order.deliveryAddress);
+    //var coordinates;
+    var endpoint = 'mapbox.places';
+    var search_text = this.state.order.deliveryAddress;
+    const MAP_API = 'https://api.mapbox.com/geocoding/v5/';
+    const QUERY = endpoint+'/'+search_text+'.json';
+    const KEY = '?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';
+    fetch(MAP_API + QUERY + KEY).then((response) => response.json())
+      .then(data => {
+        this.setState(() => ({end: data.features[0].geometry.coordinates}))
+      })
+      //console.log(this.state.end);
+      //return "End Coordinates: " + this.state.end[0]+" , "+this.state.end[1]
+  };
+  
+  getDirection = () => {
+    //console.log(this.state.order.deliveryAddress);
+    //var coordinates;
+    this.getStartCoordinates();
+    this.getEndCoordinates();
+    var profile = 'driving';
+    var coordinates = this.state.start[0]+','+this.state.start[1]+';'+this.state.end[0]+','+this.state.end[1];
+    const MAP_API = 'https://api.mapbox.com/directions/v5/mapbox/';
+    const QUERY = profile+'/'+coordinates;
+    const KEY = '?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';
+    console.log(MAP_API + QUERY + KEY);
+    fetch("https://api.mapbox.com/directions/v5/mapbox/driving/-122.42,37.78;-77.03,38.91?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg").then((response) => response.json())
+      .then(data => {
+        this.setState(() => ({directions: data}))
+      })
+      //console.log(this.state.end);
+      //return "End Coordinates: " + this.state.end[0]+" , "+this.state.end[1]
+  };
+  
+
+  componentDidMount(){
+    this.getStartCoordinates();
+    this.getEndCoordinates();
+    this.getDirection();
+  }
+
+  handlePickedUp = async (event) => {
+    // driver arrived -> change status base on pickup or delivery
+    
+  };
+  handleDelivered = async (event) => {
+    // driver arrived -> change status base on pickup or delivery
+  };
+
+  handleCancel = async (event) => {
+    // trip cancel -> change status base on pickup or delivery
+  };
+
+  getButton = () =>{
+    switch (this.state.order.status){
+      case 'Waiting for pick up':
+        return (
+          <div id="button-container-map">
+                <CustomButtons onclick= {this.handlePickedUp}text="Picked up" color="#DB3979" width="60%" fontSize="20px"/>
+                <CustomButtons onclick={this.handleCancel} text="Cancel trip" color="#5c8eb9" width="60%"fontSize="20px"/>
+          </div>
+        );
+      case 'Out for delivery':
+        return (
+          <div id="button-container-map">
+                <CustomButtons onclick= {this.handleDelivered}text="Delivered" color="#DB3979" width="60%" fontSize="20px"/>
+                <CustomButtons onclick={this.handleCancel} text="Cancel trip" color="#5c8eb9" width="60%"fontSize="20px"/>
+          </div>
+        );
+      default:
+        return null;   
     }
-  }
+  };
 
-  onMarkerPress = location => () => {
-    const { coords: { latitude, longitude } } = location
-    this.setState({
-      destination: location,
-      desLatitude: latitude,
-      desLongitude: longitude
-    }, this.mergeCoords)
-  }
 
-  renderMarkers = () => {
-    const { locations } = this.state
-    return (
-      <View>
-        {
-          locations.map((location, idx) => {
-            const {
-              coords: { latitude, longitude }
-            } = location
-            return (
-              <Marker
-                key={idx}
-                coordinate={{ latitude, longitude }}
-                onPress={this.onMarkerPress(location)}
-              />
-            )
-          })
-        }
-      </View>
-    )
-  }
-
-  render() {
-    const {
-      time,
-      coords,
-      distance,
-      latitude,
-      longitude,
-      destination
-    } = this.state
-
-    if (latitude) {
+    render() {
+      
       return (
-        <MapView
-          showsUserLocation
-          style={{ flex: 1 }}
-          initialRegion={{
-            latitude,
-            longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421
-          }}
-        >
-        <View
-          style={{
-            width: '100%',
-            paddingTop: 10,
-            alignSelf: 'center',
-            alignItems: 'center',
-            height: '100%',
-            backgroundColor: 'white',
-            justifyContent: 'flex-end',
-          }}>
-          <Text style={{ fontWeight: 'bold' }}>Estimated Time: {time}</Text>
-          <Text style={{ fontWeight: 'bold' }}>Estimated Distance: {distance}</Text>
-        </View>
-        {this.renderMarkers()}
-        <MapView.Polyline
-          strokeWidth={2}
-          strokeColor="red"
-          coordinates={coords}
-        />
+       
+          <div id = "container" >
+            <div id="dash-box">
+              <div id="boxtopmap">
+      
+                <div id ="titlemap">ID: {this.state.order._id}</div>
+                <div id ="titlemap">From: {this.state.order.businessName}</div>
+                {this.getButton()}                
+            </div>
+              <Map order={this.state.order} start={this.state.start} end={this.state.end}/><br/>
+            </div>
+          </div>
         
-      </MapView>
       );
     }
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>We need your permission!</Text>
-      </View>
-    )
   }
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
-
+  
+// <div>{this.getStartCoordinates()}</div>
+//       <div>{this.getEndCoordinates()}</div>
+  
+  export default DirectionMap;
