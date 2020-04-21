@@ -11,29 +11,71 @@ import "../pages/DashCSS.css";
 class DirectionMap extends Component {
   state={
     order: this.props.order,
-    start: [-122.486052, 37.830348],
-    end: [-122.49378204345702, 37.83368330777276],
+    start: [],
+    end: [],
     zoom: 15,
-    geojson : {},
+    directions : [],
     token: 'pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg',
     };
 
-  getCoordinates = (location) => {
-    console.log(location);
-    var coordinates;
+  getStartCoordinates = () => {
+    //console.log(this.state.order.businessAddress);
+    //var coordinates;
     var endpoint = 'mapbox.places';
-    var search_text = location;
+    var search_text = this.state.order.businessAddress;
     const MAP_API = 'https://api.mapbox.com/geocoding/v5/';
     const QUERY = endpoint+'/'+search_text+'.json';
     const KEY = '?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';
-    fetch(MAP_API + QUERY + KEY, {
-      method: "GET",
-      }).then((response) => response.json())
-      .then((result) => {coordinates = result})
-      console.log(coordinates);
-      return coordinates;
+    fetch(MAP_API + QUERY + KEY).then((response) => response.json())
+      .then(data => {
+        this.setState(() => ({start: data.features[0].geometry.coordinates}))
+      })
+      //console.log(this.state.start);
+      //return "Start Coordinates: " + this.state.start[0]+" , "+this.state.start[1]
+  };
+
+  getEndCoordinates = () => {
+    //console.log(this.state.order.deliveryAddress);
+    //var coordinates;
+    var endpoint = 'mapbox.places';
+    var search_text = this.state.order.deliveryAddress;
+    const MAP_API = 'https://api.mapbox.com/geocoding/v5/';
+    const QUERY = endpoint+'/'+search_text+'.json';
+    const KEY = '?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';
+    fetch(MAP_API + QUERY + KEY).then((response) => response.json())
+      .then(data => {
+        this.setState(() => ({end: data.features[0].geometry.coordinates}))
+      })
+      //console.log(this.state.end);
+      //return "End Coordinates: " + this.state.end[0]+" , "+this.state.end[1]
   };
   
+  getDirection = () => {
+    //console.log(this.state.order.deliveryAddress);
+    //var coordinates;
+    this.getStartCoordinates();
+    this.getEndCoordinates();
+    var profile = 'driving';
+    var coordinates = this.state.start[0]+','+this.state.start[1]+';'+this.state.end[0]+','+this.state.end[1];
+    const MAP_API = 'https://api.mapbox.com/directions/v5/mapbox/';
+    const QUERY = profile+'/'+coordinates;
+    const KEY = '?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';
+    console.log(MAP_API + QUERY + KEY);
+    fetch("https://api.mapbox.com/directions/v5/mapbox/driving/-122.42,37.78;-77.03,38.91?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg").then((response) => response.json())
+      .then(data => {
+        this.setState(() => ({directions: data}))
+      })
+      //console.log(this.state.end);
+      //return "End Coordinates: " + this.state.end[0]+" , "+this.state.end[1]
+  };
+  
+
+  componentDidMount(){
+    this.getStartCoordinates();
+    this.getEndCoordinates();
+    this.getDirection();
+  }
+
   handlePickedUp = async (event) => {
     // driver arrived -> change status base on pickup or delivery
     
@@ -75,11 +117,12 @@ class DirectionMap extends Component {
           <div id = "container" >
             <div id="dash-box">
               <div id="boxtopmap">
+      
                 <div id ="titlemap">ID: {this.state.order._id}</div>
                 <div id ="titlemap">From: {this.state.order.businessName}</div>
                 {this.getButton()}                
             </div>
-              <Map order={this.state.order}/><br/>
+              <Map order={this.state.order} start={this.state.start} end={this.state.end}/><br/>
             </div>
           </div>
         
@@ -87,6 +130,7 @@ class DirectionMap extends Component {
     }
   }
   
-
+// <div>{this.getStartCoordinates()}</div>
+//       <div>{this.getEndCoordinates()}</div>
   
   export default DirectionMap;

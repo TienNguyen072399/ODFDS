@@ -1,11 +1,7 @@
 import React, { Component } from "react";
-//import mapboxgl from 'mapbox-gl';
-//import ReactMapGL, {PloyLine,GeolocateControl,CanvasOverlay} from "react-map-gl";
-//import MapGL from "react-map-gl";
-//import DeckGL, { GeoJsonLayer } from "deck.gl";
-//import Geocoder from "react-map-gl-geocoder";
+
 import 'mapbox-gl/dist/mapbox-gl.css'
-//import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
+
 import "../mapbox-gl-directions.css";
 import "../pages/TempCSS.css";
 import "../mapbox-gl.css";
@@ -80,8 +76,6 @@ class Map extends Component {
         mapboxgl.accessToken = 'pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';
         
         
-        
-
         var map = new mapboxgl.Map({
           container: 'drivermap'+ this.state.order._id,
           style: 'mapbox://styles/mapbox/streets-v11',
