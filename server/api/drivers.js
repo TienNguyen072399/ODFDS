@@ -57,6 +57,14 @@ router.put("/order/accept", cors(), async (req, res, next) => {
   //update order to have driver name, user in this case is the driver found
   console.log(req.body);
 
+  let restaurantLat;
+  let restaurantLong;
+  let firstLat;
+  let firstLong;
+  let secondLat;
+  let secondLong;
+  let distFromRestToFirst;
+  let distFromFirstToSecond;
   //Check if how many orders the user has
   await Orders.find({ driverId: req.body.driverId }).then(async (orders) => {
     //Prevents more than 2 orders at once
@@ -76,15 +84,6 @@ router.put("/order/accept", cors(), async (req, res, next) => {
           });
         } else {
           console.log("Same restaurant");
-
-          let restaurantLat;
-          let restaurantLong;
-          let firstLat;
-          let firstLong;
-          let secondLat;
-          let secondLong;
-          let distFromRestToFirst;
-          let distFromFirstToSecond;
 
           //Get restaurant lat and long
           await Restaurant.findById({ _id: orders[0].businessId }).then(
@@ -184,6 +183,7 @@ router.put("/order/accept", cors(), async (req, res, next) => {
                       assigned: req.body.driverName,
                       driverId: req.body.driverId,
                       status: "Waiting for pickup",
+                      distance: distFromFirstToSecond,
                     }
                   );
                   await Orders.findById({ _id: req.body.orderId }).then(
@@ -219,12 +219,56 @@ router.put("/order/accept", cors(), async (req, res, next) => {
         if (order.assigned) {
           res.send({ error: "Request to accept the order has failed" });
         } else {
+          //Get restaurant coords
+          await Restaurant.findById({ _id: order.businessId }).then(
+            (restaurant) => {
+              restaurantLat = restaurant.latitude;
+              restaurantLong = restaurant.longitude;
+            }
+          );
+
+          //Get delivery coords
+          firstLat = order.latitude;
+          firstLong = order.longitude;
+          let optionOne = {
+            host: "api.mapbox.com",
+            path: `/directions/v5/mapbox/driving-traffic/${restaurantLong},${restaurantLat};${firstLong},${firstLat}?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg`,
+            method: "GET",
+          };
+
+          let responseString = "";
+          await new Promise((resolve, reject) => {
+            const requ = https.request(optionOne, async (res) => {
+              console.log(`statusCode: ${res.statusCode}`);
+
+              res.on("data", (d) => {
+                responseString += d;
+              });
+
+              res.on("close", () => {
+                responseString = JSON.parse(responseString);
+                resolve(responseString);
+              });
+            });
+            req.on("error", (error) => {
+              console.love(error);
+              reject(error);
+            });
+            requ.end();
+          });
+          distFromRestToFirst = (
+            responseString.routes[0].distance * 0.000621371
+          ).toFixed(2);
+
+          console.log(distFromRestToFirst);
+
           await Orders.findByIdAndUpdate(
             { _id: req.body.orderId },
             {
               assigned: req.body.driverName,
               driverId: req.body.driverId,
               status: "Waiting for pickup",
+              distance: distFromRestToFirst,
             }
           );
           await Orders.findById({ _id: req.body.orderId }).then((order) => {
@@ -243,24 +287,80 @@ router.put("/order/accept", cors(), async (req, res, next) => {
   });
 });
 
-function calc_dist(lat1, lon1, lat2, lon2) {
-  let pi = Math.PI;
-  var R = 6371e3; // metres
-  var phi1 = (lat1 * pi) / 180;
-  var phi2 = (lat2 * pi) / 180;
-  var phidifference = ((lat2 - lat1) * pi) / 180;
-  var lamdadifference = ((lon2 - lon1) * pi) / 180;
+//driver picks up the order
+router.put("/order/pick-up-order", cors(), (req, res, next) => {
+  //updating request
+  let d = new Date();
+  //req sends in driver email
+  //finds and update based off drivers name(assigned),
+  Orders.findOneAndUpdate(
+    { _id: req.body.orderId },
+    { timePickUp: d, status: "Out for delivery" },
+    { new: true }
+  ).then((order) => {
+    //Order found
+    if (order) {
+      res.send({ success: "The order has been picked up" });
+    } else {
+      res.send({ error: "Failed to process order pick up" });
+    }
+  });
+});
 
-  var a =
-    Math.sin(phidifference / 2) * Math.sin(phidifference / 2) +
-    Math.cos(phi1) *
-      Math.cos(phi2) *
-      Math.sin(lamdadifference / 2) *
-      Math.sin(lamdadifference / 2);
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+//Order delivered
+router.put("/order/order-delivered", cors(), async (req, res, next) => {
+  //updating request
+  let d = new Date();
+  let distance = 0;
+  let cost = 0;
+  //req sends in driver email
+  //finds and update based off drivers name(assigned),\
 
-  var d = R * c * 0.000621371;
-  return d.toFixed(2);
+  await Orders.findById({ _id: req.body.orderId }).then((order) => {
+    distance = order.distance;
+    cost = order.cost;
+  });
+
+  //No cost update because less than 1 miles. 1st mile is free
+  if (distance <= 1) {
+    await Orders.findOneAndUpdate(
+      { _id: req.body.orderId },
+      { timePickUp: d, status: "Delivered" },
+      {
+        new: true,
+      }
+    ).then((order) => {
+      if (order) {
+        res.send({ success: "The order has been marked as delivered!" });
+      } else {
+        res.send({ error: "Failed to process order delivered" });
+      }
+    });
+  } else {
+    cost = calc_costs(distance);
+    await Orders.findOneAndUpdate(
+      { _id: req.body.orderId },
+      { timePickUp: d, status: "Delivered", cost: cost },
+      {
+        new: true,
+      }
+    ).then((order) => {
+      if (order) {
+        res.send({ success: "The order has been marked as delivered!" });
+      } else {
+        res.send({ error: "Failed to process order delivered" });
+      }
+    });
+  }
+});
+
+//calculate costs of 1 order
+function calc_costs(miles) {
+  //calculating cost, 5 is base cost
+  let cost_order = 5;
+
+  cost_order = cost_order + miles * 2;
+  return cost_order;
 }
 
 module.exports = router;
