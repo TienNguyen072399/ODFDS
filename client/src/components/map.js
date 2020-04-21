@@ -15,7 +15,7 @@ class Map extends Component {
       order: this.props.order,
       start: [-121.88130866919334,37.336324837847584],
       end: [0,0],
-      directions: {},
+      directions: null,
       zoom: 15,
       geojson: {},
       token:
@@ -70,11 +70,12 @@ class Map extends Component {
     const MAP_API = 'https://api.mapbox.com/directions/v5/';
     const QUERY = profile+'/'+coordinates;
     const KEY = '?geometries=geojson&steps=true&access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg';
-    console.log(MAP_API + QUERY + KEY);
+    
     fetch("https://api.mapbox.com/directions/v5/mapbox/driving/-122.42,37.78;-77.03,38.91?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg").then((response) => response.json())
       .then(data => {
         this.setState(() => ({directions: data}))
       })
+      console.log(MAP_API + QUERY + KEY);
       //console.log(this.state.end);
       //return "End Coordinates: " + this.state.end[0]+" , "+this.state.end[1]
   };
@@ -95,7 +96,11 @@ componentWillMount(){
 componentDidUpdate(){
   console.log(this.state.start)
   console.log(this.state.end)
-  console.log(this.state.directions)
+  //console.log(this.state.directions)
+  if (this.state.directions){
+    console.log(this.state.directions)
+    console.log(this.state.directions.routes[0].geometry);
+  }
   
   // let currentComponent=this;
   // navigator.geolocation.watchPosition(function(position) {
@@ -187,7 +192,8 @@ componentDidUpdate(){
         return true;
       }
     };
-          
+
+    
     map.on('load', function() {
       map.addImage('pulsing-dot', pulsingDot, { pixelRatio: 2 });
       
@@ -198,6 +204,7 @@ componentDidUpdate(){
           'properties': {},
           'geometry': {
           'type': 'LineString',
+          // drivng route from mapbox direction 
           'coordinates': [[-121.881699,37.33688],[-121.882232,37.337626],[-121.892506,37.332763],[-121.894288,37.335213]]
           }
           }
