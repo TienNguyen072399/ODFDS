@@ -95,16 +95,23 @@ router.put("/order/accept", cors(), async (req, res, next) => {
   //Check if how many orders the user has
   await Orders.find({ driverId: req.body.driverId }).then(async (orders) => {
     //Prevents more than 2 orders at once
-    if (orders.length === 2) {
+    let currentOrders = [];
+
+    for (let i = 0; i < orders.length; i++) {
+      if (orders[i].status !== "Delivered") {
+        currentOrders.push(orders[i]);
+      }
+    }
+    if (currentOrders.length === 2) {
       res.send({
         error:
           "You already have 2 deliveries in progress. Please complete them before accepting another order.",
       });
-    } else if (orders.length === 1) {
+    } else if (currentOrders.length === 1) {
       //Find the order details
       await Orders.findById({ _id: req.body.orderId }).then(async (order) => {
         //Check if from same restaurant
-        if (order.businessId !== orders[0].businessId) {
+        if (order.businessId !== currentOrders[0].businessId) {
           res.send({
             error:
               "You can only accept a second order if it is from the same restaurant.",
@@ -113,7 +120,7 @@ router.put("/order/accept", cors(), async (req, res, next) => {
           console.log("Same restaurant");
 
           //Get restaurant lat and long
-          await Restaurant.findById({ _id: orders[0].businessId }).then(
+          await Restaurant.findById({ _id: currentOrders[0].businessId }).then(
             (restaurant) => {
               restaurantLat = restaurant.latitude;
               restaurantLong = restaurant.longitude;
@@ -121,8 +128,8 @@ router.put("/order/accept", cors(), async (req, res, next) => {
           );
 
           //First delivery location lat and long
-          firstLat = orders[0].latitude;
-          firstLong = orders[0].longitude;
+          firstLat = currentOrders[0].latitude;
+          firstLong = currentOrders[0].longitude;
           secondLat = order.latitude;
           secondLong = order.longitude;
 
@@ -202,7 +209,9 @@ router.put("/order/accept", cors(), async (req, res, next) => {
             await Orders.findById({ _id: req.body.orderId }).then(
               async (order) => {
                 if (order.assigned) {
-                  res.send({ error: "Request to accept the order has failed." });
+                  res.send({
+                    error: "Request to accept the order has failed.",
+                  });
                 } else {
                   await Orders.findByIdAndUpdate(
                     { _id: req.body.orderId },
