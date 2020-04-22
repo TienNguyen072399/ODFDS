@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import Navbar from "../components/NavBar";
 import DriverDash from "../components/DriverDash";
-
+import billPopup from "../components/billPopup";
 class DriverCompletOrders extends Component {
   constructor(props) {
     super(props);
@@ -47,6 +47,10 @@ class DriverCompletOrders extends Component {
         {this.state.orders.map((item) => (
           <div key={item._id}>
             <center>
+              <billPopup
+              onPayNow={this.handlePayNow}
+              onPayLater={this.handlePayLater}
+              />
               <DriverDash order={item} onAccept={this.handleAccept} />
             </center>
           </div>
