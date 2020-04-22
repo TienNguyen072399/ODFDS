@@ -15,7 +15,7 @@ class Navbar extends Component {
             <Link to="openorders">Open Orders</Link>
             <Link to="map">Order Map</Link>
             <Link to="complete">Delivered Orders</Link>
-            <Link to="">Logout</Link>
+            <Link to="">Log Out</Link>
           </div>{" "}
         </div>
       );
@@ -26,7 +26,7 @@ class Navbar extends Component {
             {/* <a href="/business/setting">Settings</a> */}
             <Link to="neworder">New Order</Link>
             <Link to="dashboard">Current Orders</Link>
-            <Link to="">Logout</Link>
+            <Link to="">Log Out</Link>
           </div>{" "}
         </div>
       );

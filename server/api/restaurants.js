@@ -51,10 +51,10 @@ router.post("/order/submit", cors(), function (req, res, next) {
   }).then((order) => {
     if (order) {
       console.log(order);
-      res.send({ success: "Your order has been inputed" });
+      res.send({ success: "Your order has been input." });
     } else {
       res.send({
-        error: "We were not able to process your order. Please try again",
+        error: "We were not able to process your order. Please try again.",
       });
     }
   });

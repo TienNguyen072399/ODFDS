@@ -28,7 +28,7 @@ router.get("/orders", cors(), (req, res, next) => {
       res.send(orderList);
     } else {
       res.send({
-        error: "We were not able to process your order. Please try again",
+        error: "We were not able to process your order. Please try again.",
       });
     }
   });
@@ -71,7 +71,7 @@ router.get("/mycompletedorders/:id", cors(), (req, res, next) => {
       res.send(orderList);
     } else {
       res.send({
-        error: "We were not able to process your order. Please try again",
+        error: "We were not able to process your order. Please try again.",
       });
     }
   });
@@ -98,7 +98,7 @@ router.put("/order/accept", cors(), async (req, res, next) => {
     if (orders.length === 2) {
       res.send({
         error:
-          "You already have 2 deliveries in progress, please complete them before accepting another order",
+          "You already have 2 deliveries in progress. Please complete them before accepting another order.",
       });
     } else if (orders.length === 1) {
       //Find the order details
@@ -107,7 +107,7 @@ router.put("/order/accept", cors(), async (req, res, next) => {
         if (order.businessId !== orders[0].businessId) {
           res.send({
             error:
-              "You can only accept a second order if it is from the same restaurant",
+              "You can only accept a second order if it is from the same restaurant.",
           });
         } else {
           console.log("Same restaurant");
@@ -202,7 +202,7 @@ router.put("/order/accept", cors(), async (req, res, next) => {
             await Orders.findById({ _id: req.body.orderId }).then(
               async (order) => {
                 if (order.assigned) {
-                  res.send({ error: "Request to accept the order has failed" });
+                  res.send({ error: "Request to accept the order has failed." });
                 } else {
                   await Orders.findByIdAndUpdate(
                     { _id: req.body.orderId },
@@ -221,7 +221,7 @@ router.put("/order/accept", cors(), async (req, res, next) => {
                           res.send({ success: "You have accepted the order!" });
                         } else {
                           res.send({
-                            error: "Request to accept the order failed",
+                            error: "Request to accept the order failed.",
                           });
                         }
                       }
@@ -235,7 +235,7 @@ router.put("/order/accept", cors(), async (req, res, next) => {
           else {
             res.send({
               error:
-                "The distance from the your first delivery to this order is greater than the distance from the restaurant to your first delivery",
+                "The distance from the your first delivery to this order is greater than the distance from the restaurant to your first delivery.",
             });
           }
         }
@@ -244,7 +244,7 @@ router.put("/order/accept", cors(), async (req, res, next) => {
       //First order
       await Orders.findById({ _id: req.body.orderId }).then(async (order) => {
         if (order.assigned) {
-          res.send({ error: "Request to accept the order has failed" });
+          res.send({ error: "Request to accept the order has failed." });
         } else {
           //Get restaurant coords
           await Restaurant.findById({ _id: order.businessId }).then(
@@ -304,7 +304,7 @@ router.put("/order/accept", cors(), async (req, res, next) => {
                 console.log(order.assigned);
                 res.send({ success: "You have accepted the order!" });
               } else {
-                res.send({ error: "Request to accept the order failed" });
+                res.send({ error: "Request to accept the order failed." });
               }
             }
           });

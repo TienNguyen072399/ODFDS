@@ -4,23 +4,23 @@ const Schema = mongoose.Schema;
 const DriverSchema = new Schema({
   name: {
     type: String,
-    require: [true, "Name of business owner is required"],
+    require: [true, "Name of driver is required."],
   },
   email: {
     type: String,
-    require: [true, "Email is required"],
+    require: [true, "Email is required."],
   },
   vehicle: {
     type: String,
-    require: [true, "Vehicle is required"],
+    require: [true, "Vehicle is required."],
   },
   driversLicense: {
     type: String,
-    require: [true, "Vehicle is required"],
+    require: [true, "Driver's liscence is required."],
   },
   password: {
     type: String,
-    require: [true, "Password is required"],
+    require: [true, "Password is required."],
   },
   bankAccount: {
     type: String,

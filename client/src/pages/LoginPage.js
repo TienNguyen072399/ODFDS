@@ -94,7 +94,7 @@ class Login extends Component {
       >
         <div className="formInput">
           {" "}
-          <h1> Driver Login </h1> <label>Email address </label>{" "}
+          <h1> Login </h1> <label>Email address </label>{" "}
           <input
             type="email"
             id="inputEmail"
@@ -128,7 +128,7 @@ class Login extends Component {
         </div>
         <div className="formInput">
           <CustomButtons
-            text="LOGIN"
+            text="LOG IN"
             color="#DB3979"
             width="100%"
             fontSize="30px"

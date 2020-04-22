@@ -27,6 +27,7 @@ class Map extends Component {
     };
   }
 
+
   getLocationUpdate = async (event) => {
     let currentComponent = this;
     console.log("Get location method");
@@ -36,19 +37,13 @@ class Map extends Component {
     if (this.state.order.status === "Waiting for pickup") {
       console.log("Step 1: Start location for waiting for pickup");
       if (navigator.geolocation) {
-        alert("browser are located to your location!");
+        alert("Finding your location. (If prompted by your browser, please say yes.)");
         navigator.geolocation.watchPosition(function (position) {
           currentComponent.setState({
             start: [position.coords.longitude, position.coords.latitude],
           });
         });
-      } else {
-        alert("Sorry, browser does not support geolocation!");
-        currentComponent.setState({
-          start: [-121.88130866919334, 37.336324837847584],
-        });
-      }
-    }
+      } 
 
     //From restaurant to delivery address
     else if (this.state.order.status === "Out for delivery") {

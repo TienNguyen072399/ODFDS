@@ -54,9 +54,9 @@ class NewOrder extends Component {
     e.preventDefault();
     console.log(this.props);
     if (!this.state.deliveryAddress) {
-      alert("Please enter a valid address");
+      alert("Please enter a valid address.");
     } else if (this.state.city.toLowerCase() !== "san jose") {
-      alert("OFDS is only available in San Jose");
+      alert("ODFDS is only available in San Jose at this time.");
     } else {
       await fetch(
         `https://api.mapbox.com/geocoding/v5/mapbox.places/${this.state.deliveryAddress}, ${this.state.city}, CA ${this.state.zipCode}.json?access_token=${this.state.token}`
@@ -149,7 +149,7 @@ class NewOrder extends Component {
         >
           <div className="formInput">
             {" "}
-            <h1> Create new order </h1> <label>Customer Name </label>
+            <h1> Create New Order </h1> <label>Customer Name </label>
             <input
               type="text"
               id="inputCusName"
