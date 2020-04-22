@@ -36,12 +36,39 @@ router.get("/orders", cors(), (req, res, next) => {
 
 //Get orders that the driver accepted
 router.get("/myorders/:id", cors(), (req, res, next) => {
+  let orderList = [];
   console.log("getting orders");
   // res.send({ test: "" });
   Orders.find({ driverId: req.params.id }).then((orders) => {
     if (orders) {
       // console.log(orders);
-      res.send(orders);
+      for (let i = 0; i < orders.length; i++) {
+        if (orders[i].status !== "Delivered") {
+          orderList.push(orders[i]);
+        }
+      }
+      res.send(orderList);
+    } else {
+      res.send({
+        error: "We were not able to process your order. Please try again",
+      });
+    }
+  });
+});
+
+router.get("/mycompletedorders/:id", cors(), (req, res, next) => {
+  let orderList = [];
+  console.log("getting orders");
+  // res.send({ test: "" });
+  Orders.find({ driverId: req.params.id }).then((orders) => {
+    if (orders) {
+      // console.log(orders);
+      for (let i = 0; i < orders.length; i++) {
+        if (orders[i].status === "Delivered") {
+          orderList.push(orders[i]);
+        }
+      }
+      res.send(orderList);
     } else {
       res.send({
         error: "We were not able to process your order. Please try again",

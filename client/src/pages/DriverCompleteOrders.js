@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import Navbar from "../components/NavBar";
 import DriverDash from "../components/DriverDash";
 
-class DriverDashboard extends Component {
+class DriverCompletOrders extends Component {
   constructor(props) {
     super(props);
 
@@ -15,7 +15,10 @@ class DriverDashboard extends Component {
 
   componentDidMount() {
     console.log(this.props.user);
-    fetch("http://localhost:5000/api/drivers/myorders/" + this.props.user._id)
+    fetch(
+      "http://localhost:5000/api/drivers//mycompletedorders/" +
+        this.props.user._id
+    )
       .then((response) => response.json())
       .then((res) => {
         console.log(res);
@@ -56,4 +59,4 @@ const mapStateToProps = (state) => ({
   user: state.user,
 });
 
-export default connect(mapStateToProps)(DriverDashboard);
+export default connect(mapStateToProps)(DriverCompletOrders);

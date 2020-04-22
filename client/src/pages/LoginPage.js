@@ -67,7 +67,7 @@ class Login extends Component {
             if (this.state.type === "business") {
               this.setState({ redirect: "/business/dashboard" });
             } else {
-              this.setState({ redirect: "/driver/dashboard" });
+              this.setState({ redirect: "/driver/map" });
             }
             // alert("sucessfully logged in");
           }
