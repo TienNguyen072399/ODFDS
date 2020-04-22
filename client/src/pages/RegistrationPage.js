@@ -57,8 +57,10 @@ class Registration extends Component {
         )
           .then((response) => response.json())
           .then((res) => {
+
             if (res.features.length == 0) {
               alert("Address not found");
+
             } else {
               this.setState({
                 latitude: res.features[0].center[1],

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import Navbar from "../components/NavBar";
 import BuisDash from "../components/BuisDash";
+
 class BusinessDashboard extends Component {
   constructor(props) {
     super(props);
@@ -22,7 +23,7 @@ class BusinessDashboard extends Component {
 
   render() {
     return (
-      
+
       <div
         style={{
           display: "flex",

@@ -12,10 +12,9 @@ class Navbar extends Component {
       return (
         <div class="navcontainer">
           <div class="navbar">
-            <a href="/driver/setting"> Settings </a>
-            <Link to="map">Order Map</Link>
             <Link to="openorders">Open Orders</Link>
-            <Link to="dashboard">Current Orders</Link>
+            <Link to="map">Order Map</Link>
+            <Link to="complete">Delivered Orders</Link>
             <Link to="">Log Out</Link>
           </div>{" "}
         </div>

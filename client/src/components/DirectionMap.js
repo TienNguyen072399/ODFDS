@@ -1,27 +1,25 @@
 import React, { Component } from "react";
 import Map from "./map";
 import CustomButtons from "./CustomButtons";
-import 'mapbox-gl/dist/mapbox-gl.css';
+import "mapbox-gl/dist/mapbox-gl.css";
 import "../mapbox-gl-directions.css";
 import "../pages/TempCSS.css";
 import "../mapbox-gl.css";
 import "../pages/DashCSS.css";
 
-
 class DirectionMap extends Component {
   constructor(props) {
     super(props);
     this.state = {
-    order: this.props.order,
-    start: [],
-    end: [],
-    zoom: 15,
-    directions : {},
-    token: 'pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg',
+      order: this.props.order,
+      start: [],
+      end: [],
+      zoom: 15,
+      directions: {},
+      token:
+        "pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg",
     };
-
   }
-  
 
   // getStartCoordinates = () => {
   //   navigator.geolocation.watchPosition(function(position) {
@@ -52,7 +50,7 @@ class DirectionMap extends Component {
   //    // console.log(this.state.end);
   //     //return "End Coordinates: " + this.state.end[0]+" , "+this.state.end[1]
   // };
-  
+
   // getDirection = () => {
   //   var profile = 'mapbox/driving-traffic';
   //   var coordinates = this.state.start.longitude+','+this.state.start.latitude+';'+this.state.end[0]+','+this.state.end[1];
@@ -68,54 +66,88 @@ class DirectionMap extends Component {
   //     //console.log(this.state.end);
   //     //return "End Coordinates: " + this.state.end[0]+" , "+this.state.end[1]
   // };
-  
 
-  componentDidMount(){
-    
-  };
+  componentDidMount() {
+    console.log("Order:", this.state.order);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    // console.log(nextProps.order.status);
+    // console.log(this.state.order.status);
+    if (nextProps.order.status !== this.state.order.status) {
+      this.setState({ order: nextProps.order });
+    }
+  }
 
   handlePickedUp = async (event) => {
     // driver arrived -> change status base on pickup or delivery
-    
+    // event.preventDefault();
+    this.props.onPickedUp(event);
   };
   handleDelivered = async (event) => {
     // driver arrived -> change status base on pickup or delivery
-    console.log(" Deliver");
+    console.log("Deliver");
   };
 
   handleCancel = async (event) => {
     // trip cancel -> change status base on pickup or delivery
     event.preventDefault();
     alert("cancel");
-    
   };
 
-  getButton = () =>{
-    switch (this.state.order.status){
-      case 'Waiting for pick up':
+  getButton = () => {
+    switch (this.state.order.status) {
+      case "Waiting for pickup":
         return (
           <div id="button-container-map">
-                <CustomButtons onclick= {this.handlePickedUp}text="Picked up" color="#DB3979" width="60%" fontSize="20px"/>
-                <CustomButtons onclick={this.handleCancel} text="Cancel trip" color="#5c8eb9" width="60%"fontSize="20px"/>
+            <CustomButtons
+              onClick={this.props.onPickedUp}
+              text="Picked up"
+              color="#DB3979"
+              width="60%"
+              fontSize="20px"
+              value={this.state.order._id}
+            />
+            <CustomButtons
+              onClick={this.handleCancel}
+              text="Cancel trip"
+              color="#5c8eb9"
+              width="60%"
+              fontSize="20px"
+            />
           </div>
         );
-      case 'Out for delivery':
+      case "Out for delivery":
         return (
           <div id="button-container-map">
-                <CustomButtons onclick= {this.handleDelivered}text="Delivered" color="#DB3979" width="60%" fontSize="20px"/>
-                <CustomButtons onclick={this.handleCancel} text="Cancel trip" color="#5c8eb9" width="60%"fontSize="20px"/>
+            <CustomButtons
+              onClick={this.props.onDelivered}
+              text="Delivered"
+              color="#DB3979"
+              width="60%"
+              fontSize="20px"
+              value={this.state.order._id}
+            />
+            <CustomButtons
+              onClick={this.handleCancel}
+              text="Cancel trip"
+              color="#5c8eb9"
+              width="60%"
+              fontSize="20px"
+            />
           </div>
         );
       default:
-        return null;   
+        return null;
     }
   };
+
 
 
     render() {
       
       return (
-       
+    
           <div id = "container" >
             <div id="dash-box">
               <div id="boxtopmap">
@@ -127,9 +159,12 @@ class DirectionMap extends Component {
               <Map order={this.state.order}/><br/>
             </div>
           </div>
-        
-      );
-    }
+          <Map order={this.state.order} />
+          <br />
+        </div>
+      </div>
+    );
   }
-  
-  export default DirectionMap;
+}
+
+export default DirectionMap;
