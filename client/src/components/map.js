@@ -26,23 +26,23 @@ class Map extends Component {
     let currentComponent=this;
     if(this.state.order.status === "Waiting for pick up"){
       if(navigator.geolocation){
-        alert("browser are located to your location!")
+        alert("Finding your location. (If prompted by your browser, please say yes.)")
         navigator.geolocation.watchPosition(function(position) {
             currentComponent.setState({start: [position.coords.longitude,position.coords.latitude]});
           });
       } else {
-         alert("Sorry, browser does not support geolocation!");
+         alert("Sorry, your browser does not support geolocation.");
          currentComponent.setState({start: [-121.88130866919334,37.336324837847584]})
       }
     }
     else if (this.state.order.status === "Out for delivery") {
       if(navigator.geolocation){
-        alert("browser are located to your location!")
+        alert("Finding your location. (If prompted by your browser, please say yes.)")
         navigator.geolocation.watchPosition(function(position) {
             currentComponent.setState({start: [position.coords.longitude,position.coords.latitude]});
           });
       } else {
-        alert("Sorry, browser does not support geolocation!");
+        alert("Sorry, your browser does not support geolocation.");
         var search_text = this.state.order.businessAddress.split(" ").join('%20');
         var endpoint = 'mapbox.places';
         const MAP_API = 'https://api.mapbox.com/geocoding/v5/';

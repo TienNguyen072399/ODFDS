@@ -14,7 +14,7 @@ router.get("/", (req, res, next) => {
 In the database/models folder, there are 2 files...
 driver.js and restaurant.js
 Those are templates that mongodb is going to use when creating a new entry in the db
-When creating a driver, u want to call the driver model, which is imported as Driver
+When creating a driver, you want to call the driver model, which is imported as Driver
 Using the Driver.create(req.body) method, it will make an entry in the database pulling all the info from req.body
 Note: the information variables in req.body needs to match the variable names in the template
 If the entry is successfully created, it will send back the user information from the db
@@ -51,7 +51,7 @@ router.post("/registration", cors(), (req, res, next) => {
       if (user) {
         console.log("email exist");
         res.send({
-          error: "An account exist under this email. Please try another email",
+          error: "An account exists under this email. Please try another email",
         });
       } else {
         Restaurant.create(req.body).then((user) => {
@@ -70,7 +70,7 @@ router.post("/registration", cors(), (req, res, next) => {
       if (user) {
         console.log("email exist");
         res.send({
-          error: "An account exist under this email. Please try another email",
+          error: "An account exists under this email. Please try another email",
         });
       } else {
         Driver.create(req.body).then((user) => {

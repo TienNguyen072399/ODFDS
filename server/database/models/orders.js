@@ -4,23 +4,23 @@ const Schema = mongoose.Schema;
 const OrdersSchema = new Schema({
   businessName: {
     type: String,
-    require: [true, "Name of business is required"],
+    require: [true, "Name of business is required."],
   },
   businessId: {
     type: String,
-    require: [true, "Business Id is required"],
+    require: [true, "Business Id is required."],
   },
   businessAddress: {
     type: String,
-    require: [true, "Business Address is required"],
+    require: [true, "Business Address is required."],
   },
   customerName: {
     type: String,
-    require: [true, "Name of customer is required"],
+    require: [true, "Name of customer is required."],
   },
   deliveryAddress: {
     type: String,
-    require: [true, "Delivery Address is required"],
+    require: [true, "Delivery Address is required."],
   },
   orderTime: {
     type: String,
@@ -44,7 +44,7 @@ const OrdersSchema = new Schema({
   },
   status: {
     type: String,
-    default: "Waiting for driver",
+    default: "Waiting for driver.",
   },
   cost: {
     type: String,

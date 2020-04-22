@@ -48,7 +48,7 @@ class Registration extends Component {
         !this.state.businessName ||
         !this.state.address
       ) {
-        alert("Please fill out the entire form");
+        alert("Please fill out the entire form.");
         e.preventDefault();
         return;
       } else {
@@ -58,7 +58,7 @@ class Registration extends Component {
           .then((response) => response.json())
           .then((res) => {
             if (res.features.length == 0) {
-              alert("Invalid Address");
+              alert("Address not found");
             } else {
               this.setState({
                 latitude: res.features[0].center[1],
@@ -104,7 +104,7 @@ class Registration extends Component {
         !this.state.driversLicense ||
         !this.state.vehicle
       ) {
-        alert("Please fill out the entire form");
+        alert("Please fill out the entire form.");
         e.preventDefault();
         return;
       } else {
@@ -177,7 +177,7 @@ class Registration extends Component {
             <label>Password</label>
             <input
               type="password"
-              name="businessName"
+              name="password"
               onChange={(e) => {
                 this.setState({ password: e.target.value });
               }}
@@ -341,7 +341,7 @@ class Registration extends Component {
               }}
             >
               <CustomButtons
-                text="business"
+                text="Business"
                 value="business"
                 color="#DB3979"
                 width="40%"
@@ -349,7 +349,7 @@ class Registration extends Component {
                 onClick={this.handleChooseType}
               />
               <CustomButtons
-                text="driver"
+                text="Driver"
                 value="driver"
                 color="#DB3979"
                 width="40%"
@@ -382,7 +382,7 @@ class Registration extends Component {
         let registrationText = "";
         if (this.state.type === "business") {
           registrationText =
-            "Hello! We're so glad to see you're interested in our service. Let's collect some information to get started.";
+            "Hello! We're so glad you're interested in our service. We'll need some information to get started.";
           return (
             <div
               style={{
@@ -428,7 +428,7 @@ class Registration extends Component {
           );
         } else {
           registrationText =
-            "Hello! Thank you for your interest in driving for us. Let's collect some information to get started.";
+            "Hello! We're so glad you're interested in driving for us. We'll need some information to get started.";
           return (
             <div
               style={{
