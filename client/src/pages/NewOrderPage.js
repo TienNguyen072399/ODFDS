@@ -63,7 +63,7 @@ class NewOrder extends Component {
       )
         .then((response) => response.json())
         .then((res) => {
-          if (res.features.length == 0) {
+          if (res.features.length === 0) {
             alert("Invalid Address");
           } else {
             // console.log(res);

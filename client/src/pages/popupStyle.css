@@ -1,0 +1,26 @@
+.popupcontainer {
+    height: max-content;
+    width: 30%;
+    background-color: #ffffff;
+    border-radius: 20px;
+    border: #db3979;
+    border-style: solid;
+    border-width: 2px;
+    align-self: center;
+}
+
+#dollar {
+position: relative;
+top: 2%;
+text-align: center;
+font-family: Arial, Helvetica, sans-serif;
+font-size: 70px;
+color: #67a839;
+}
+
+#txtcontainer {
+    text-align: center;
+    font-size: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    padding-bottom: 10%;
+}
