@@ -142,22 +142,15 @@ class DirectionMap extends Component {
     }
   };
 
-
-
-    render() {
-      
-      return (
-    
-          <div id = "container" >
-            <div id="dash-box">
-              <div id="boxtopmap">
-                <div id ="titlemap">ID: {this.state.order._id}</div>
-                <div id ="titlemap">From: {this.state.order.businessName}</div>
-                <div id ="titlemap">Status: {this.state.order.status}</div>
-                {this.getButton()}                
-            </div>
-              <Map order={this.state.order}/><br/>
-            </div>
+  render() {
+    return (
+      <div id="container">
+        <div id="dash-box">
+          <div id="boxtopmap">
+            <div id="titlemap">ID: {this.state.order._id}</div>
+            <div id="titlemap">From: {this.state.order.businessName}</div>
+            <div id="titlemap">Status: {this.state.order.status}</div>
+            {this.getButton()}
           </div>
           <Map order={this.state.order} />
           <br />

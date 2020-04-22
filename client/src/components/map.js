@@ -27,7 +27,6 @@ class Map extends Component {
     };
   }
 
-
   getLocationUpdate = async (event) => {
     let currentComponent = this;
     console.log("Get location method");
@@ -37,13 +36,21 @@ class Map extends Component {
     if (this.state.order.status === "Waiting for pickup") {
       console.log("Step 1: Start location for waiting for pickup");
       if (navigator.geolocation) {
-        alert("Finding your location. (If prompted by your browser, please say yes.)");
+        alert(
+          "Finding your location. (If prompted by your browser, please say yes.)"
+        );
         navigator.geolocation.watchPosition(function (position) {
           currentComponent.setState({
             start: [position.coords.longitude, position.coords.latitude],
           });
         });
-      } 
+      } else {
+        alert("Sorry, browser does not support geolocation!");
+        currentComponent.setState({
+          start: [-121.88130866919334, 37.336324837847584],
+        });
+      }
+    }
 
     //From restaurant to delivery address
     else if (this.state.order.status === "Out for delivery") {
@@ -103,7 +110,6 @@ class Map extends Component {
       "," +
       this.state.end[1];
     //var coordinates = this.state.start.longitude+','+this.state.start.latitude+';'+this.state.order.longitude+','+this.state.order.latitude;
-
     const MAP_API = "https://api.mapbox.com/directions/v5/";
     const QUERY = profile + "/" + coordinates;
     const KEY =
@@ -118,7 +124,6 @@ class Map extends Component {
 
     //console.log(this.state.end);
     //return "End Coordinates: " + this.state.end[0]+" , "+this.state.end[1]
-
   };
 
   async componentDidMount() {
@@ -302,11 +307,7 @@ class Map extends Component {
 
     return (
       <>
-
-
-        
-        <button onClick={this.getDirection}>Load direction</button>
-
+        <button onClick={this.getDirection}>Load directions</button>
         <button onClick={this.getLocationUpdate}>Load current location</button>
         <div style={style} id={"drivermap" + this.state.order._id}></div>
       </>
