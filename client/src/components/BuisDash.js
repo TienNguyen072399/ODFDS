@@ -64,7 +64,7 @@ class BuisDash extends Component {
         </div><br/>
         <div id="starcontainer"><Rating driver={this.state.order.assignedr}/></div>
         <div id="button-container2">
-          <Link to={{pathname: '/order/map', order: this.state.order}}>
+          <Link to={{pathname: '/order/map', state:{order: this.state.order} }}>
             <CustomButtons text="View Driver Location ->" color="#5c8eb9" width="100%"fontSize="20px"/>
           </Link>
         </div>

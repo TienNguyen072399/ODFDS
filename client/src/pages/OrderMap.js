@@ -11,7 +11,7 @@ class OrderMap extends Component {
     super(props);
     this.state = {
         type:'business',
-        order: props.location.order,
+        order: this.props.location.state.order,
     };
   }
   componentDidMount () {
