@@ -108,6 +108,7 @@ class Map extends Component {
       "," +
       this.state.end[1];
     //var coordinates = this.state.start.longitude+','+this.state.start.latitude+';'+this.state.order.longitude+','+this.state.order.latitude;
+
     const MAP_API = "https://api.mapbox.com/directions/v5/";
     const QUERY = profile + "/" + coordinates;
     const KEY =
@@ -122,6 +123,7 @@ class Map extends Component {
 
     //console.log(this.state.end);
     //return "End Coordinates: " + this.state.end[0]+" , "+this.state.end[1]
+
   };
 
   async componentDidMount() {
@@ -305,7 +307,11 @@ class Map extends Component {
 
     return (
       <>
-        <button onClick={this.getDirection}>Load directions</button>
+
+
+        
+        <button onClick={this.getDirection}>Load direction</button>
+
         <button onClick={this.getLocationUpdate}>Load current location</button>
         <div style={style} id={"drivermap" + this.state.order._id}></div>
       </>

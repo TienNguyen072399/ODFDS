@@ -17,8 +17,10 @@ import NewOrder from "./pages/NewOrderPage";
 import BusinessDashboard from "./pages/BusinessDashboard";
 import DriverCompleteOrders from "./pages/DriverCompleteOrders";
 import DriverMap from "./pages/DriverMap";
+import BusinessMap from "./pages/BusinessMap";
 import DriverOpenOrders from "./pages/DriverOpenOrders";
 import { createStore } from "redux";
+import OrderMap from "./pages/OrderMap";
 
 const store = createStore(rootReducer);
 
@@ -37,11 +39,15 @@ function App() {
             exact
             component={BusinessDashboard}
           />
+
           <Route
             path="/driver/complete"
             exact
             component={DriverCompleteOrders}
           />
+
+          <Route path="/business/map" exact component={BusinessMap} />
+          <Route path="/order/map" exact component={OrderMap} />
           <Route path="/driver/map" exact component={DriverMap} />
           <Route path="/driver/openorders" exact component={DriverOpenOrders} />
         </Switch>
