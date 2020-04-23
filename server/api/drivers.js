@@ -361,7 +361,7 @@ router.put("/order/order-delivered", cors(), async (req, res, next) => {
   if (distance <= 1) {
     await Orders.findOneAndUpdate(
       { _id: req.body.orderId },
-      { timePickUp: d, status: "Delivered" },
+      { timeDelivered: d, status: "Delivered" },
       {
         new: true,
       }
