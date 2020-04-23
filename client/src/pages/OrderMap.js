@@ -108,32 +108,38 @@ class OrderMap extends Component {
   };
 
   async componentDidMount() {
+    if (this.state.order.status !== "Waiting for driver."&&this.state.order.status !== "Waiting for driver"&&this.state.order.status !== "Delivered"){
     console.log("Get Location details");
     await this.getLocationUpdate();
     await this.getEndCoordinates();
     await this.getDirection();
-    
+    }
   }
 
   async componentWillReceiveProps(nextProps) {
-    if (nextProps.order.status !== this.state.order.status) {
-      await this.setState({ order: nextProps.order });
-      console.log(nextProps.order);
-      console.log("Updating information");
-      await this.getLocationUpdate();
-      await this.getEndCoordinates();
-      await this.getDirection();
-      
+    if (this.state.order.status !== "Waiting for driver."&&this.state.order.status !== "Waiting for driver"&&this.state.order.status !== "Delivered"){
+      if (nextProps.order.status !== this.state.order.status) {
+        await this.setState({ order: nextProps.order });
+        console.log(nextProps.order);
+        console.log("Updating information");
+        await this.getLocationUpdate();
+        await this.getEndCoordinates();
+        await this.getDirection();
+        
+      }
     }
   }
 
   showMap = () => {
     switch (this.state.order.status){
       case 'Waiting for driver.':
+        console.log("No map - no driver")
         return <div id="ordermap">Sorry, cannot get Driver location.</div>;
       case 'Waiting for driver':
+        console.log("No map - no driver")
         return <div id="ordermap">Sorry, cannot get Driver location.</div>;
       case 'Delivered':
+        console.log("No map delivered")
         return <div id="ordermap">Sorry, cannot get Driver location.</div>;
       default:
         console.log("map showing")
@@ -142,10 +148,12 @@ class OrderMap extends Component {
   }
 
   getDistanceTime = () => {
+    if (this.state.order.status !== "Waiting for driver."&&this.state.order.status !== "Waiting for driver"&&this.state.order.status !== "Delivered"){
     if (this.state.directions){
       let distancetime = this.state.directions.routes[0].duration;
-      return Math.abs(Math.round(distancetime/60))
+      return `Driver is ${Math.abs(Math.round(distancetime/60))} mins away`
     } else return;
+    }else return;
   }
    
   render() {
@@ -165,9 +173,11 @@ class OrderMap extends Component {
           <div id="dash-box">
             <div id="boxtopmap">
               <div id ="titlemap">ID: {this.state.order._id}</div>
-              <div id="timeaway">Driver is {this.getDistanceTime()} mins away</div>
+              <div id="timeaway">{this.getDistanceTime()}</div>
               <div id ="titlemap">Driver: {this.state.order.assigned}</div> 
+              
               <div id ="titlemap">Status: {this.state.order.status}</div>       
+
             </div>
             {this.showMap()}
           </div>
