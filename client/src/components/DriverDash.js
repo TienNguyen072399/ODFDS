@@ -94,39 +94,40 @@ class DriverDash extends Component {
     return (
       <div id="container">
         <div id="dash-box">
-          <div id="boxtop"></div>
+          <div id="boxtop">
+            <div id="titlecontainer">ID: {this.state.order._id}</div>
+            <br />
+            <div id="titlecontainer">
+              Restaurant: {this.state.order.businessName}
+            </div>
+            <br />
+          </div>
+
           <div id="container">
             <div className="iconcircle"></div>
           </div>
-          <div id="titlecontainer">ID: {this.state.order._id}</div>
-          <br />
-          <div id="titlecontainer">
-            <h2>{this.getBusiness()}</h2>
-          </div>
-          <br />
 
+          <div id="titlecontainer">Status: {this.state.order.status}</div>
+          <br />
           <div id="time">{this.getRealTime()} mins ago</div>
           <div id="container">
-            <div id="description">
-              Requesting {this.getNumOrder()} delivery {this.getDistance()}{" "}
-              miles away
-              <br />
-              <div id="description">
-                Delivery route: {this.getRoute()} miles
-              </div>
+            <br />
+            <div
+              id="description"
+              style={{ textAlign: "left", paddingRight: "30%" }}
+            >
+              {this.getDestination()}
             </div>
           </div>
           <br />
-          <br />
-          <br />
-          <div id="button-container">
+          <div id="button-container2">
             <CustomButtons
               onClick={this.props.onAccept}
-              text={"Accept Order"}
-              value={this.state.order._id}
+              text="Accept Order"
               color="#5c8eb9"
               width="100%"
-              fontSize="13px"
+              fontSize="20px"
+              value={this.state.order._id}
             />
           </div>
         </div>

@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import Navbar from "../components/NavBar";
 import DriverDash from "../components/DriverDash";
+import DriverComplete from "../components/DriverComplete";
+import BuisDash from "../components/BuisDash";
 import billPopup from "../components/billPopup";
 class DriverCompletOrders extends Component {
   constructor(props) {
@@ -48,10 +50,10 @@ class DriverCompletOrders extends Component {
           <div key={item._id}>
             <center>
               <billPopup
-              onPayNow={this.handlePayNow}
-              onPayLater={this.handlePayLater}
+                onPayNow={this.handlePayNow}
+                onPayLater={this.handlePayLater}
               />
-              <DriverDash order={item} onAccept={this.handleAccept} />
+              <DriverComplete order={item} />
             </center>
           </div>
         ))}
