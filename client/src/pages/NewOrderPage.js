@@ -56,7 +56,7 @@ class NewOrder extends Component {
     if (!this.state.deliveryAddress) {
       alert("Please enter a valid address.");
     } else if (this.state.city.toLowerCase() !== "san jose") {
-      alert("ODFDS is only available in San Jose at this time.");
+      alert("Eat Grubs is only available in San Jose at this time.");
     } else {
       await fetch(
         `https://api.mapbox.com/geocoding/v5/mapbox.places/${this.state.deliveryAddress}, ${this.state.city}, CA ${this.state.zipCode}.json?access_token=${this.state.token}`
