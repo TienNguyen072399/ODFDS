@@ -8,6 +8,7 @@ class DriverDash extends Component {
     start: [],
     end: [],
     directions: null,
+    deliveryRoute: null,
   };
   getBusiness = () => {
     if (this.state.order.businessName) {
@@ -37,7 +38,7 @@ class DriverDash extends Component {
       if (this.state.directions.message === "Total distance between all coordinates cannot exceed 10000km"){
         return "exceed 6000";
       }
-      return Math.round(this.state.directions.routes[0].distance * 0.000621371);
+      return Math.round(10*this.state.directions.routes[0].distance * 0.000621371)/10;
     }
     else return;
   };
@@ -56,10 +57,62 @@ class DriverDash extends Component {
     //don't think we need this
     // get number of orders from that restaurant
   };
-  
+
   getRoute = () => {
     // get number of miles between businessAddress and deliveryAddress
+    if (this.state.deliveryRoute){
+      return Math.round(10*this.state.deliveryRoute.routes[0].distance * 0.000621371)/10
+    }
+    else return;
+  }
+  
+  getDeliverRoute = async (event) => {
+    if (this.state.order) {
     
+      
+      const MAP_API = "https://api.mapbox.com/geocoding/v5/mapbox.places/";
+      const KEY =
+        "?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg";
+      // get business address coordinates  
+      const QUERY1 =this.state.order.businessAddress.split(" ").join("%20") + ".json";
+      
+    var business
+      await fetch(`${MAP_API}${QUERY1}${KEY}`)
+        .then((response) => response.json())
+        .then((data) => {
+          business = data.features[0].geometry.coordinates
+        });
+      console.log("business: "+business)
+      // get delivery address coordinate
+      const QUERY2 = this.state.order.deliveryAddress.split(" ").join("%20") + ".json";
+      var customer
+      await fetch(`${MAP_API}${QUERY2}${KEY}`)
+        .then((response) => response.json())
+        .then((data) => {
+          customer = data.features[0].geometry.coordinates
+        });
+        console.log("customer: "+ customer)
+        var direction;
+        var profile = "mapbox/driving-traffic";
+        var coordinates =
+          business[0] +
+          "," +
+          business[1] +
+          ";" +
+          customer[0] +
+          "," +
+          customer[1];
+        //var coordinates = this.state.start.longitude+','+this.state.start.latitude+';'+this.state.order.longitude+','+this.state.order.latitude;
+        const QUERY3 = profile + "/" + coordinates;
+        await fetch("https://api.mapbox.com/directions/v5/" + QUERY3 + "?geometries=geojson&steps=true&access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg")
+          .then((response) => response.json())
+          .then((data) => {
+            this.setState(() => ({deliveryRoute: data }));
+            console.log("https://api.mapbox.com/directions/v5/" + QUERY3 + "?geometries=geojson&steps=true&access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg");
+          });
+
+    
+  }else return;
   };
 
   handleAccept = async (event) => {
@@ -81,9 +134,9 @@ class DriverDash extends Component {
     if (this.state.order.status === "Waiting for pickup" || this.state.order.status === "Waiting for driver.") {
       console.log("Step 1: Start location for waiting for pickup");
       if (navigator.geolocation) {
-        alert(
-          "Finding your location. (If prompted by your browser, please say yes.)"
-        );
+        // alert(
+        //   "Finding your location. (If prompted by your browser, please say yes.)"
+        // );
         navigator.geolocation.watchPosition(function (position) {
           currentComponent.setState({
             start: [position.coords.longitude, position.coords.latitude],
@@ -176,6 +229,7 @@ class DriverDash extends Component {
     await this.getLocationUpdate();
     await this.getEndCoordinates();
     await this.getDirection();
+    await this.getDeliverRoute();
   }
 
   async componentWillReceiveProps(nextProps) {
@@ -186,6 +240,7 @@ class DriverDash extends Component {
       await this.getLocationUpdate();
       await this.getEndCoordinates();
       await this.getDirection();
+      await this.getDeliverRoute();
     }
   }
 
@@ -209,11 +264,11 @@ class DriverDash extends Component {
           <div id="time">{this.getRealTime()} mins ago</div>
           <div id="container">
             <div id="description">
-              Requesting {this.getNumOrder()} delivery {this.getDistance()}{" "}
+              Requesting {this.getNumOrder()} delivery from {this.getDistance()}{" "}
               miles away
               <br />
               <div id="description">
-                Delivery route: {this.getRoute()} miles
+                Estimate delivery route: {this.getRoute()} miles
               </div>
             </div>
           </div>
