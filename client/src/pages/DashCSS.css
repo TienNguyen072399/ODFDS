@@ -156,3 +156,10 @@ h2 {
     color: #242323;
     padding-top: 20% ;
 }
+
+#timeaway {
+    color: #ffffff;
+    font: 20px/20px Arial;
+    float: right;
+    padding-right: 3%;
+}

@@ -145,12 +145,7 @@ class Map extends Component {
   }
 
   componentDidUpdate() {
-    // console.log("start: "+this.state.start)
-    // console.log("end: "+this.state.end)
-
     if (this.state.directions) {
-      // console.log("direction: "+this.state.directions)
-      // console.log(this.state.directions.routes[0].geometry);
       var mapdirection = this.state.directions;
     }
     var mapstart = this.state.start;
@@ -161,10 +156,7 @@ class Map extends Component {
     mapboxgl.accessToken =
       "pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg";
     if (this.state.start) {
-      // console.log("inside if end: "+this.state.end)
-
-      //this.getDirection();
-
+      console.log("draw map here")
       var map = new mapboxgl.Map({
         container: "drivermap" + this.state.order._id,
         style: "mapbox://styles/mapbox/streets-v11",
