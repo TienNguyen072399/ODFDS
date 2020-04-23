@@ -299,8 +299,7 @@ class Map extends Component {
 
     return (
       <>
-        <button onClick={this.getDirection}>Load directions</button>
-        <button onClick={this.getLocationUpdate}>Load current location</button>
+        
         <div style={style} id={"drivermap" + this.state.order._id}></div>
       </>
     );
@@ -308,3 +307,5 @@ class Map extends Component {
 }
 
 export default Map;
+//<button onClick={this.getDirection}>Load directions</button>
+//  <button onClick={this.getLocationUpdate}>Load current location</button>

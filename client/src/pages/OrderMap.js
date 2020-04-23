@@ -15,7 +15,7 @@ class OrderMap extends Component {
         start: [],
         end: [],
         directions: null,
-        driverlocation: null,
+        driverlocation: this.props.driverlocation,
     };
   }
   getLocationUpdate = async (event) => {
@@ -165,8 +165,9 @@ class OrderMap extends Component {
           <div id="dash-box">
             <div id="boxtopmap">
               <div id ="titlemap">ID: {this.state.order._id}</div>
-              <div id="timeaway">{this.getDistanceTime()} mins away</div>
-              <div id ="titlemap">Driver: {this.state.order.assigned}</div>        
+              <div id="timeaway">Driver is {this.getDistanceTime()} mins away</div>
+              <div id ="titlemap">Driver: {this.state.order.assigned}</div> 
+              <div id ="titlemap">Status: {this.state.order.status}</div>       
             </div>
             {this.showMap()}
           </div>
