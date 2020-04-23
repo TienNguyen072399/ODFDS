@@ -15,7 +15,7 @@ class OrderMap extends Component {
         start: [],
         end: [],
         directions: null,
-        driverlocation: this.props.driverlocation,
+        driverlocation: this.props.driverlocation, // may changed to this.state.order.driverlocation
     };
   }
   getLocationUpdate = async (event) => {
@@ -137,7 +137,7 @@ class OrderMap extends Component {
         return <div id="ordermap">Sorry, cannot get Driver location.</div>;
       default:
         console.log("map showing")
-        return <Map key = {this.state.order._id} order={this.state.order}/>;   
+        return <Map type = "business" key = {this.state.order._id} order={this.state.order}/>;   
     }
   }
 

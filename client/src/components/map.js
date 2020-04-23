@@ -22,8 +22,8 @@ class Map extends Component {
           },
         ],
       },
-      token:
-        "pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg",
+      driverlocation: null,// store driver coordinates, can use this to update info in order.driverlocation field
+      type: this.props.type,
     };
   }
 
@@ -31,46 +31,62 @@ class Map extends Component {
     let currentComponent = this;
     console.log("Get location method");
     console.log(this.state.order);
+    
+    // if display this map on business side, set starting point to driverlocation
+    if (this.state.type === "business"){
+      console.log("type is business")
+      if (this.state.driverlocation){
+        currentComponent.setState({start: this.state.driverlocation})
+      }else {
+        currentComponent.setState({start: [-121.88130866919334, 37.336324837847584]})
+      }
+      
+    }
+    else {
+      //if display this map on driver side
 
-    //From current location or preset location to restaurant
-    if (this.state.order.status === "Waiting for pickup") {
-      console.log("Step 1: Start location for waiting for pickup");
-      if (navigator.geolocation) {
-        alert(
-          "Finding your location. (If prompted by your browser, please say yes.)"
-        );
-        navigator.geolocation.watchPosition(function (position) {
-          currentComponent.setState({
-            start: [position.coords.longitude, position.coords.latitude],
+      //From current location or preset location to restaurant
+      if (this.state.order.status === "Waiting for pickup") {
+        console.log("Step 1: Start location for waiting for pickup");
+        if (navigator.geolocation) {
+          alert(
+            "Finding your location. (If prompted by your browser, please say yes.)"
+          );
+          navigator.geolocation.watchPosition(function (position) {
+            currentComponent.setState({
+              start: [position.coords.longitude, position.coords.latitude],
+              driverlocation: this.state.start //update driver location
+            });
           });
-        });
-      } else {
-        alert("Sorry, browser does not support geolocation!");
-        currentComponent.setState({
-          start: [-121.88130866919334, 37.336324837847584],
-        });
+        } else {
+          alert("Sorry, browser does not support geolocation!");
+          currentComponent.setState({
+            start: [-121.88130866919334, 37.336324837847584],
+            driverlocation: this.state.start //update driverlocation
+          });
+        }
+      }
+
+      //From restaurant to delivery address
+      else if (this.state.order.status === "Out for delivery") {
+        console.log("Step 1: Start location for out for delivery");
+        var search_text = this.state.order.businessAddress.split(" ").join("%20");
+        var endpoint = "mapbox.places";
+        const MAP_API = "https://api.mapbox.com/geocoding/v5/";
+        const QUERY = endpoint + "/" + search_text + ".json";
+        const KEY =
+          "?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg";
+
+        await fetch(`${MAP_API}${QUERY}${KEY}`)
+          .then((response) => response.json())
+          .then((data) => {
+            this.setState(() => ({
+              start: data.features[0].geometry.coordinates,
+              driverlocation: this.state.start //update driver location
+            }));
+          });
       }
     }
-
-    //From restaurant to delivery address
-    else if (this.state.order.status === "Out for delivery") {
-      console.log("Step 1: Start location for out for delivery");
-      var search_text = this.state.order.businessAddress.split(" ").join("%20");
-      var endpoint = "mapbox.places";
-      const MAP_API = "https://api.mapbox.com/geocoding/v5/";
-      const QUERY = endpoint + "/" + search_text + ".json";
-      const KEY =
-        "?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg";
-
-      await fetch(`${MAP_API}${QUERY}${KEY}`)
-        .then((response) => response.json())
-        .then((data) => {
-          this.setState(() => ({
-            start: data.features[0].geometry.coordinates,
-          }));
-        });
-    }
-    // }
   };
 
   getEndCoordinates = async () => {

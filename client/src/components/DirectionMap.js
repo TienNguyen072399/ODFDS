@@ -152,7 +152,7 @@ class DirectionMap extends Component {
             <div id="titlemap">Status: {this.state.order.status}</div>
             {this.getButton()}
           </div>
-          <Map order={this.state.order} />
+          <Map type="driver" order={this.state.order} />
           <br />
         </div>
       </div>
