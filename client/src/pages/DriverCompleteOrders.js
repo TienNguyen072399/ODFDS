@@ -18,7 +18,7 @@ class DriverCompletOrders extends Component {
   componentDidMount() {
     console.log(this.props.user);
     fetch(
-      "http://localhost:5000/api/drivers//mycompletedorders/" +
+      "http://localhost:5000/api/drivers/mycompletedorders/" +
         this.props.user._id
     )
       .then((response) => response.json())
@@ -53,7 +53,7 @@ class DriverCompletOrders extends Component {
                 onPayNow={this.handlePayNow}
                 onPayLater={this.handlePayLater}
               />
-              <DriverComplete order={item} />
+              <DriverComplete index={this.state.orders.indexOf(item)+1} order={item} />
             </center>
           </div>
         ))}

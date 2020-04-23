@@ -38,7 +38,7 @@ class BusinessDashboard extends Component {
         {this.state.orders.map((item) => (
           <div>
             <center>
-              <BuisDash order={item} />
+              <BuisDash index={this.state.orders.indexOf(item)+1} order={item} />
             </center>
           </div>
         ))}

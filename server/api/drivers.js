@@ -376,7 +376,7 @@ router.put("/order/order-delivered", cors(), async (req, res, next) => {
     cost = calc_costs(distance);
     await Orders.findOneAndUpdate(
       { _id: req.body.orderId },
-      { timePickUp: d, status: "Delivered", cost: cost },
+      { timeDelivered: d, status: "Delivered", cost: cost },
       {
         new: true,
       }

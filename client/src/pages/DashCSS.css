@@ -111,6 +111,14 @@
     float: left;
 }
 
+#circleindex {
+    float: center;
+    font: Bold 25px/25px Arial;
+    color: #ffffff;
+    padding-top: 30%;
+}
+
+
 /*Header CSS for name of Restaurant*/
 
 h2 {
@@ -139,4 +147,12 @@ h2 {
     
     padding-left: 5%;
     padding-top: 2%;
+}
+
+#ordermap {
+    float: center;
+    text-align: center;
+    font: Bold 25px/25px Arial;
+    color: #242323;
+    padding-top: 20% ;
 }

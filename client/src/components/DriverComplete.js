@@ -17,7 +17,19 @@ class DriverComplete extends Component {
     return realTime;
   };
 
+  getTotaltime = () => {
+
+    if (this.state.order.timeDelivered && this.state.order.timePickUp){
+    var deliveryTime = new Date(this.state.order.timeDelivered);
+    var pickupTime = new Date(this.state.order.timePickUp);
+    let totalTime = (deliveryTime.getTime() - pickupTime.getTime())/(1000*60)
+    return  Math.abs(Math.round(totalTime));
+    }
+    else return "N/A"
+  }
+
   render() {
+    console.log(this.state.order)
     return (
       <div id="container">
         <div id="dash-box">
@@ -31,7 +43,7 @@ class DriverComplete extends Component {
           </div>
 
           <div id="container">
-            <div className="iconcircle"></div>
+            <div className="iconcircle"><div id ="circleindex">{this.props.index}</div></div>
           </div>
 
           <div id="titlecontainer">Status: {this.state.order.status}</div>
@@ -43,16 +55,25 @@ class DriverComplete extends Component {
               id="description"
               style={{ textAlign: "left", paddingRight: "30%" }}
             >
+              
               To: {this.state.order.deliveryAddress}
             </div>
-          </div>
-          <br />
-          <div
+            <div
             id="description"
             style={{ textAlign: "left", paddingRight: "30%" }}
-          >
-            Cost: ${this.state.order.cost}
+            >
+            Total time: {this.getTotaltime()} minutes
+            </div>
+            <div
+            id="description"
+            style={{ textAlign: "left", paddingRight: "30%" }}
+            >
+            Total cost: ${this.state.order.cost}
+            </div>
           </div>
+          
+          <br/>
+          
         </div>
       </div>
     );

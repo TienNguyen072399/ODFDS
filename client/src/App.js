@@ -47,7 +47,7 @@ function App() {
           />
 
           <Route path="/business/map" exact component={BusinessMap} />
-          <Route path="/order/map" exact component={OrderMap} />
+          <Route path="/business/order-map" exact component={OrderMap} />
           <Route path="/driver/map" exact component={DriverMap} />
           <Route path="/driver/openorders" exact component={DriverOpenOrders} />
         </Switch>

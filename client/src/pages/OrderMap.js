@@ -19,8 +19,25 @@ class OrderMap extends Component {
     // const { order } = this.props.location.state
 
   }
+
+  showMap = () => {
+    switch (this.state.order.status){
+      case 'Waiting for driver.':
+        return "Sorry, cannot get Driver location.";
+      case 'Waiting for driver':
+        return "Sorry, cannot get Driver location.";
+      case 'Delivered':
+        return "Sorry, cannot get Driver location.";
+      default:
+        return <Map key = {this.state.order._id} order={this.state.order}/>;   
+    }
+
+    
+
+  }
    
   render() {
+    console.log(this.state.order)
       return (
       <div 
         style={{
@@ -38,7 +55,7 @@ class OrderMap extends Component {
               <div id ="titlemap">ID: {this.state.order._id}</div>
               <div id ="titlemap">Driver: {this.state.order.assigned}</div>        
             </div>
-            <Map key = {this.state.order._id} order={this.state.order}/><br/>
+            <div id="ordermap">{this.showMap()}</div>
           </div>
         </div>
       </div>

@@ -22,6 +22,8 @@ class DriverDash extends Component {
     switch (this.state.order.status){
       case 'Waiting for Driver.':
         return "At "+this.state.order.businessAddress;
+      case 'Waiting for Driver':
+        return "At "+this.state.order.businessAddress;
       case 'Waiting for pickup':
         return "At "+this.state.order.businessAddress;
       case 'Out for delivery':
@@ -33,10 +35,12 @@ class DriverDash extends Component {
 
   getDistance = () => {
     // calc the distance from current location to restaurant.
-    console.log(this.state.directions)
-    if (this.state.directions !== null) {
+    //console.log(this.state.directions)
+    if (this.state.directions) {
       if (this.state.directions.message === "Total distance between all coordinates cannot exceed 10000km"){
         return "exceed 6000";
+      } else if(this.state.directions.message === "Latitude must be between -90 and 90"){
+        return `Error, please refresh`;
       }
       return Math.round(10*this.state.directions.routes[0].distance * 0.000621371)/10;
     }
@@ -51,11 +55,6 @@ class DriverDash extends Component {
     diff /= 60;
     var realTime = Math.abs(Math.round(diff));
     return realTime;
-  };
-
-  getNumOrder = () => {
-    //don't think we need this
-    // get number of orders from that restaurant
   };
 
   getRoute = () => {
@@ -126,7 +125,7 @@ class DriverDash extends Component {
     console.log(this.state.order);
 
     //From current location or preset location to restaurant
-    if (this.state.order.status === "Waiting for pickup" || this.state.order.status === "Waiting for driver.") {
+    if (this.state.order.status === "Waiting for pickup" || this.state.order.status === "Waiting for driver."||this.state.order.status === "Waiting for driver") {
       console.log("Step 1: Start location for waiting for pickup");
       if (navigator.geolocation) {
         // alert(
@@ -135,6 +134,13 @@ class DriverDash extends Component {
         navigator.geolocation.watchPosition(function (position) {
           currentComponent.setState({
             start: [position.coords.longitude, position.coords.latitude],
+          });
+        },
+        function(error) {
+          if (error.code == error.PERMISSION_DENIED)
+          alert("Sorry, browser geolocation permission is denied");
+          currentComponent.setState({
+            start: [-121.88130866919334, 37.336324837847584],
           });
         });
       } else {
@@ -169,7 +175,7 @@ class DriverDash extends Component {
   getEndCoordinates = async () => {
     var endpoint = "mapbox.places";
     var search_text = "";
-    if (this.state.order.status === "Waiting for pickup"||this.state.order.status === "Waiting for driver.") {
+    if (this.state.order.status === "Waiting for pickup"||this.state.order.status === "Waiting for driver."||this.state.order.status === "Waiting for driver") {
       search_text = this.state.order.businessAddress.split(" ").join("%20");
       console.log("Step 2: Get end coordinates (Restaurant)");
     } else if (this.state.order.status === "Out for delivery") {
@@ -185,10 +191,7 @@ class DriverDash extends Component {
       .then((response) => response.json())
       .then((data) => {
         this.setState(() => ({ end: data.features[0].geometry.coordinates }));
-        //console.log(this.state.end);
       });
-    // console.log(this.state.end);
-    //return "End Coordinates: " + this.state.end[0]+" , "+this.state.end[1]
   };
 
   getDirection = async (event) => {
@@ -217,7 +220,7 @@ class DriverDash extends Component {
   };
 
   async componentDidMount() {
-    console.log("Get Start , End and Direction");
+    console.log("Get Location details");
     await this.getLocationUpdate();
     await this.getEndCoordinates();
     await this.getDirection();
@@ -228,7 +231,7 @@ class DriverDash extends Component {
     if (nextProps.order.status !== this.state.order.status) {
       await this.setState({ order: nextProps.order });
       console.log(nextProps.order);
-      console.log("Rerender map");
+      console.log("Updating information");
       await this.getLocationUpdate();
       await this.getEndCoordinates();
       await this.getDirection();
@@ -250,7 +253,7 @@ class DriverDash extends Component {
           </div>
 
           <div id="container">
-            <div className="iconcircle"></div>
+            <div className="iconcircle"><div id ="circleindex">{this.props.index}</div></div>
           </div>
 
           <div id="titlecontainer">Status: {this.state.order.status}</div>

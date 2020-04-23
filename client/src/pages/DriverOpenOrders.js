@@ -72,7 +72,7 @@ class DriverOpenOrders extends Component {
         {this.state.orders.map((item) => (
           <div key={item._id}>
             <center>
-              <DriverDash order={item} onAccept={this.handleAccept} />
+              <DriverDash index={this.state.orders.indexOf(item)+1} order={item} onAccept={this.handleAccept} />
             </center>
           </div>
         ))}
