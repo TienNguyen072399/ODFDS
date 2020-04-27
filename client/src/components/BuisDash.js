@@ -30,7 +30,7 @@ class BuisDash extends Component {
 
   getDestination = () => {
     switch (this.state.order.status) {
-      case "Waiting for Driver":
+      case "Waiting for Driver.":
         return ;
       case "Waiting for pickup":
         if(this.state.order.assigned) {
@@ -57,10 +57,10 @@ class BuisDash extends Component {
     if(this.state.order.cost){
       switch (this.state.order.status) {
         case "Delivered":
-          return `Total cost: $${this.state.order.cost}`;
+          return `Total cost: $${Math.round(this.state.order.cost*100)/100}`;
         default:
           // try to update real time cost - not finished
-          return `Estimate cost: $${this.state.order.cost}`;
+          return `Estimate cost: $${Math.round(this.state.order.cost*100)/100}`;
       }
       
     }else return;
@@ -100,11 +100,13 @@ class BuisDash extends Component {
           <div id="time">{this.getRealTime()} mins ago</div>
           <div id="container">
             <br />
-            <div id="description"style={{ textAlign: "left", paddingRight: "30%" }}>{this.getDestination()}</div>
-            <div id="description"style={{ textAlign: "left", paddingRight: "30%" }}>{this.getCost()}</div>
+            <div id="description"style={{ textAlign: "left", paddingRight: "40%" }}>{this.getDestination()}</div>
+            <div id="description"style={{ textAlign: "left", paddingRight: "40%" }}>{this.getCost()}</div>
           </div>
           <br />
-          <div id="starcontainer" style={{ paddingBottom: "10%" }}>
+          <br />
+          <br />
+          <div id="starcontainer" >
             <Rating driver={this.state.order.assigned} />
           </div>
           <div id="button-container2">
