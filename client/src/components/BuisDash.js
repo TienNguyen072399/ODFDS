@@ -17,10 +17,10 @@ class BuisDash extends Component {
       case "Waiting for driver.":
         return this.state.order.status;
       case "Waiting for pickup":
-        if(this.state.order.assigned) {
+        if (this.state.order.assigned) {
           return this.state.order.assigned;
-        }else return "Waiting for driver";
-        
+        } else return "Waiting for driver";
+
       case "Out for delivery":
         return this.state.order.assigned;
       default:
@@ -31,11 +31,11 @@ class BuisDash extends Component {
   getDestination = () => {
     switch (this.state.order.status) {
       case "Waiting for Driver.":
-        return ;
+        return;
       case "Waiting for pickup":
-        if(this.state.order.assigned) {
+        if (this.state.order.assigned) {
           return "Currently on route to " + this.state.order.businessAddress;
-        }else return "";
+        } else return "";
       case "Out for delivery":
         return "Currently on route to " + this.state.order.deliveryAddress;
       default:
@@ -54,26 +54,28 @@ class BuisDash extends Component {
   };
 
   getCost = () => {
-    if(this.state.order.cost){
+    if (this.state.order.cost) {
       switch (this.state.order.status) {
         case "Delivered":
-          return `Total cost: $${Math.round(this.state.order.cost*100)/100}`;
+          return `Total cost: $${
+            Math.round(this.state.order.cost * 100) / 100
+          }`;
         default:
           // try to update real time cost - not finished
-          return `Estimate cost: $${Math.round(this.state.order.cost*100)/100}`;
+          return `Estimate cost: $${
+            Math.round(this.state.order.cost * 100) / 100
+          }`;
       }
-      
-    }else return;
+    } else return;
   };
 
   //calculate costs of 1 order
   calc_costs = (miles) => {
-  //calculating cost, 5 is base cost
+    //calculating cost, 5 is base cost
     let cost_order = 5;
     cost_order = cost_order + miles * 2;
     return cost_order;
-  }
-
+  };
 
   render() {
     return (
@@ -89,7 +91,9 @@ class BuisDash extends Component {
           </div>
 
           <div id="container">
-          <div className="iconcircle"><div id ="circleindex">{this.props.index}</div></div>
+            <div className="iconcircle">
+              <div id="circleindex">{this.props.index}</div>
+            </div>
           </div>
           <div id="status">Status: {this.state.order.status}</div>
 
@@ -100,13 +104,23 @@ class BuisDash extends Component {
           <div id="time">{this.getRealTime()} mins ago</div>
           <div id="container">
             <br />
-            <div id="description"style={{ textAlign: "left", paddingRight: "40%" }}>{this.getDestination()}</div>
-            <div id="description"style={{ textAlign: "left", paddingRight: "40%" }}>{this.getCost()}</div>
+            <div
+              id="description"
+              style={{ textAlign: "left", paddingRight: "40%" }}
+            >
+              {this.getDestination()}
+            </div>
+            <div
+              id="description"
+              style={{ textAlign: "left", paddingRight: "40%" }}
+            >
+              {this.getCost()}
+            </div>
           </div>
           <br />
           <br />
           <br />
-          <div id="starcontainer" >
+          <div id="starcontainer">
             <Rating driver={this.state.order.assigned} />
           </div>
           <div id="button-container2">

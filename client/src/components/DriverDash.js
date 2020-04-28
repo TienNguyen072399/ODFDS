@@ -19,32 +19,40 @@ class DriverDash extends Component {
   };
 
   getDestination = () => {
-    switch (this.state.order.status){
-      case 'Waiting for Driver.':
-        return "At "+this.state.order.businessAddress;
-      case 'Waiting for Driver':
-        return "At "+this.state.order.businessAddress;
-      case 'Waiting for pickup':
-        return "At "+this.state.order.businessAddress;
-      case 'Out for delivery':
+    switch (this.state.order.status) {
+      case "Waiting for Driver.":
+        return "At " + this.state.order.businessAddress;
+      case "Waiting for Driver":
+        return "At " + this.state.order.businessAddress;
+      case "Waiting for pickup":
+        return "At " + this.state.order.businessAddress;
+      case "Out for delivery":
         return this.state.order.deliveryAddress;
       default:
-        return ;   
+        return;
     }
-  }
+  };
 
   getDistance = () => {
     // calc the distance from current location to restaurant.
     //console.log(this.state.directions)
     if (this.state.directions) {
-      if (this.state.directions.message === "Total distance between all coordinates cannot exceed 10000km"){
+      if (
+        this.state.directions.message ===
+        "Total distance between all coordinates cannot exceed 10000km"
+      ) {
         return "exceed 6000";
-      } else if(this.state.directions.message === "Latitude must be between -90 and 90"){
+      } else if (
+        this.state.directions.message === "Latitude must be between -90 and 90"
+      ) {
         return `Error, please refresh`;
       }
-      return Math.round(10*this.state.directions.routes[0].distance * 0.000621371)/10;
-    }
-    else return;
+      return (
+        Math.round(
+          10 * this.state.directions.routes[0].distance * 0.000621371
+        ) / 10
+      );
+    } else return;
   };
 
   getRealTime = () => {
@@ -59,11 +67,14 @@ class DriverDash extends Component {
 
   getRoute = () => {
     // get number of miles between businessAddress and deliveryAddress
-    if (this.state.deliveryRoute){
-      return Math.round(10*this.state.deliveryRoute.routes[0].distance * 0.000621371)/10
-    }
-    else return;
-  }
+    if (this.state.deliveryRoute) {
+      return (
+        Math.round(
+          10 * this.state.deliveryRoute.routes[0].distance * 0.000621371
+        ) / 10
+      );
+    } else return;
+  };
 
   handleAccept = async (event) => {
     // accept request - change status to 'onRoutePickup', insert driver to assigned.
@@ -80,69 +91,79 @@ class DriverDash extends Component {
       const MAP_API = "https://api.mapbox.com/geocoding/v5/mapbox.places/";
       const KEY =
         "?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg";
-      // get business address coordinates  
-      const QUERY1 =this.state.order.businessAddress.split(" ").join("%20") + ".json";
-    var business
+      // get business address coordinates
+      const QUERY1 =
+        this.state.order.businessAddress.split(" ").join("%20") + ".json";
+      var business;
       await fetch(`${MAP_API}${QUERY1}${KEY}`)
         .then((response) => response.json())
         .then((data) => {
-          business = data.features[0].geometry.coordinates
+          business = data.features[0].geometry.coordinates;
         });
-      console.log("business: "+business)
+      console.log("business: " + business);
       // get delivery address coordinate
-      const QUERY2 = this.state.order.deliveryAddress.split(" ").join("%20") + ".json";
-      var customer
+      const QUERY2 =
+        this.state.order.deliveryAddress.split(" ").join("%20") + ".json";
+      var customer;
       await fetch(`${MAP_API}${QUERY2}${KEY}`)
         .then((response) => response.json())
         .then((data) => {
-          customer = data.features[0].geometry.coordinates
+          customer = data.features[0].geometry.coordinates;
         });
-        console.log("customer: "+ customer)
-        var direction;
-        var profile = "mapbox/driving-traffic";
-        var coordinates =
-          business[0] +
-          "," +
-          business[1] +
-          ";" +
-          customer[0] +
-          "," +
-          customer[1];
-        //var coordinates = this.state.start.longitude+','+this.state.start.latitude+';'+this.state.order.longitude+','+this.state.order.latitude;
-        const QUERY3 = profile + "/" + coordinates;
-        await fetch("https://api.mapbox.com/directions/v5/" + QUERY3 + "?geometries=geojson&steps=true&access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg")
-          .then((response) => response.json())
-          .then((data) => {
-            this.setState(() => ({deliveryRoute: data }));
-            console.log("https://api.mapbox.com/directions/v5/" + QUERY3 + "?geometries=geojson&steps=true&access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg");
-          });
-    }else return;
+      console.log("customer: " + customer);
+      var direction;
+      var profile = "mapbox/driving-traffic";
+      var coordinates =
+        business[0] + "," + business[1] + ";" + customer[0] + "," + customer[1];
+      //var coordinates = this.state.start.longitude+','+this.state.start.latitude+';'+this.state.order.longitude+','+this.state.order.latitude;
+      const QUERY3 = profile + "/" + coordinates;
+      await fetch(
+        "https://api.mapbox.com/directions/v5/" +
+          QUERY3 +
+          "?geometries=geojson&steps=true&access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg"
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          this.setState(() => ({ deliveryRoute: data }));
+          console.log(
+            "https://api.mapbox.com/directions/v5/" +
+              QUERY3 +
+              "?geometries=geojson&steps=true&access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg"
+          );
+        });
+    } else return;
   };
-  
+
   getLocationUpdate = async (event) => {
     let currentComponent = this;
     console.log("Get location method");
     console.log(this.state.order);
 
     //From current location or preset location to restaurant
-    if (this.state.order.status === "Waiting for pickup" || this.state.order.status === "Waiting for driver."||this.state.order.status === "Waiting for driver") {
+    if (
+      this.state.order.status === "Waiting for pickup" ||
+      this.state.order.status === "Waiting for driver." ||
+      this.state.order.status === "Waiting for driver"
+    ) {
       console.log("Step 1: Start location for waiting for pickup");
       if (navigator.geolocation) {
         // alert(
         //   "Finding your location. (If prompted by your browser, please say yes.)"
         // );
-        navigator.geolocation.watchPosition(function (position) {
-          currentComponent.setState({
-            start: [position.coords.longitude, position.coords.latitude],
-          });
-        },
-        function(error) {
-          if (error.code == error.PERMISSION_DENIED)
-          alert("Sorry, browser geolocation permission is denied");
-          currentComponent.setState({
-            start: [-121.88130866919334, 37.336324837847584],
-          });
-        });
+        navigator.geolocation.watchPosition(
+          function (position) {
+            currentComponent.setState({
+              start: [position.coords.longitude, position.coords.latitude],
+            });
+          },
+          function (error) {
+            if (error.code == error.PERMISSION_DENIED)
+              alert("Sorry, browser geolocation permission is denied");
+            currentComponent.setState({
+              start: [-121.88130866919334, 37.336324837847584],
+            });
+          }
+        );
       } else {
         alert("Sorry, browser does not support geolocation!");
         currentComponent.setState({
@@ -171,11 +192,15 @@ class DriverDash extends Component {
     }
     // }
   };
-  
+
   getEndCoordinates = async () => {
     var endpoint = "mapbox.places";
     var search_text = "";
-    if (this.state.order.status === "Waiting for pickup"||this.state.order.status === "Waiting for driver."||this.state.order.status === "Waiting for driver") {
+    if (
+      this.state.order.status === "Waiting for pickup" ||
+      this.state.order.status === "Waiting for driver." ||
+      this.state.order.status === "Waiting for driver"
+    ) {
       search_text = this.state.order.businessAddress.split(" ").join("%20");
       console.log("Step 2: Get end coordinates (Restaurant)");
     } else if (this.state.order.status === "Out for delivery") {
@@ -253,7 +278,9 @@ class DriverDash extends Component {
           </div>
 
           <div id="container">
-            <div className="iconcircle"><div id ="circleindex">{this.props.index}</div></div>
+            <div className="iconcircle">
+              <div id="circleindex">{this.props.index}</div>
+            </div>
           </div>
 
           <div id="titlecontainer">Status: {this.state.order.status}</div>
@@ -265,11 +292,12 @@ class DriverDash extends Component {
               id="description"
               style={{ textAlign: "left", paddingRight: "20%" }}
             >
-              >> Requesting delivery from {this.getDistance()} miles away<br/> <br/>
-              at {this.state.order.businessAddress}<br/><br/>
+              {/* >> Requesting delivery from {this.getDistance()} miles away<br/> <br/> */}
+              >> Deliver to: {this.state.order.businessAddress}
+              <br />
+              <br />
               >> Estimate delivery route: {this.getRoute()} miles
             </div>
-            
           </div>
           <br />
           <div id="button-container2">
