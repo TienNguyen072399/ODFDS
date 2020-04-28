@@ -5,7 +5,7 @@ class Header extends Component {
   state = {};
 
   render() {
-    return <h1 className="header">FLY ME FOOD</h1>;
+    return <h1 className="header">Eat Grubs</h1>;
   }
 }
 
