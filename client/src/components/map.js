@@ -22,7 +22,7 @@ class Map extends Component {
           },
         ],
       },
-      driverlocation: null,// store driver coordinates, can use this to update info in order.driverlocation field
+      driverlocation: null, // store driver coordinates, can use this to update info in order.driverlocation field
       type: this.props.type,
     };
   }
@@ -31,18 +31,38 @@ class Map extends Component {
     let currentComponent = this;
     console.log("Get location method");
     console.log(this.state.order);
-    
+
     // if display this map on business side, set starting point to driverlocation
-    if (this.state.type === "business"){
-      console.log("type is business")
-      if (this.state.driverlocation){
-        currentComponent.setState({start: this.state.driverlocation})
-      }else {
-        currentComponent.setState({start: [-121.88130866919334, 37.336324837847584]})
+    if (this.state.type === "business") {
+      console.log("type is business");
+      if (this.state.driverlocation) {
+        currentComponent.setState({ start: this.state.driverlocation });
+      } else {
+        if (this.state.order.status === "Out for delivery") {
+          var search_text = this.state.order.businessAddress
+            .split(" ")
+            .join("%20");
+          var endpoint = "mapbox.places";
+          const MAP_API = "https://api.mapbox.com/geocoding/v5/";
+          const QUERY = endpoint + "/" + search_text + ".json";
+          const KEY =
+            "?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg";
+
+          await fetch(`${MAP_API}${QUERY}${KEY}`)
+            .then((response) => response.json())
+            .then((data) => {
+              this.setState(() => ({
+                start: data.features[0].geometry.coordinates,
+                driverlocation: this.state.start, //update driver location
+              }));
+            });
+        } else {
+          currentComponent.setState({
+            start: [-121.88130866919334, 37.336324837847584],
+          });
+        }
       }
-      
-    }
-    else {
+    } else {
       //if display this map on driver side
 
       //From current location or preset location to restaurant
@@ -55,14 +75,14 @@ class Map extends Component {
           navigator.geolocation.watchPosition(function (position) {
             currentComponent.setState({
               start: [position.coords.longitude, position.coords.latitude],
-              driverlocation: this.state.start //update driver location
+              driverlocation: this.state.start, //update driver location
             });
           });
         } else {
           alert("Sorry, browser does not support geolocation!");
           currentComponent.setState({
             start: [-121.88130866919334, 37.336324837847584],
-            driverlocation: this.state.start //update driverlocation
+            driverlocation: this.state.start, //update driverlocation
           });
         }
       }
@@ -70,7 +90,9 @@ class Map extends Component {
       //From restaurant to delivery address
       else if (this.state.order.status === "Out for delivery") {
         console.log("Step 1: Start location for out for delivery");
-        var search_text = this.state.order.businessAddress.split(" ").join("%20");
+        var search_text = this.state.order.businessAddress
+          .split(" ")
+          .join("%20");
         var endpoint = "mapbox.places";
         const MAP_API = "https://api.mapbox.com/geocoding/v5/";
         const QUERY = endpoint + "/" + search_text + ".json";
@@ -82,7 +104,7 @@ class Map extends Component {
           .then((data) => {
             this.setState(() => ({
               start: data.features[0].geometry.coordinates,
-              driverlocation: this.state.start //update driver location
+              driverlocation: this.state.start, //update driver location
             }));
           });
       }
@@ -172,7 +194,7 @@ class Map extends Component {
     mapboxgl.accessToken =
       "pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg";
     if (this.state.start) {
-      console.log("draw map here")
+      console.log("draw map here");
       var map = new mapboxgl.Map({
         container: "drivermap" + this.state.order._id,
         style: "mapbox://styles/mapbox/streets-v11",
@@ -315,7 +337,6 @@ class Map extends Component {
 
     return (
       <>
-        
         <div style={style} id={"drivermap" + this.state.order._id}></div>
       </>
     );
