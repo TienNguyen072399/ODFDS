@@ -6,6 +6,7 @@ import Map from "../components/map";
 import DirectionMap from "../components/DirectionMap";
 import "./DashCSS.css";
 import Popup from "../components/Popup";
+import CompleteOrder from "../components/completeOrder";
 
 class BusinessMap extends Component {
   state={
@@ -32,6 +33,7 @@ class BusinessMap extends Component {
       <div className="App">
         <button onClick = {this.changeStatus}> Click To Change status </button>
         <Popup ref = {this.popupRef} />
+        <CompleteOrder></CompleteOrder>
       </div>
     );
   }
