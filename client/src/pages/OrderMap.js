@@ -5,6 +5,7 @@ import "../mapbox-gl.css";
 import Map from "../components/map";
 //import DirectionMap from "../components/DirectionMap";
 import "./DashCSS.css";
+import CompleteOrder from "../components/completeOrder";
 
 class OrderMap extends Component {
   constructor(props) {
@@ -140,7 +141,7 @@ class OrderMap extends Component {
         return <div id="ordermap">Sorry, cannot get Driver location.</div>;
       case 'Delivered':
         console.log("No map delivered")
-        return <div id="ordermap">Sorry, cannot get Driver location.</div>;
+        return <CompleteOrder order = {this.state.order} onPay = {this.handlePay}/>;
       default:
         console.log("map showing")
         return <Map type = "business" key = {this.state.order._id} order={this.state.order}/>;   
@@ -156,6 +157,11 @@ class OrderMap extends Component {
     }else return;
   }
    
+  handlePay = (e) => {
+    e.preventDefault();
+    alert("Thank you ! This order is paid. ")
+  }
+
   render() {
     console.log(this.state.order)
       return (

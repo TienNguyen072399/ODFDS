@@ -11,12 +11,12 @@ state = {
 
 message = '';
 
-  openPopup = (message = 'Something went wrong...') => {
+  openPopup = (message = 'Order delivered, please check status') => {
     this.message = message;
     this.setState({ isActive: true }, () => {
-      // setTimeout(() => {
-      //   this.setState({ isActive: false });
-      // }, 30000);
+      setTimeout(() => {
+        this.setState({ isActive: false });
+      }, 10000);
       
     });
   }

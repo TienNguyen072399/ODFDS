@@ -33,12 +33,12 @@ class BusinessMap extends Component {
       <div className="App">
         <button onClick = {this.changeStatus}> Click To Change status </button>
         <Popup ref = {this.popupRef} />
-        <CompleteOrder></CompleteOrder>
+        
       </div>
     );
   }
   
-  
+  //<CompleteOrder></CompleteOrder>
   
   // constructor(props) {
   //   super(props);

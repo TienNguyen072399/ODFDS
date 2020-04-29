@@ -7,12 +7,12 @@
 
 }
 
-#button-container {
+#button-container-complete {
     height: max-content;
     position: relative;
-    top: 20%;
+    top: 10%;
     align-self: center;
-    left: auto;
+    left: 25%;
     right: auto;
     /*align-items: center;*/
 
@@ -22,7 +22,7 @@
 
 #dash-box {
     width: 600px;
-    height: 300px;
+    height: 350px;
     border: brown;
     background-color: #ffffff;
     position: relative;
