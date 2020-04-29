@@ -5,7 +5,7 @@ import CustomButtons from "./CustomButtons";
 
 class Popup extends Component {
 state = {
-  cost: 100,
+  order: this.props.order,
   isActive: false,
 };
 
@@ -24,14 +24,9 @@ message = '';
     const { isActive } = this.state;
     return (
       <div className = {isActive ? [Styles.popup, Styles.show].join(" ") : Styles.popup}>
-        
-          <div id="dollar">$</div>
-        
-          <div id="txtcontainer">You owe ${this.state.cost}.</div>
-          <div id="txtcontainer"> <CustomButtons onclick = {this.props.onPayNow} text="PAY NOW" color="#5c8eb9" width="100%"fontSize="20px"/></div>
-          <div id="txtcontainer"> <CustomButtons onclick = {this.props.onPayLater} text="PAY LATER" color="#5c8eb9" width="100%"fontSize="20px"/></div>
-        
-        
+        <div id="dollar">$</div>
+        <div id="txtcontainer">You have paid ${this.state.order.cost}. Thank you!</div>
+        <div id="txtcontainer"><CustomButtons text="Close Window" color="#5c8eb9" width="100%"fontSize="20px"/></div>    
       </div>
     )
   }

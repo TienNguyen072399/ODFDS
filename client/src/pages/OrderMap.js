@@ -6,6 +6,7 @@ import Map from "../components/map";
 //import DirectionMap from "../components/DirectionMap";
 import "./DashCSS.css";
 import CompleteOrder from "../components/completeOrder";
+import Popup from "../components/Popup";
 
 class OrderMap extends Component {
   constructor(props) {
@@ -16,7 +17,8 @@ class OrderMap extends Component {
         start: [],
         end: [],
         directions: null,
-        driverlocation: this.props.driverlocation, // may changed to this.state.order.driverlocation
+        driverlocation: this.props.driverlocation, // may changed to this.state.order.driverlocation,
+        status: null
     };
   }
   getLocationUpdate = async (event) => {
@@ -157,13 +159,21 @@ class OrderMap extends Component {
     }else return;
   }
    
-  handlePay = (e) => {
-    e.preventDefault();
-    alert("Thank you ! This order is paid. ")
+  handlePay = () => {
+    this.setState({status: "paid"})
+  }
+
+  popupRef = React.createRef();
+
+  _showPopupHandler = () => {
+    this.popupRef.current.openPopup('Paid');
   }
 
   render() {
     console.log(this.state.order)
+    if (this.state.status === "Paid"){
+      this._showPopupHandler()
+    }
       return (
       <div 
         style={{
@@ -188,6 +198,7 @@ class OrderMap extends Component {
             {this.showMap()}
           </div>
         </div>
+        <Popup ref = {this.popupRef} order= {this.state.order} />
       </div>
     );
   }

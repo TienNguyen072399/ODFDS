@@ -10,7 +10,8 @@ import CompleteOrder from "../components/completeOrder";
 
 class BusinessMap extends Component {
   state={
-    status : ""
+    status : "",
+    order : {cost: 10}
   }
   popupRef = React.createRef();
 
@@ -32,7 +33,7 @@ class BusinessMap extends Component {
     return (
       <div className="App">
         <button onClick = {this.changeStatus}> Click To Change status </button>
-        <Popup ref = {this.popupRef} />
+        <Popup ref = {this.popupRef} order = {this.state.order}/>
         
       </div>
     );

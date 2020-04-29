@@ -30,7 +30,7 @@ class CompleteOrder extends Component {
       <div id ="time">Order recieved at {this.getRecievedTime()}</div><br/>
     <div id="time">Delivered at {this.getDeliveryTime()}</div><br/>
     <div id="container">
-    <div id="titlecontainer"><h2>Order for {this.state.order.customerName} was delivered. You owe ${this.state.order.cost}.</h2></div>
+    <div id="titlecontainer"><h2>Order for {this.state.order.customerName} was delivered. You owe ${(Math.round(this.state.order.cost * 100) / 100)}.</h2></div>
     </div>
     <div id="button-container-complete"><CustomButtons onclick = {this.props.onPay} text="PAY NOW" color="#5c8eb9" width="50%"fontSize="25px"/></div>
 </div>
