@@ -117,9 +117,7 @@ class BuisDash extends Component {
               {this.getCost()}
             </div>
           </div>
-          <br />
-          <br />
-          <br />
+          <br/>
           <div id="starcontainer">
             <Rating driver={this.state.order.assigned} />
           </div>

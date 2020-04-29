@@ -1,8 +1,8 @@
-#boxtop {
+#boxtopcomplete {
     background-color: #A8A8A8;
     font: Bold 50px Arial; 
     text-align: center; 
-    height: min-content;
+    height: max-content;
     width: auto;  
 
 }

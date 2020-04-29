@@ -12,7 +12,7 @@ class CompleteOrder extends Component {
       return (
     <div id = "container">
     <div id="dash-box">
-    <div id="boxtop">ORDER COMPLETED</div>
+    <div id="boxtopcomplete">ORDER COMPLETED</div>
     <br></br>
     <div id ="titlecontainer"><h2>ORDER RECIEVED</h2></div>
     <div id="time">[Delivery Time]</div>

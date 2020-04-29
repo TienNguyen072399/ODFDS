@@ -10,8 +10,8 @@ class Navbar extends Component {
   render() {
     if (this.state.type === "driver") {
       return (
-        <div class="navcontainer">
-          <div class="navbar">
+        <div className="navcontainer">
+          <div className="navbar">
             <Link to="openorders">Open Orders</Link>
             <Link to="map">Order Map</Link>
             <Link to="complete">Delivered Orders</Link>
@@ -21,8 +21,8 @@ class Navbar extends Component {
       );
     } else {
       return (
-        <div class="navcontainer">
-          <div class="navbar">
+        <div className="navcontainer">
+          <div className="navbar">
             {/* <a href="/business/setting">Settings</a> */}
             <Link to="neworder">New Order</Link>
             <Link to="dashboard">Current Orders</Link>

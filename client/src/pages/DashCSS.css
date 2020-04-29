@@ -1,7 +1,6 @@
 #dash-box {
     width: 600px;
-    height: 350px;
-    border: brown;
+    height: max-content;
     background-color: #ffffff;
     position: relative;
 
@@ -10,11 +9,12 @@
 /*To be filled in with a map? Low Priority on backlog.*/
 
 #boxtop {
-    background-color: #A8A8A8;
-    height: auto;
+    background-color: #a8a8a8;
+    height: 20%;
     width: auto;   
 }
 
+/*Used in direction map component*/
 #boxtopmap {
     background-color: rgb(63, 61, 61);
     height: auto;
@@ -30,6 +30,8 @@
     
 }
 
+/*Containers */
+
 #button-container-map {
     height: max-content;
     width: auto;
@@ -37,8 +39,6 @@
     right: -60px;
     position: absolute;
 }
-
-/*Containers */
 
 #container{
     padding: 3%;
@@ -72,7 +72,7 @@
 }
 
 #star-container {
-    /**/
+    padding: 20px;
 }
 
 /*React Rating Star Colors*/
@@ -84,8 +84,7 @@
     padding-top: 3%;
     position: absolute;
     display: flex;
-    line-height: normal
-    ;
+    line-height: normal;
 }
 
 /*Active star color*/
