@@ -53,8 +53,13 @@ class NewOrder extends Component {
   handleSubmit = async (e) => {
     e.preventDefault();
     console.log(this.props);
-    if (!this.state.deliveryAddress) {
-      alert("Please enter a valid address.");
+    if (
+      !this.state.deliveryAddress ||
+      !this.state.customerName ||
+      !this.state.city ||
+      !this.state.zipCode
+    ) {
+      alert("Please fill out all the required fields.");
     } else if (this.state.city.toLowerCase() !== "san jose") {
       alert("Eat Grubs is only available in San Jose at this time.");
     } else {
@@ -75,49 +80,49 @@ class NewOrder extends Component {
         });
 
       console.log(`${this.state.latitude}, ${this.state.longitude}`);
+      await fetch("http://localhost:5000/api/restaurants/order/submit", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          businessName: this.props.user.businessName,
+          businessId: this.props.user._id,
+          businessAddress: this.props.user.address,
+          customerName: this.state.customerName,
+          deliveryAddress:
+            this.state.deliveryAddress +
+            "," +
+            this.state.city +
+            ", CA " +
+            this.state.zipCode,
+          latitude: this.state.latitude,
+          longitude: this.state.longitude,
+        }),
+      })
+        .then((response) => response.json())
+        .then((res) => {
+          if (res.success) {
+            alert(res.success);
+            this.setState({
+              customerName: "",
+              deliveryAddress: "",
+              city: "",
+              zipCode: "",
+            });
+          } else {
+            alert(res.error);
+            this.setState({
+              customerName: "",
+              deliveryAddress: "",
+              city: "",
+              zipCode: "",
+            });
+          }
+        });
     }
 
-    await fetch("http://localhost:5000/api/restaurants/order/submit", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        businessName: this.props.user.businessName,
-        businessId: this.props.user._id,
-        businessAddress: this.props.user.address,
-        customerName: this.state.customerName,
-        deliveryAddress:
-          this.state.deliveryAddress +
-          "," +
-          this.state.city +
-          ", CA " +
-          this.state.zipCode,
-        latitude: this.state.latitude,
-        longitude: this.state.longitude,
-      }),
-    })
-      .then((response) => response.json())
-      .then((res) => {
-        if (res.success) {
-          alert(res.success);
-          this.setState({
-            customerName: "",
-            deliveryAddress: "",
-            city: "",
-            zipCode: "",
-          });
-        } else {
-          alert(res.error);
-          this.setState({
-            customerName: "",
-            deliveryAddress: "",
-            city: "",
-            zipCode: "",
-          });
-        }
-      });
     // return <Redirect to="/business/dashboard" />;
   };
 

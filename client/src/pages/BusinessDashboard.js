@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import CustomButtons from "../components/CustomButtons";
 import Navbar from "../components/NavBar";
 import BuisDash from "../components/BuisDash";
 
@@ -21,9 +22,16 @@ class BusinessDashboard extends Component {
       });
   }
 
+  handleRefresh = () => {
+    fetch("http://localhost:5000/api/restaurants/orders/" + this.props.user._id)
+      .then((response) => response.json())
+      .then((res) => {
+        this.setState({ orders: res });
+      });
+  };
+
   render() {
     return (
-
       <div
         style={{
           display: "flex",
@@ -34,11 +42,22 @@ class BusinessDashboard extends Component {
         }}
       >
         <Navbar type={this.state.type} />
-
+        <center>
+          <CustomButtons
+            text="Refresh"
+            color="#5c8eb9"
+            width="100%"
+            fontSize="20px"
+            onClick={this.handleRefresh}
+          />
+        </center>
         {this.state.orders.map((item) => (
           <div>
             <center>
-              <BuisDash index={this.state.orders.indexOf(item)+1} order={item} />
+              <BuisDash
+                index={this.state.orders.indexOf(item) + 1}
+                order={item}
+              />
             </center>
           </div>
         ))}

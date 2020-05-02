@@ -293,7 +293,7 @@ class DriverDash extends Component {
               style={{ textAlign: "left", paddingRight: "20%" }}
             >
               {/* >> Requesting delivery from {this.getDistance()} miles away<br/> <br/> */}
-              >> Deliver to: {this.state.order.businessAddress}
+              >> Deliver to: {this.state.order.deliveryAddress}
               <br />
               <br />
               >> Estimate delivery route: {this.getRoute()} miles

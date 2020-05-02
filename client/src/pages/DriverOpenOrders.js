@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link, Redirect, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
-
+import CustomButtons from "../components/CustomButtons";
 import Navbar from "../components/NavBar";
 import DriverDash from "../components/DriverDash";
 
@@ -56,6 +56,14 @@ class DriverOpenOrders extends Component {
       });
   };
 
+  handleRefresh = () => {
+    fetch("http://localhost:5000/api/drivers/orders")
+      .then((response) => response.json())
+      .then((res) => {
+        this.setState({ orders: res });
+      });
+  };
+
   render() {
     return (
       <div
@@ -68,11 +76,23 @@ class DriverOpenOrders extends Component {
         }}
       >
         <Navbar type={this.state.type} />
-
+        <center>
+          <CustomButtons
+            text="Refresh"
+            color="#5c8eb9"
+            width="100%"
+            fontSize="20px"
+            onClick={this.handleRefresh}
+          />
+        </center>
         {this.state.orders.map((item) => (
           <div key={item._id}>
             <center>
-              <DriverDash index={this.state.orders.indexOf(item)+1} order={item} onAccept={this.handleAccept} />
+              <DriverDash
+                index={this.state.orders.indexOf(item) + 1}
+                order={item}
+                onAccept={this.handleAccept}
+              />
             </center>
           </div>
         ))}
