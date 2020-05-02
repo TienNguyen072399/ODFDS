@@ -73,10 +73,10 @@ class Map extends Component {
             "Finding your location. (If prompted by your browser, please say yes.)"
           );
           navigator.geolocation.watchPosition(function (position) {
-            currentComponent.setState({
-              start: [position.coords.longitude, position.coords.latitude],
-              driverlocation: this.state.start, //update driver location
-            });
+            // currentComponent.setState({
+            //   start: [position.coords.longitude, position.coords.latitude],
+            //   driverlocation: this.state.start, //update driver location
+            // });
           });
         } else {
           alert("Sorry, browser does not support geolocation!");

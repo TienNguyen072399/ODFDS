@@ -10,6 +10,14 @@ class BuisDash extends Component {
     order: this.props.order,
   };
 
+  componentWillReceiveProps(nextProps) {
+    // console.log(nextProps.order.status);
+    // console.log(this.state.order.status);
+    if (nextProps.order.status !== this.state.order.status) {
+      this.setState({ order: nextProps.order });
+    }
+  }
+
   getDriver = () => {
     switch (this.state.order.status) {
       case "Waiting for driver":
@@ -117,8 +125,8 @@ class BuisDash extends Component {
               {this.getCost()}
             </div>
           </div>
-          <br/>
-          <br/>
+          <br />
+          <br />
           <div id="starcontainer">
             <Rating driver={this.state.order.assigned} />
           </div>
