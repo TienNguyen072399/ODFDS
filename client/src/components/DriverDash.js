@@ -68,6 +68,9 @@ class DriverDash extends Component {
   getRoute = () => {
     // get number of miles between businessAddress and deliveryAddress
     if (this.state.deliveryRoute) {
+      if (this.state.deliveryRoute.message){
+        return "invalid address ";
+      }
       return (
         Math.round(
           10 * this.state.deliveryRoute.routes[0].distance * 0.000621371
