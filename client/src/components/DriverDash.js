@@ -73,10 +73,17 @@ class DriverDash extends Component {
       const MAP_API = "https://api.mapbox.com/geocoding/v5/mapbox.places/";
       const KEY =
         "?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg";
+<<<<<<< Updated upstream
       // get business address coordinates  
       const QUERY1 =this.state.order.businessAddress.split(" ").join("%20") + ".json";
       
     var business
+=======
+      // get business address coordinates
+      const QUERY1 = this.state.order.businessAddress.split(" ").join("%20") + ".json";
+      //const QUERY1 = this.state.order.businessAddress;
+      var business;
+>>>>>>> Stashed changes
       await fetch(`${MAP_API}${QUERY1}${KEY}`)
         .then((response) => response.json())
         .then((data) => {
@@ -85,7 +92,12 @@ class DriverDash extends Component {
       console.log("business: "+business)
       // get delivery address coordinate
       const QUERY2 = this.state.order.deliveryAddress.split(" ").join("%20") + ".json";
+<<<<<<< Updated upstream
       var customer
+=======
+      //const QUERY2 = this.state.order.deliveryAddress;
+      var customer;
+>>>>>>> Stashed changes
       await fetch(`${MAP_API}${QUERY2}${KEY}`)
         .then((response) => response.json())
         .then((data) => {
@@ -154,6 +166,7 @@ class DriverDash extends Component {
     else if (this.state.order.status === "Out for delivery") {
       console.log("Step 1: Start location for out for delivery");
       var search_text = this.state.order.businessAddress.split(" ").join("%20");
+      //var search_text = this.state.order.businessAddress;
       var endpoint = "mapbox.places";
       const MAP_API = "https://api.mapbox.com/geocoding/v5/";
       const QUERY = endpoint + "/" + search_text + ".json";
@@ -176,9 +189,11 @@ class DriverDash extends Component {
     var search_text = "";
     if (this.state.order.status === "Waiting for pickup"||this.state.order.status === "Waiting for driver.") {
       search_text = this.state.order.businessAddress.split(" ").join("%20");
+      //search_text = this.state.order.businessAddress;
       console.log("Step 2: Get end coordinates (Restaurant)");
     } else if (this.state.order.status === "Out for delivery") {
       search_text = this.state.order.deliveryAddress.split(" ").join("%20");
+      //search_text = this.state.order.deliveryAddress;
       console.log("Step 2: Get end coordinates (Delivery Address)");
     }
     const MAP_API = "https://api.mapbox.com/geocoding/v5/";

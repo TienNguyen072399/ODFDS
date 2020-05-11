@@ -32,6 +32,7 @@ class Map extends Component {
     console.log("Get location method");
     console.log(this.state.order);
 
+<<<<<<< Updated upstream
     //From current location or preset location to restaurant
     if (this.state.order.status === "Waiting for pickup") {
       console.log("Step 1: Start location for waiting for pickup");
@@ -40,6 +41,56 @@ class Map extends Component {
           "Finding your location. (If prompted by your browser, please say yes.)"
         );
         navigator.geolocation.watchPosition(function (position) {
+=======
+    // if display this map on business side, set starting point to driverlocation
+    if (this.state.type === "business") {
+      console.log("type is business");
+      if (this.state.driverlocation) {
+        currentComponent.setState({ start: this.state.driverlocation });
+      } else {
+        if (this.state.order.status === "Out for delivery") {
+          var search_text = this.state.order.businessAddress
+            .split(" ")
+            .join("%20");
+          var endpoint = "mapbox.places";
+          const MAP_API = "https://api.mapbox.com/geocoding/v5/";
+          const QUERY = endpoint + "/" + search_text + ".json";
+          const KEY =
+            "?proximity=-121.893028,37.335480&access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg&types=address&bbox=-122.02102649158965%2C37.25101674976506%2C-121.79941218830572%2C37.40577078607954&limit=1";
+
+          await fetch(`${MAP_API}${QUERY}${KEY}`)
+            .then((response) => response.json())
+            .then((data) => {
+              this.setState(() => ({
+                start: data.features[0].geometry.coordinates,
+                driverlocation: this.state.start, //update driver location
+              }));
+            });
+        } else {
+          currentComponent.setState({
+            start: [-121.88130866919334, 37.336324837847584],
+          });
+        }
+      }
+    } else {
+      //if display this map on driver side
+
+      //From current location or preset location to restaurant
+      if (this.state.order.status === "Waiting for pickup") {
+        console.log("Step 1: Start location for waiting for pickup");
+        if (navigator.geolocation) {
+          alert(
+            "Finding your location. (If prompted by your browser, please say yes.)"
+          );
+          navigator.geolocation.watchPosition(function (position) {
+            // currentComponent.setState({
+            //   start: [position.coords.longitude, position.coords.latitude],
+            //   driverlocation: this.state.start, //update driver location
+            // });
+          });
+        } else {
+          alert("Sorry, browser does not support geolocation!");
+>>>>>>> Stashed changes
           currentComponent.setState({
             start: [position.coords.longitude, position.coords.latitude],
           });
@@ -52,6 +103,7 @@ class Map extends Component {
       }
     }
 
+<<<<<<< Updated upstream
     //From restaurant to delivery address
     else if (this.state.order.status === "Out for delivery") {
       console.log("Step 1: Start location for out for delivery");
@@ -61,6 +113,19 @@ class Map extends Component {
       const QUERY = endpoint + "/" + search_text + ".json";
       const KEY =
         "?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg";
+=======
+      //From restaurant to delivery address
+      else if (this.state.order.status === "Out for delivery") {
+        console.log("Step 1: Start location for out for delivery");
+        var search_text = this.state.order.businessAddress
+          .split(" ")
+          .join("%20");
+        var endpoint = "mapbox.places";
+        const MAP_API = "https://api.mapbox.com/geocoding/v5/";
+        const QUERY = endpoint + "/" + search_text + ".json";
+        const KEY =
+          "?proximity=-121.893028,37.335480&access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg&types=address&bbox=-122.02102649158965%2C37.25101674976506%2C-121.79941218830572%2C37.40577078607954&limit=1";
+>>>>>>> Stashed changes
 
       await fetch(`${MAP_API}${QUERY}${KEY}`)
         .then((response) => response.json())
@@ -86,7 +151,7 @@ class Map extends Component {
     const MAP_API = "https://api.mapbox.com/geocoding/v5/";
     const QUERY = endpoint + "/" + search_text + ".json";
     const KEY =
-      "?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg";
+      "?proximity=-121.893028,37.335480&access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg&types=address&bbox=-122.02102649158965%2C37.25101674976506%2C-121.79941218830572%2C37.40577078607954&limit=1";
     //console.log(`${MAP_API}${QUERY}${KEY}`);
     await fetch(`${MAP_API}${QUERY}${KEY}`)
       .then((response) => response.json())

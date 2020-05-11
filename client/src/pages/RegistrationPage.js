@@ -18,7 +18,47 @@ class Registration extends Component {
     longitude: 0,
     redirect: "",
     status: "",
+    polygon: [
+      [
+        [
+          -122.19131469726561,
+          37.21119097450984
+        ],
+        [
+          -121.72164916992186,
+          37.21119097450984
+        ],
+        [
+          -121.72164916992186,
+          37.48684571271661
+        ],
+        [
+          -122.19131469726561,
+          37.48684571271661
+        ],
+        [
+          -122.19131469726561,
+          37.21119097450984
+        ]
+      ]
+    ]
   };
+
+  inside = (point, vs) => {
+    
+    var x = point[0], y = point[1];
+
+    var inside = false;
+    for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+        var xi = vs[i][0], yi = vs[i][1];
+        var xj = vs[j][0], yj = vs[j][1];
+
+        var intersect = ((yi > y) != (yj > y))
+            && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        if (intersect) inside = !inside;
+    }
+    return inside;
+};
 
   handleChooseType = (e) => {
     console.log(e.target.value);
@@ -53,12 +93,13 @@ class Registration extends Component {
         return;
       } else {
         await fetch(
-          `https://api.mapbox.com/geocoding/v5/mapbox.places/${this.state.address}.json?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg`
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${this.state.address}.json?proximity=-121.893028,37.335480&access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg&types=address&bbox=-122.02102649158965%2C37.25101674976506%2C-121.79941218830572%2C37.40577078607954&limit=1`
         )
           .then((response) => response.json())
           .then((res) => {
-
-            if (res.features.length == 0) {
+            console.log("result: "+res.features[0].place_name.split(",")[0]);
+            console.log("input: "+this.state.address.split(",")[0]);
+            if (res.features[0].place_name.split(",")[0] !== this.state.address.split(",")[0]) {
               alert("Address not found");
 
             } else {
@@ -69,7 +110,7 @@ class Registration extends Component {
             }
           });
         console.log(`${this.state.latitude}, ${this.state.longitude}`);
-
+        if (this.state.latitude !== 0 && this.longitude !== 0){
         await fetch("http://localhost:5000/api/users/registration", {
           method: "POST",
 
@@ -97,6 +138,7 @@ class Registration extends Component {
               alert(res.error);
             }
           });
+        }
       }
     } else {
       if (
