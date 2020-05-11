@@ -259,6 +259,7 @@ class Map extends Component {
       };
 
       map.on("load", function () {
+        
         map.addImage("pulsing-dot", pulsingDot, { pixelRatio: 2 });
         // add route layer
         map.addSource("route", {
@@ -308,6 +309,7 @@ class Map extends Component {
             "icon-image": "pulsing-dot",
           },
         });
+        
       });
 
       // Add zoom and rotation controls to the map.
@@ -321,6 +323,23 @@ class Map extends Component {
           trackUserLocation: true,
         })
       );
+      
+      // create the popup
+      if (this.state.order.status === "Out for delivery"){
+        var popup = new mapboxgl.Popup({ offset: 25 }).setText(
+          `${this.state.order.deliveryAddress}`
+          );
+      } else if (this.state.order.status === "Waiting for pickup"){
+        var popup = new mapboxgl.Popup({ offset: 25 }).setText(
+          `${this.state.order.businessAddress}`
+          );
+      }
+      
+      // create the marker
+      if (this.state.end) {
+        new mapboxgl.Marker().setLngLat(this.state.end).setPopup(popup).addTo(map);
+      }
+      
     }
   }
 

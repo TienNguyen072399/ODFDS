@@ -154,13 +154,15 @@ class OrderMap extends Component {
     if (this.state.order.status !== "Waiting for driver."&&this.state.order.status !== "Waiting for driver"&&this.state.order.status !== "Delivered"){
     if (this.state.directions){
       let distancetime = this.state.directions.routes[0].duration;
-      return `Driver is ${Math.abs(Math.round(distancetime/60))} mins away`
+      if (this.state.order.status === "Out for delivery") return `Driver is ${Math.abs(Math.round(distancetime/60))} mins away from destination`;
+      return `Driver is ${Math.abs(Math.round(distancetime/60))} mins away from restaurant`
     } else return;
     }else return;
   }
    
-  handlePay = () => {
+  handlePay = async (e) => {
     this.setState({status: "paid"})
+    console.log("Paid")
   }
 
   popupRef = React.createRef();
@@ -168,6 +170,8 @@ class OrderMap extends Component {
   _showPopupHandler = () => {
     this.popupRef.current.openPopup('Paid');
   }
+
+   
 
   render() {
     console.log(this.state.order)
@@ -189,6 +193,7 @@ class OrderMap extends Component {
           <div id="dash-box">
             <div id="boxtopmap">
               <div id ="titlemap">ID: {this.state.order._id}</div>
+              
               <div id="timeaway">{this.getDistanceTime()}</div>
               <div id ="titlemap">Driver: {this.state.order.assigned}</div> 
               
