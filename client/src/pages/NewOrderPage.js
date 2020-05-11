@@ -15,6 +15,7 @@ class NewOrder extends Component {
       deliveryAddress: "",
       timePickUp: "",
       timeDelivered: "",
+      fullAddress: "",
       token:
         "pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg",
       latitude: 0,
@@ -64,23 +65,56 @@ class NewOrder extends Component {
       alert("Eat Grubs is only available in San Jose at this time.");
     } else {
       await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${this.state.deliveryAddress}, ${this.state.city}, CA ${this.state.zipCode}.json?access_token=${this.state.token}`
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${this.state.deliveryAddress}, ${this.state.city}, CA ${this.state.zipCode}.json?proximity=-121.893028,37.335480&access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg&types=address&bbox=-122.02102649158965%2C37.25101674976506%2C-121.79941218830572%2C37.40577078607954&limit=1`
       )
         .then((response) => response.json())
-        .then((res) => {
-          if (res.features.length === 0) {
-            alert("Invalid Address");
-          } else {
-            // console.log(res);
-            this.setState({
-              latitude: res.features[0].center[1],
-              longitude: res.features[0].center[0],
-            });
-          }
-        });
+        .then(async (res) => {
+          if (res.features.length > 0) {
+            console.log(res);
+            let deliveryAddress = "";
+            let city = "";
+            let zipCode = "";
+            let startIndex = 0;
+            let endIndex = res.features[0].place_name.indexOf(",");
 
-      console.log(`${this.state.latitude}, ${this.state.longitude}`);
-      await fetch("http://localhost:5000/api/restaurants/order/submit", {
+            deliveryAddress = res.features[0].place_name
+              .substring(startIndex, endIndex)
+              .toLowerCase();
+
+            startIndex += deliveryAddress.length + 2;
+            endIndex = res.features[0].place_name.indexOf(",", startIndex);
+
+            city = res.features[0].place_name
+              .substring(startIndex, endIndex)
+              .toLowerCase();
+
+            startIndex += city.length + 2 + "california".length + 1;
+            endIndex = res.features[0].place_name.indexOf(",", startIndex);
+            zipCode = res.features[0].place_name.substring(
+              startIndex,
+              endIndex
+            );
+
+            console.log(deliveryAddress);
+            console.log(city);
+            console.log(zipCode);
+
+            //Address validation
+            if (
+              this.state.deliveryAddress.toLowerCase() === deliveryAddress &&
+              this.state.city.toLowerCase() === city &&
+              this.state.zipCode === zipCode
+            ) {
+              console.log("valid address");
+              this.setState({
+                latitude: res.features[0].center[1],
+                longitude: res.features[0].center[0],
+                fullAddress: res.features[0].place_name,
+              });
+              console.log(`${this.state.latitude}, ${this.state.longitude}`);
+              console.log(this.state.fullAddress);
+
+              await fetch("http://localhost:5000/api/restaurants/order/submit", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -121,8 +155,23 @@ class NewOrder extends Component {
             });
           }
         });
+            }
+            //Address not valid
+            else {
+              alert("Address not found. Please enter a valid address");
+            }
+            // console.log(res.features[0].place_name);
+            // this.setState({
+            //   latitude: res.features[0].center[1],
+            //   longitude: res.features[0].center[0],
+            // });
+          } else {
+            alert("Address not found. Please enter a valid address");
+          }
+        });
     }
-
+      
+    
     // return <Redirect to="/business/dashboard" />;
   };
 
