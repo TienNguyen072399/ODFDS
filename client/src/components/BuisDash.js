@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 class BuisDash extends Component {
   state = {
     order: this.props.order,
+    deliveryRoute: null,
   };
 
   componentWillReceiveProps(nextProps) {
@@ -65,13 +66,14 @@ class BuisDash extends Component {
     if (this.state.order.cost) {
       switch (this.state.order.status) {
         case "Delivered":
-          return `Total cost: $${
+          return `Final cost: $${
             Math.round(this.state.order.cost * 100) / 100
           }`;
         default:
-          // try to update real time cost - not finished
+          // estimate cost base on delivery route
+          if (this.getRoute() === "invalid address ") return `Cannot calculate cost `;
           return `Estimate cost: $${
-            Math.round(this.state.order.cost * 100) / 100
+            Math.round(this.calc_costs(this.getRoute()) * 100) / 100
           }`;
       }
     } else return;
@@ -81,9 +83,99 @@ class BuisDash extends Component {
   calc_costs = (miles) => {
     //calculating cost, 5 is base cost
     let cost_order = 5;
-    cost_order = cost_order + miles * 2;
+    if (miles >1) cost_order = cost_order + (miles-1) * 2; // first mile is free
     return cost_order;
   };
+
+  getRoute = () => {
+    // get number of miles between businessAddress and deliveryAddress
+    if (this.state.deliveryRoute) {
+      if (this.state.deliveryRoute.message){
+        return "invalid address ";
+      }
+      return (
+        Math.round(
+          10 * this.state.deliveryRoute.routes[0].distance * 0.000621371
+        ) / 10
+      );
+    } else return;
+  };
+
+  getDistance = () => {
+    if (this.state.order) {
+      switch (this.state.order.status) {
+        case "Delivered":
+          if (this.getRoute() === "invalid address ") return `Cannot calculate distance `;
+          return `Distance: ${this.getRoute()} miles`;
+        default:
+          // show distance
+          if (this.getRoute() === "invalid address ") return `Cannot calculate distance `;
+          return `Distance: ${this.getRoute()} miles`;
+      }
+    } else return;
+  };
+
+  getDeliverRoute = async (event) => {
+    if (this.state.order) {
+      const MAP_API = "https://api.mapbox.com/geocoding/v5/mapbox.places/";
+      const KEY =
+        "?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg";
+      // get business address coordinates
+      const QUERY1 =
+        this.state.order.businessAddress.split(" ").join("%20") + ".json";
+      var business;
+      await fetch(`${MAP_API}${QUERY1}${KEY}`)
+        .then((response) => response.json())
+        .then((data) => {
+          business = data.features[0].geometry.coordinates;
+        });
+      console.log("business: " + business);
+      // get delivery address coordinate
+      const QUERY2 =
+        this.state.order.deliveryAddress.split(" ").join("%20") + ".json";
+      var customer;
+      await fetch(`${MAP_API}${QUERY2}${KEY}`)
+        .then((response) => response.json())
+        .then((data) => {
+          customer = data.features[0].geometry.coordinates;
+        });
+      console.log("customer: " + customer);
+      var direction;
+      var profile = "mapbox/driving-traffic";
+      var coordinates =
+        business[0] + "," + business[1] + ";" + customer[0] + "," + customer[1];
+      //var coordinates = this.state.start.longitude+','+this.state.start.latitude+';'+this.state.order.longitude+','+this.state.order.latitude;
+      const QUERY3 = profile + "/" + coordinates;
+      await fetch(
+        "https://api.mapbox.com/directions/v5/" +
+          QUERY3 +
+          "?geometries=geojson&steps=true&access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg"
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          this.setState(() => ({ deliveryRoute: data }));
+          console.log(
+            "https://api.mapbox.com/directions/v5/" +
+              QUERY3 +
+              "?geometries=geojson&steps=true&access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg"
+          );
+        });
+    } else return;
+  };
+
+  async componentDidMount() {
+    console.log("Get Location details");
+    await this.getDeliverRoute();
+  }
+
+  async componentWillReceiveProps(nextProps) {
+    if (nextProps.order.status !== this.state.order.status) {
+      await this.setState({ order: nextProps.order });
+      console.log(nextProps.order);
+      console.log("Updating information");
+      await this.getDeliverRoute();
+    }
+  }
 
   render() {
     return (
@@ -109,21 +201,22 @@ class BuisDash extends Component {
             <h2>Driver: {this.getDriver()}</h2>
           </div>
           <br />
-          <div id="time">{this.getRealTime()} mins ago</div>
+          <div id="time">Recieved: {this.getRealTime()} mins ago</div>
           <div id="container">
             <br />
             <div
               id="description"
-              style={{ textAlign: "left", paddingRight: "40%" }}
+              style={{ textAlign: "left", paddingRight: "20%" }}
             >
               {this.getDestination()}
             </div>
             <div
               id="description"
-              style={{ textAlign: "left", paddingRight: "40%" }}
+              style={{ textAlign: "left", paddingRight: "20%" }}
             >
-              {this.getCost()}
+              {this.getCost()} , {this.getDistance()}
             </div>
+            
           </div>
           <br />
           <br />

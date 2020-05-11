@@ -10,8 +10,8 @@ class DriverComplete extends Component {
   getRealTime = () => {
     var currentDay = new Date();
     var currentTime = currentDay.getTime();
-    var orderTime = new Date(this.state.order.timeDelivered);
-    var diff = (currentTime - orderTime.getTime()) / 1000;
+    var deliveryTime = new Date(this.state.order.timeDelivered);
+    var diff = (currentTime - deliveryTime.getTime()) / 1000;
     diff /= 60;
     var realTime = Math.abs(Math.round(diff));
     return realTime;
@@ -48,7 +48,7 @@ class DriverComplete extends Component {
 
           <div id="titlecontainer">Status: {this.state.order.status}</div>
           <br />
-          <div id="time">{this.getRealTime()} mins ago</div>
+          <div id="time">Delivered: {this.getRealTime()} mins ago</div>
           <div id="container">
             <br />
             <div

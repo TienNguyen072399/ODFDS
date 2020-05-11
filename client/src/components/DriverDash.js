@@ -10,28 +10,28 @@ class DriverDash extends Component {
     directions: null,
     deliveryRoute: null,
   };
-  getBusiness = () => {
-    if (this.state.order.businessName) {
-      return this.state.order.businessName;
-    } else {
-      return "N/A";
-    }
-  };
+  // getBusiness = () => {
+  //   if (this.state.order.businessName) {
+  //     return this.state.order.businessName;
+  //   } else {
+  //     return "N/A";
+  //   }
+  // };
 
-  getDestination = () => {
-    switch (this.state.order.status) {
-      case "Waiting for Driver.":
-        return "At " + this.state.order.businessAddress;
-      case "Waiting for Driver":
-        return "At " + this.state.order.businessAddress;
-      case "Waiting for pickup":
-        return "At " + this.state.order.businessAddress;
-      case "Out for delivery":
-        return this.state.order.deliveryAddress;
-      default:
-        return;
-    }
-  };
+  // getDestination = () => {
+  //   switch (this.state.order.status) {
+  //     case "Waiting for Driver.":
+  //       return "At " + this.state.order.businessAddress;
+  //     case "Waiting for Driver":
+  //       return "At " + this.state.order.businessAddress;
+  //     case "Waiting for pickup":
+  //       return "At " + this.state.order.businessAddress;
+  //     case "Out for delivery":
+  //       return this.state.order.deliveryAddress;
+  //     default:
+  //       return;
+  //   }
+  // };
 
   getDistance = () => {
     // calc the distance from current location to restaurant.
@@ -65,11 +65,27 @@ class DriverDash extends Component {
     return realTime;
   };
 
+  getCost = () => {
+    if (this.state.order) {
+          // estimate cost base on delivery route
+          if (this.getRoute() === "invalid address ") return `Cannot calculate cost `;
+          return ` $${Math.round(this.calc_costs(this.getRoute()) * 100) / 100}`;
+    } else return;
+  };
+
+  //calculate costs of 1 order
+  calc_costs = (miles) => {
+    //calculating cost, 5 is base cost
+    let cost_order = 5;
+    if (miles >1) cost_order = cost_order + (miles-1) * 2; // first mile is free
+    return cost_order;
+  };
+
   getRoute = () => {
     // get number of miles between businessAddress and deliveryAddress
     if (this.state.deliveryRoute) {
       if (this.state.deliveryRoute.message){
-        return "invalid address ";
+        return "invalid";
       }
       return (
         Math.round(
@@ -114,7 +130,7 @@ class DriverDash extends Component {
           customer = data.features[0].geometry.coordinates;
         });
       console.log("customer: " + customer);
-      var direction;
+      
       var profile = "mapbox/driving-traffic";
       var coordinates =
         business[0] + "," + business[1] + ";" + customer[0] + "," + customer[1];
@@ -161,14 +177,14 @@ class DriverDash extends Component {
           },
           function (error) {
             if (error.code == error.PERMISSION_DENIED)
-              alert("Sorry, browser geolocation permission is denied");
+              //alert("Sorry, browser geolocation permission is denied");
             currentComponent.setState({
               start: [-121.88130866919334, 37.336324837847584],
             });
           }
         );
       } else {
-        alert("Sorry, browser does not support geolocation!");
+        //alert("Sorry, browser does not support geolocation!");
         currentComponent.setState({
           start: [-121.88130866919334, 37.336324837847584],
         });
@@ -295,11 +311,12 @@ class DriverDash extends Component {
               id="description"
               style={{ textAlign: "left", paddingRight: "20%" }}
             >
-              {/* >> Requesting delivery from {this.getDistance()} miles away<br/> <br/> */}
+              >> Requesting delivery from {this.getDistance()} miles away<br/> <br/>
               >> Deliver to: {this.state.order.deliveryAddress}
               <br />
               <br />
-              >> Estimate delivery route: {this.getRoute()} miles
+              >> Estimate delivery route: {this.getRoute()} miles with {this.getCost()}
+                            
             </div>
           </div>
           <br />

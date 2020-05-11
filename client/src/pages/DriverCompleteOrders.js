@@ -5,6 +5,7 @@ import DriverDash from "../components/DriverDash";
 import DriverComplete from "../components/DriverComplete";
 import BuisDash from "../components/BuisDash";
 import billPopup from "../components/billPopup";
+import CustomButtons from "../components/CustomButtons";
 class DriverCompletOrders extends Component {
   constructor(props) {
     super(props);
@@ -33,6 +34,18 @@ class DriverCompletOrders extends Component {
     console.log(e.target);
   };
 
+  handleRefresh = () => {
+    fetch(
+      "http://localhost:5000/api/drivers/mycompletedorders/" +
+        this.props.user._id
+    )
+      .then((response) => response.json())
+      .then((res) => {
+        console.log(res);
+        this.setState({ orders: res });
+      });
+  };
+
   render() {
     return (
       <div
@@ -45,7 +58,15 @@ class DriverCompletOrders extends Component {
         }}
       >
         <Navbar type={this.state.type} />
-
+        <center>
+          <CustomButtons
+            text="Refresh"
+            color="#5c8eb9"
+            width="100%"
+            fontSize="20px"
+            onClick={this.handleRefresh}
+          />
+        </center>
         {this.state.orders.map((item) => (
           <div key={item._id}>
             <center>
