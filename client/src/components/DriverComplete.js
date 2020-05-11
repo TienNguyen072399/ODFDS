@@ -13,8 +13,9 @@ class DriverComplete extends Component {
     var deliveryTime = new Date(this.state.order.timeDelivered);
     var diff = (currentTime - deliveryTime.getTime()) / 1000;
     diff /= 60;
-    var realTime = Math.abs(Math.round(diff));
-    return realTime;
+    var realTime = Math.round(diff*100)/100;
+    if (realTime < 1) return `${Math.abs(Math.round(realTime*60))} seconds`;
+    return `${Math.abs(Math.round(realTime))} minutes`;
   };
 
   getTotaltime = () => {
@@ -22,8 +23,10 @@ class DriverComplete extends Component {
     if (this.state.order.timeDelivered && this.state.order.timePickUp){
     var deliveryTime = new Date(this.state.order.timeDelivered);
     var pickupTime = new Date(this.state.order.timePickUp);
-    let totalTime = (deliveryTime.getTime() - pickupTime.getTime())/(1000*60)
-    return  Math.abs(Math.round(totalTime));
+    let totalTime = Math.round(100*((deliveryTime.getTime() - pickupTime.getTime())/(1000*60)))/100
+    
+    if (totalTime < 1) return `${Math.abs(Math.round(totalTime*60))} seconds`;
+    return  `${Math.abs(Math.round(totalTime))} minutes`;
     }
     else return "N/A"
   }
@@ -48,7 +51,7 @@ class DriverComplete extends Component {
 
           <div id="titlecontainer">Status: {this.state.order.status}</div>
           <br />
-          <div id="time">Delivered: {this.getRealTime()} mins ago</div>
+          <div id="time">Delivered: {this.getRealTime()} ago</div>
           <div id="container">
             <br />
             <div
@@ -62,13 +65,13 @@ class DriverComplete extends Component {
             id="description"
             style={{ textAlign: "left", paddingRight: "30%" }}
             >
-            Total time: {this.getTotaltime()} minutes
+            Total time: {this.getTotaltime()}
             </div>
             <div
             id="description"
             style={{ textAlign: "left", paddingRight: "30%" }}
             >
-            Total cost: ${this.state.order.cost}
+            Total cost: ${Math.round(this.state.order.cost*100)/100}
             </div>
           </div>
           
