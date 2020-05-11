@@ -301,7 +301,7 @@ class Map extends Component {
           },
         });
 
-        map.addLayer({
+      map.addLayer({
           id: "points",
           type: "symbol",
           source: "points",
@@ -324,6 +324,15 @@ class Map extends Component {
         })
       );
       
+      // create the marker
+      if (this.state.start) {
+        // create the popup
+        var startpopup = new mapboxgl.Popup({ offset: 25 }).setText(
+          `${this.state.start}`
+          );
+        new mapboxgl.Marker().setLngLat(this.state.start).setPopup(startpopup).addTo(map);
+      }
+
       // create the popup
       if (this.state.order.status === "Out for delivery"){
         var popup = new mapboxgl.Popup({ offset: 25 }).setText(
