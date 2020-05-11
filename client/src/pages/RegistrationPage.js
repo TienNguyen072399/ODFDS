@@ -11,7 +11,10 @@ class Registration extends Component {
     email: "",
     password: "",
     businessName: "",
-    address: "",
+    streetAddress: "",
+    city: "",
+    zipCode: "",
+    fullAddress: "",
     driversLicense: "",
     vehicle: "",
     latitude: 0,
@@ -46,55 +49,103 @@ class Registration extends Component {
         !this.state.email ||
         !this.state.password ||
         !this.state.businessName ||
-        !this.state.address
+        !this.state.streetAddress ||
+        !this.state.city ||
+        !this.state.zipCode
       ) {
         alert("Please fill out the entire form.");
         e.preventDefault();
         return;
       } else {
         await fetch(
-          `https://api.mapbox.com/geocoding/v5/mapbox.places/${this.state.address}.json?access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg`
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${this.state.streetAddress}, ${this.state.city}, CA ${this.state.zipCode}.json?proximity=-121.893028,37.335480&access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg&types=address&bbox=-122.02102649158965%2C37.25101674976506%2C-121.79941218830572%2C37.40577078607954&limit=1`
         )
           .then((response) => response.json())
-          .then((res) => {
+          .then(async (res) => {
+            if (res.features.length > 0) {
+              console.log(res);
+              let streetAddress = "";
+              let city = "";
+              let zipCode = "";
+              let startIndex = 0;
+              let endIndex = res.features[0].place_name.indexOf(",");
 
-            if (res.features.length == 0) {
-              alert("Address not found");
+              streetAddress = res.features[0].place_name
+                .substring(startIndex, endIndex)
+                .toLowerCase();
 
+              startIndex += streetAddress.length + 2;
+              endIndex = res.features[0].place_name.indexOf(",", startIndex);
+
+              city = res.features[0].place_name
+                .substring(startIndex, endIndex)
+                .toLowerCase();
+
+              startIndex += city.length + 2 + "california".length + 1;
+              endIndex = res.features[0].place_name.indexOf(",", startIndex);
+              zipCode = res.features[0].place_name.substring(
+                startIndex,
+                endIndex
+              );
+
+              console.log(streetAddress);
+              console.log(city);
+              console.log(zipCode);
+
+              //Address validation
+              if (
+                this.state.streetAddress.toLowerCase() === streetAddress &&
+                this.state.city.toLowerCase() === city &&
+                this.state.zipCode === zipCode
+              ) {
+                console.log("valid address");
+                this.setState({
+                  latitude: res.features[0].center[1],
+                  longitude: res.features[0].center[0],
+                  fullAddress: res.features[0].place_name,
+                });
+                console.log(`${this.state.latitude}, ${this.state.longitude}`);
+                console.log(this.state.fullAddress);
+
+                await fetch("http://localhost:5000/api/users/registration", {
+                  method: "POST",
+
+                  headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    type: this.state.type,
+                    name: this.state.name,
+                    email: this.state.email.toLowerCase(),
+                    password: this.state.password,
+                    businessName: this.state.businessName,
+                    address: this.state.fullAddress,
+                    latitude: this.state.latitude,
+                    longitude: this.state.longitude,
+                  }),
+                })
+                  .then((response) => response.json())
+                  .then((res) => {
+                    if (res.user) {
+                      console.log(res.user);
+                      this.setState({ status: "done" });
+                    } else {
+                      alert(res.error);
+                    }
+                  });
+              }
+              //Address not valid
+              else {
+                alert("Address not found. Please enter a valid address");
+              }
+              // console.log(res.features[0].place_name);
+              // this.setState({
+              //   latitude: res.features[0].center[1],
+              //   longitude: res.features[0].center[0],
+              // });
             } else {
-              this.setState({
-                latitude: res.features[0].center[1],
-                longitude: res.features[0].center[0],
-              });
-            }
-          });
-        console.log(`${this.state.latitude}, ${this.state.longitude}`);
-
-        await fetch("http://localhost:5000/api/users/registration", {
-          method: "POST",
-
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            type: this.state.type,
-            name: this.state.name,
-            email: this.state.email.toLowerCase(),
-            password: this.state.password,
-            businessName: this.state.businessName,
-            address: this.state.address,
-            latitude: this.state.latitude,
-            longitude: this.state.longitude,
-          }),
-        })
-          .then((response) => response.json())
-          .then((res) => {
-            if (res.user) {
-              console.log(res.user);
-              this.setState({ status: "done" });
-            } else {
-              alert(res.error);
+              alert("Address not found. Please enter a valid address");
             }
           });
       }
@@ -198,14 +249,36 @@ class Registration extends Component {
             />
           </div>
           <div className="registrationInput">
-            <label>Address</label>
+            <label>Street Address</label>
             <input
               type="text"
-              name="address"
+              name="streetAddress"
               onChange={(e) => {
-                this.setState({ address: e.target.value });
+                this.setState({ streetAddress: e.target.value });
               }}
-              placeholder="Address"
+              placeholder="Street Address"
+            />
+          </div>
+          <div className="registrationInput">
+            <label>City</label>
+            <input
+              type="text"
+              name="city"
+              onChange={(e) => {
+                this.setState({ city: e.target.value });
+              }}
+              placeholder="City"
+            />
+          </div>
+          <div className="registrationInput">
+            <label>Zip Code</label>
+            <input
+              type="text"
+              name="zipCode"
+              onChange={(e) => {
+                this.setState({ zipCode: e.target.value });
+              }}
+              placeholder="Zip Code"
             />
           </div>
           <div className="registrationInput">
