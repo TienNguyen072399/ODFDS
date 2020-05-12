@@ -393,9 +393,7 @@ router.put("/order/order-delivered", cors(), async (req, res, next) => {
 //calculate costs of 1 order
 function calc_costs(miles) {
   //calculating cost, 5 is base cost
-  let cost_order = 5;
-
-  cost_order = cost_order + miles * 2;
+  let cost_order = 5 + (miles-1) * 2;
   return cost_order;
 }
 

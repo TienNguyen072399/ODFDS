@@ -76,8 +76,7 @@ class DriverDash extends Component {
   //calculate costs of 1 order
   calc_costs = (miles) => {
     //calculating cost, 5 is base cost
-    let cost_order = 5;
-    if (miles >1) cost_order = cost_order + (miles-1) * 2; // first mile is free
+    let cost_order = 5 + (miles-1) * 2; // first mile is free
     return cost_order;
   };
 
