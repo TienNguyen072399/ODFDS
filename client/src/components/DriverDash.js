@@ -176,7 +176,7 @@ class DriverDash extends Component {
             });
           },
           function (error) {
-            if (error.code == error.PERMISSION_DENIED)
+            if (error.code === error.PERMISSION_DENIED)
               //alert("Sorry, browser geolocation permission is denied");
             currentComponent.setState({
               start: [-121.88130866919334, 37.336324837847584],

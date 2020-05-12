@@ -3,6 +3,8 @@ import CustomButtons from "../components/CustomButtons";
 import { Link, Redirect } from "react-router-dom";
 import "./TempCSS.css";
 
+var emailPatt = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
 class Registration extends Component {
   state = {
     step: 1,
@@ -56,7 +58,10 @@ class Registration extends Component {
         alert("Please fill out the entire form.");
         e.preventDefault();
         return;
-      } else {
+      } else if (!emailPatt.test(this.state.email)) { //Email Validation: Business
+        alert("Invalid email. Please enter a valid email address.");
+      }
+      else {
         await fetch(
           `https://api.mapbox.com/geocoding/v5/mapbox.places/${this.state.streetAddress}, ${this.state.city}, CA ${this.state.zipCode}.json?proximity=-121.893028,37.335480&access_token=pk.eyJ1IjoibmdvdGhhb21pbmg5MCIsImEiOiJjazkwdnVhdmIwNXAyM2xvNmd0MnFsdXJlIn0.mT75xgKIwKFgt8BdWGouCg&types=address&bbox=-122.02102649158965%2C37.25101674976506%2C-121.79941218830572%2C37.40577078607954&limit=1`
         )
@@ -160,7 +165,10 @@ class Registration extends Component {
         alert("Please fill out the entire form.");
         e.preventDefault();
         return;
-      } else {
+      } else if (!emailPatt.test(this.state.email)) { //Email Validation: Driver
+        alert("Invalid email. Please enter a valid email address.");
+      }
+      else {
         fetch("http://localhost:5000/api/users/registration", {
           method: "POST",
 
